@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0abf1de6-8e11-44cd-a502-834b109d772a">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="id" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     sample2.`date` AS sample2_date,
+     sample2.`docno` AS sample2_docno,
+     sample2.`companyname` AS sample2_companyname,
+     sample2line.`itemname` AS sample2line_itemname,
+     sample2line.`qty` AS sample2line_qty,
+     sample2line.`unitprice` AS sample2line_unitprice,
+     sample2line.`uom` AS sample2line_uom,
+     sample2line.`amount` AS sample2line_amount
+FROM
+     `sample2line` sample2line INNER JOIN `sample2` sample2 ON sample2line.`headerid` = sample2.`id`
+WHERE sample2line.`qty` >= $P{id} ]]>
+	</queryString>
+	<field name="sample2_date" class="java.sql.Date"/>
+	<field name="sample2_docno" class="java.lang.String"/>
+	<field name="sample2_companyname" class="java.lang.String"/>
+	<field name="sample2line_itemname" class="java.lang.String"/>
+	<field name="sample2line_qty" class="java.lang.Integer"/>
+	<field name="sample2line_unitprice" class="java.math.BigDecimal"/>
+	<field name="sample2line_uom" class="java.lang.String"/>
+	<field name="sample2line_amount" class="java.math.BigDecimal"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="246" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="0bbf72ed-5eb0-4985-8fe2-cf6c90237aa8" x="10" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Original Text]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="24601dc1-f478-4401-985c-4ce2c36731a4" x="10" y="110" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[HTML Text]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="1e0d2371-b80a-4861-b67d-940a604fce11" x="20" y="145" width="400" height="101"/>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA["<a href='http://www.simit.com.my'>"+$F{sample2_date}+"</a><br/>company="+$F{sample2_companyname}+"<br/><ul><li>1. item 1</li><li>2. item 2</li><li>3. item 3</li></ul>"+"<table border=1><tr><td>cell 1</td><td><b>cell 2</b></td></tr>"+"<tr><td><u>col 3</u></td><td><i>col2</i></td></tr></table>"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="54043594-785d-48eb-b64b-1357f8891883" x="10" y="20" width="460" height="90"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["<a href='http://www.simit.com.my'>"+$F{sample2_date}+"</a><br/>company="+ $F{sample2_companyname}+"<br/><ul><li>1. item 1</li><li>2. item 2</li><li>3. item 3</li></ul>"+"<table border=1><tr><td>cell 1</td><td><b>cell 2</b></td></tr>"+"<tr><td><u>col 3</u></td><td><i>col2</i></td></tr></table>"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

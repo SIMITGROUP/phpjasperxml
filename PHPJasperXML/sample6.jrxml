@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="18142129-aa1b-4c3f-9ca2-77e61e8a96c3">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="parameter1" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     sample1.`no` AS sample1_no,
+     sample1.`date` AS sample1_date,
+     sample1.`itemname` AS sample1_itemname,
+     sample1.`qty` AS sample1_qty,
+     sample1.`uom` AS sample1_uom
+FROM
+     `sample1` sample1
+order by sample1_date]]>
+	</queryString>
+	<field name="sample1_no" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="sample1_date" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="sample1_itemname" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="sample1_qty" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="sample1_uom" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="total" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{sample1_qty}]]></variableExpression>
+	</variable>
+	<variable name="subtotalqty" class="java.lang.String" resetType="Group" resetGroup="groupdate" calculation="Sum">
+		<variableExpression><![CDATA[$F{sample1_qty}]]></variableExpression>
+	</variable>
+	<group name="groupdate">
+		<groupExpression><![CDATA[$F{sample1_date}]]></groupExpression>
+		<groupHeader>
+			<band height="40" splitType="Stretch">
+				<textField>
+					<reportElement uuid="a832702d-4b37-499f-83ce-03aa6030359c" x="40" y="0" width="100" height="17"/>
+					<textElement>
+						<font size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{sample1_date}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="0cd509fc-398f-4643-966a-129a93766fc3" x="4" y="0" width="69" height="17"/>
+					<textElement>
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Date]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="5c05714f-eed9-4cd7-b3ae-289edfc74805" x="327" y="17" width="100" height="20"/>
+					<textElement textAlignment="Center">
+						<font isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[Uom]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="bd338de0-e0fe-4ee4-9c2d-a56819c72d37" x="227" y="17" width="100" height="20"/>
+					<textElement textAlignment="Right">
+						<font isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[Qty]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="fedb98af-71c1-45d4-876f-3fa4d1e89c17" x="40" y="17" width="187" height="20"/>
+					<textElement>
+						<font isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[Item Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1df51c15-08cd-40f4-8553-9e56d04b024c" x="4" y="17" width="31" height="20"/>
+					<textElement>
+						<font isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[No]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="22">
+				<staticText>
+					<reportElement uuid="9e3f60b8-f999-45a7-88e4-ed5d30f7cb3b" x="89" y="0" width="138" height="20" forecolor="#33CC00"/>
+					<textElement/>
+					<text><![CDATA[Group Footer, Subtotal]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="186369da-ef58-4f9d-b3c0-968fc78c1150" x="227" y="0" width="100" height="20" forecolor="#33CC00"/>
+					<textElement textAlignment="Right">
+						<font isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{subtotalqty}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="333a1614-e2d6-4921-8ae8-fd5e7e33b2b3" x="4" y="19" width="551" height="1"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="23829ec9-ab70-46c7-9b51-d32528d49f67" x="157" y="0" width="298" height="20"/>
+				<textElement/>
+				<text><![CDATA[Page Header]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField pattern="">
+				<reportElement uuid="e2b5d1e5-0261-4cb8-8161-53df55a5c5c9" x="4" y="0" width="31" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{sample1_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0179d972-0ec4-4610-b01e-823bd4a3f933" x="40" y="0" width="187" height="20"/>
+				<textElement>
+					<font fontName="msungstdlight"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sample1_itemname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8b5822f0-ee6e-49e4-9bbb-bf8c0ec775cb" x="227" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{sample1_qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="eccdd85e-da0f-4ed9-bc7d-e0bd08d35504" isPrintRepeatedValues="false" x="327" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{sample1_uom}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="7ee9c9ff-ed23-45d4-ac95-4ce932b6da41" x="10" y="18" width="138" height="20"/>
+				<textElement/>
+				<text><![CDATA[Report Footer]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement uuid="186369da-ef58-4f9d-b3c0-968fc78c1150" x="227" y="0" width="100" height="20" forecolor="#000099"/>
+				<textElement textAlignment="Right">
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9e3f60b8-f999-45a7-88e4-ed5d30f7cb3b" x="89" y="0" width="138" height="20" forecolor="#000099"/>
+				<textElement>
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Summary: Grant Total]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

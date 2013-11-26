@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="parameter1" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     sample1.`no` AS sample1_no,
+     sample1.`date` AS sample1_date,
+     sample1.`itemname` AS sample1_itemname,
+     sample1.`qty` AS sample1_qty,
+     sample1.`uom` AS sample1_uom
+FROM
+     `sample1` sample1 where sample1.`no` > $P{parameter1}
+order by sample1.`date`]]>
+	</queryString>
+	<field name="sample1_no" class="java.lang.Integer"/>
+	<field name="sample1_date" class="java.sql.Date"/>
+	<field name="sample1_itemname" class="java.lang.String"/>
+	<field name="sample1_qty" class="java.lang.Integer"/>
+	<field name="sample1_uom" class="java.lang.String"/>
+	<variable name="total" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{sample1_qty}]]></variableExpression>
+	</variable>
+	<variable name="grouptotal" class="java.lang.String" resetType="Group" resetGroup="date" calculation="Sum">
+		<variableExpression><![CDATA[$F{sample1_qty}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="31" forecolor="#FF6666" backcolor="#0000CC"/>
+				<textElement>
+					<font size="26" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[This is sample report header]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="402" y="25" width="71" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[my no]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="116" y="25" width="71" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[my no]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="24" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{sample1_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="24" y="0" width="69" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{sample1_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="93" y="0" width="354" height="20" forecolor="#FF3333" backcolor="#FF9999"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{sample1_itemname}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.0">
+				<reportElement x="447" y="0" width="71" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true" isItalic="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sample1_qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="518" y="0" width="37" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{sample1_uom}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement x="24" y="0" width="423" height="20"/>
+				<textElement/>
+				<text><![CDATA[grant total]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="447" y="0" width="108" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

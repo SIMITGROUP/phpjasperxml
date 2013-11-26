@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="421" orientation="Landscape" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="64db675b-2d9c-46af-81df-4734d340e7b6">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="parameter1" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/Applications/XAMPP/xamppfiles/htdocs/simbiz/modules/simantz/class/PHPJasperXML/"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     sample1.`no` AS sample1_no,
+     sample1.`date` AS sample1_date,
+     sample1.`itemname` AS sample1_itemname,
+     sample1.`qty` AS sample1_qty,
+     sample1.`uom` AS sample1_uom
+FROM
+     `sample1` sample1  ]]>
+	</queryString>
+	<field name="sample1_no" class="java.lang.Integer"/>
+	<field name="sample1_date" class="java.sql.Date"/>
+	<field name="sample1_itemname" class="java.lang.String"/>
+	<field name="sample1_qty" class="java.lang.Integer"/>
+	<field name="sample1_uom" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="177" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="4a604248-1da0-4cd4-9684-6e53d05b6fbd" x="0" y="157" width="22" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1fd6addc-db94-48db-b41f-66bbc4314c71" x="22" y="157" width="305" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="msungstdlight" size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Item / 名字]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4815fdb8-b19d-4099-b90b-4d07f6fae1a2" x="327" y="157" width="87" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Qty]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="3ce2f044-6ab7-456d-8de5-1732a6906c35" x="0" y="0" width="555" height="133"/>
+				<subreportParameter name="no"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "sample8_subreport1.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="43" splitType="Stretch">
+			<textField>
+				<reportElement uuid="48422acf-4dce-40f9-82cb-88dcc390bae7" x="327" y="0" width="47" height="20" forecolor="#FF0404"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{sample1_qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="dc07405f-3a48-420b-b999-4dcaa2ca1246" x="22" y="0" width="305" height="20"/>
+				<textElement>
+					<font fontName="msungstdlight" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sample1_itemname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fa38fd81-7715-4136-93bd-e466d5824239" x="0" y="0" width="22" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{sample1_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d4da3ed9-0328-4495-a829-16521dd0c898" x="374" y="0" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{sample1_uom}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

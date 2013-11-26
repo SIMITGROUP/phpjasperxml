@@ -1,0 +1,42 @@
+Changes For 0.7a
+- Support control print repeated value
+- support odbc
+- support date pattern
+- support average calculation for time variable 
+- remove gpc magic quote function call in fpdf
+
+Changes For 0.7
+- Support TCPDF writeHTML (add text property expression with 'writeHTML'='1'), view sample5.jrxml
+- Support numbering expression, view sample2.jrxml
+- Allow sum(only) operation in text field with format "("+$V{VAR1}+$V{VAR2}+")"
+
+
+Changes For 0.6d
+-Change chinese-unicode short open tag <? to <?php to avoid compatiblity issue.
+-Add option debugsql, if set $PHPJasperXML->debugsql=true it will display the final sql statement and halt the program. It is very good for traceability purpose.
+
+
+Changes For 0.6c
+- Support Chinese unicode, refere sample4.php (pdf font shall set as uGB in iReport)
+
+Changes For 0.6b
+- Try to support chinese-unicode (Buggy)
+
+Changes For 0.6a
+- Fix some bugs issue in setting up pdf font during iReport
+
+
+Changes for 0.6
+- Second official version
+
+
+Changes from initial version
+- Rewrite all source code, replace from using xmlparser to simple_xml for xml processing
+- Alot of bugs fix
+- Centralize manage text field, static text, line
+- Support print when expression
+- Support report group
+- Support dynamic image path
+- Replace fpdf multicell heigh to font height
+- Source code for process xml file changed, refer sample 1,2,3
+

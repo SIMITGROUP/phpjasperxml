@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dc3d4581-fc29-4980-bc8a-00ac2a6e9c17">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="317"/>
+	<parameter name="parameter1" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT "x" as name,    10 as qty1,   20 as qty2,  15 as qty3,  29 as qty4
+UNION ALL
+SELECT "y" ,30,   16,  20 ,  8
+UNION ALL
+SELECT "z" ,20,   8,  2 , 20
+
+]]>
+	</queryString>
+	<field name="name" class="java.lang.String"/>
+	<field name="qty1" class="java.lang.Long"/>
+	<field name="qty2" class="java.lang.Long"/>
+	<field name="qty3" class="java.lang.Long"/>
+	<field name="qty4" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="802" splitType="Stretch">
+			<pie3DChart>
+				<chart>
+					<reportElement uuid="902351f3-a848-47d9-8836-7798e2ad6546" x="289" y="606" width="266" height="196"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{sample1_itemname}]]></keyExpression>
+					<valueExpression><![CDATA[$F{sample1_qty}]]></valueExpression>
+					<labelExpression><![CDATA[$F{sample1_itemname}]]></labelExpression>
+				</pieDataset>
+				<pie3DPlot>
+					<plot/>
+					<itemLabel/>
+				</pie3DPlot>
+			</pie3DChart>
+			<lineChart>
+				<chart>
+					<reportElement uuid="b8971683-d367-463e-ae97-e2a536ab506b" x="0" y="0" width="555" height="176"/>
+					<chartTitle>
+						<titleExpression><![CDATA["Line Chart"]]></titleExpression>
+					</chartTitle>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<categoryExpression><![CDATA["qty1"]]></categoryExpression>
+						<valueExpression><![CDATA[$F{qty1}]]></valueExpression>
+						<labelExpression><![CDATA[$F{name}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<categoryExpression><![CDATA["qty2"]]></categoryExpression>
+						<valueExpression><![CDATA[$F{qty2}]]></valueExpression>
+						<labelExpression><![CDATA[$F{name}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<categoryExpression><![CDATA["qty3"]]></categoryExpression>
+						<valueExpression><![CDATA[$F{qty3}]]></valueExpression>
+						<labelExpression><![CDATA[$F{name}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<categoryExpression><![CDATA["qty4"]]></categoryExpression>
+						<valueExpression><![CDATA[$F{qty4}]]></valueExpression>
+						<labelExpression><![CDATA[$F{name}]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+				</linePlot>
+			</lineChart>
+			<stackedAreaChart>
+				<chart>
+					<reportElement uuid="21445d25-2585-4d9b-bea8-ea0a2e0e657f" x="0" y="196" width="555" height="148"/>
+					<chartTitle>
+						<titleExpression><![CDATA["Stacked Chart"]]></titleExpression>
+					</chartTitle>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<categoryExpression><![CDATA["qty1"]]></categoryExpression>
+						<valueExpression><![CDATA[$F{qty1}]]></valueExpression>
+						<labelExpression><![CDATA[$F{name}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<categoryExpression><![CDATA["qty2"]]></categoryExpression>
+						<valueExpression><![CDATA[$F{qty2}]]></valueExpression>
+						<labelExpression><![CDATA[$F{name}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<categoryExpression><![CDATA["qty3"]]></categoryExpression>
+						<valueExpression><![CDATA[$F{qty3}]]></valueExpression>
+						<labelExpression><![CDATA[$F{name}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<categoryExpression><![CDATA["qty4"]]></categoryExpression>
+						<valueExpression><![CDATA[$F{qty4}]]></valueExpression>
+						<labelExpression><![CDATA[$F{name}]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<areaPlot>
+					<plot/>
+				</areaPlot>
+			</stackedAreaChart>
+			<barChart>
+				<chart>
+					<reportElement uuid="67b2c5d7-93ee-4686-8c67-c68ec8f8afcb" x="0" y="358" width="555" height="222"/>
+					<chartTitle>
+						<titleExpression><![CDATA["Barchart2"]]></titleExpression>
+					</chartTitle>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<categoryExpression><![CDATA["qty1"]]></categoryExpression>
+						<valueExpression><![CDATA[$F{qty1}]]></valueExpression>
+						<labelExpression><![CDATA[$F{name}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{name}]]></seriesExpression>
+						<categoryExpression><![CDATA["qty2"]]></categoryExpression>
+						<valueExpression><![CDATA[$F{qty2}]]></valueExpression>
+						<labelExpression><![CDATA[$F{name}]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot>
+					<plot/>
+					<itemLabel/>
+				</barPlot>
+			</barChart>
+			<pieChart>
+				<chart>
+					<reportElement uuid="eba31fb0-ebd3-4e95-a988-a22a8d456d38" x="0" y="606" width="230" height="196"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{sample1_itemname}]]></keyExpression>
+					<valueExpression><![CDATA[$F{sample1_qty}]]></valueExpression>
+					<labelExpression><![CDATA[$F{sample1_itemname}]]></labelExpression>
+				</pieDataset>
+				<piePlot>
+					<plot/>
+					<itemLabel/>
+				</piePlot>
+			</pieChart>
+		</band>
+	</summary>
+</jasperReport>
