@@ -33,12 +33,28 @@ class ExportXLS{
     public  $offsetposition=0;
     public $arraygrouphead;
     public $rowswithdata=array();
+    public $uselib=0;
+    public $debughtml=false;
+    public $forcenolib=false;
     public function ExportXLS($raw,$filename, $type='Excel5',$out_method='I'){
-        
-        	include dirname(__FILE__)."/PHPExcel.php";
-                $this->wb  = new PHPExcel();
-                $this->ws=$this->wb->getActiveSheet(0);
-                
+    $type='Excel5';
+                 if(extension_loaded( "excel" ) && !$this->forcenolib){
+					 $this->uselib=1;
+  		              $this->wb 	= Excel::create(1, 'UTF-8');
+			          $this->ws	= $this->wb->getWorkSheet(0);
+			          $this->wformat= new ExcelCellFormat($this->wb);
+			          $this->wfont = new ExcelFont(ExcelFont::WEIGHT_NORMAL); 
+			          
+                 }
+                 else{
+                         include dirname(__FILE__)."/PHPExcel.php";
+        	             $this->wb  = new PHPExcel();
+                         $this->ws=$this->wb->getActiveSheet(0);
+
+                 }
+
+           
+           
                 $this->arrayband=$raw->arrayband;
                 $this->arraypageHeader=$raw->arraypageHeader;
                 $this->arraypageFooter=$raw->arraypageFooter;
@@ -65,10 +81,12 @@ class ExportXLS{
   
     
         $this->global_pointer=0;
+
           $this->arrangeColumn();
           $printeddetail=false;
           $printsummary=false;
-          
+
+
         foreach ($raw->arrayband as $band) {
           
           
@@ -78,7 +96,6 @@ class ExportXLS{
                   }
             }
                  elseif($band["name"]== "pageHeader"){
-                    
                     
                   if($raw->arraypageHeader[0]["height"]>0){
                         $this->pageHeader();
@@ -116,19 +133,11 @@ class ExportXLS{
                   }
 
         }
-                       
-         for($l=1;$l<$this->maxrow;$l++)
-             $this->ws->getRowDimension($l)->setRowHeight(1);
-         sort($this->rowswithdata);
-         $this->rowswithdata=array_unique($this->rowswithdata);
-           
-         foreach($this->rowswithdata as $index =>$r){
-             $this->ws->getRowDimension($r)->setRowHeight(-1);
-         }
 
          
-         
-         
+         $this->deleteEmptyRow();
+         //die;
+          // $this->ws->removeRow(2,1);
          
  $filename=trim($filename);
 
@@ -146,28 +155,30 @@ class ExportXLS{
          }
        if($out_method=='F' || $out_method=='f'){
           
-       
-        $objWriter = PHPExcel_IOFactory::createWriter($this->wb, $type);
-           $objWriter->save($filename);
+             $this->savexls($filename,$type,$out_method);   
+//        $objWriter = PHPExcel_IOFactory::createWriter($this->wb, $type);
+  //         $objWriter->save($filename);
           $raw->generatestatus=true;
        
        }
        else{
-        //ob_end_clean();
-//ob_end_clean();
+		$filename=str_replace(".xlsx",".xls",$filename);
+
           set_time_limit(0);
          header('HTTP/1.0 200 OK', true, 200);
-
         header('Content-Type:'.$contenttype);
         header('Content-Disposition: attachment;filename="'.$filename.'"');
-        header('Cache-Control: max-age=0');
         
-        $objWriter = PHPExcel_IOFactory::createWriter($this->wb, $type);
+        header('Cache-Control: max-age=0');
+                 $this->savexls($filename,$type,'d');
+                 
+                         
+    //    $objWriter = PHPExcel_IOFactory::createWriter($this->wb, $type);
         
         
         //if(PHP_OS=='WINNT')
-         $objWriter->save('php://output');
-        
+      //   $objWriter->save('php://output');
+
         
 //ob_end_clean();
         
@@ -407,7 +418,9 @@ class ExportXLS{
                  if($nextxposition=="")
                     $nextxposition=$this->pageWidth;
               //  echo " $index ($nextxposition-$xposition)";echo "<hr>";
-                 $this->ws->getColumnDimensionByColumn($index)->setWidth($this->hunitmultiply*($nextxposition-$xposition));
+
+  	            $this->setColumnWidth($index,($nextxposition-$xposition));
+//                 $this->ws->getColumnDimensionByColumn($index)->setWidth($this->hunitmultiply*($nextxposition-$xposition));
                  $this->cols=array_merge($this->cols, array("c".$xposition=>$i));
                  $i++;
              }
@@ -492,7 +505,7 @@ class ExportXLS{
              
            //   $this->ws->getRowDimension(1)->setRowHeight(30);
               
-             return ($i);
+             return ($i-1);
             
         
     }
@@ -605,6 +618,15 @@ $r=0;
             }
             
               $headercontent=$this->grouplist[$groupno]["headercontent"];
+         $rr=$this->analyse_expression($headercontent[0]["printWhenExpression"]);
+            //echo "Header:".print_r($headercontent[0],true)."<br/><br/>";
+         if($headercontent[0]["printWhenExpression"]!=""){
+                if(!$rr){
+                    $yplusbandheight-=$y;
+                    continue;
+                }
+         }
+         
                 $j=0;
                 $currentheaderheight=$this->arrangeRows($headercontent,false,true);
                 foreach ($headercontent as $out){
@@ -632,6 +654,15 @@ $r=0;
         
        for($groupno=$this->totalgroup;$groupno  >$this->groupnochange;$groupno--){
       $footercontent=$this->grouplist[$groupno]["footercontent"];
+      
+      $rr=$this->analyse_expression($footercontent[0]["printWhenExpression"]);
+         if($footercontent[0]["printWhenExpression"]!=""){
+                if(!$rr){
+                    $yplusbandheight-=$y;
+                    continue;
+                }
+         }
+         
       $curfooterheight=$this->arrangeRows($footercontent,false,true);
       foreach ($footercontent as $out) {
             $this->display($out,$this->maxrow);
@@ -688,119 +719,93 @@ foreach($this->arraylastPageFooter as $out){
     
         if($this->relativex=='')
             $this->relativex=0;
-        
+            
+      if($this->debughtml)
+        echo $arraydata['type']." :";
+
         switch($arraydata['type']){
-            case "MultiCell":
-                
+            case "MultiCell":       
                 if($this->relativey=="")
                     $this->relativey=0;
-                $this->ws->mergeCellsByColumnAndRow(
-                        $this->relativex,  
-                        ($this->relativey+$rowpos), 
-                        ($this->cols['c'.($this->mergex+$arraydata['width'])]-1),  
-                        ($this->relativey+$rowpos)
-                        );
-                
+                    $this->mergeCells(    $this->relativex,  ($this->relativey+$rowpos),   ($this->cols['c'.($this->mergex+$arraydata['width'])]-1),   ($this->relativey+$rowpos)  );
+    
                $txt=$this->analyse_expression($arraydata['txt']);
                if($arraydata['pattern']!='')
-                  $txt= ' '.$this->formatText ($txt, $arraydata['pattern']);
-                $this->ws->setCellValueByColumnAndRow($this->relativex,
-                       ($this->relativey+$rowpos),$txt);
-              
-                if($arraydata['align']=='C')
-                    $this->ws->getStyleByColumnAndRow($this->relativex, ($this->relativey+$rowpos))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                elseif($arraydata['align']=='R')
-                    $this->ws->getStyleByColumnAndRow($this->relativex, ($this->relativey+$rowpos))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-                else
-                    $this->ws->getStyleByColumnAndRow($this->relativex, ($this->relativey+$rowpos))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-
+                  $txt= $this->formatText ($txt, $arraydata['pattern']);
+                  $this->setText($this->relativex,($this->relativey+$rowpos),  $txt,$arraydata['align']);                
+  	  			if($this->debughtml)
+  	  			   echo  $txt."align:".$arraydata['align']."<br/>";
                 break;
             case "Cell":
-               $this->ws->setCellValueByColumnAndRow($this->relativex,
-                       ($this->relativey+$rowpos),$this->analyse_expression($arraydata['txt']));
-        
+  
+
+            $this->SetText($this->relativex, ($this->relativey+$rowpos),$this->analyse_expression($arraydata['txt']));
+  	  			if($this->debughtml)
+  	  			   echo  $txt."<br/>";
+
                 break;
             case "SetXY":
                 $myx=intval($arraydata['x']);
                 $myy=intval($arraydata['y']);
-       //         if($myy%2>0)
-     //               $myy--;
-
                 $this->relativex=$this->cols['c'.$myx];
                 $this->relativey=$this->rows['r'.$myy];
                 $this->mergex=$myx;
                 $this->mergey=$myy;//$arraydata['y'];
-        //        echo $this->relativey .'-'. $arraydata['y'];
                 break;
-            
-         case "SetFont":
-             $f=$this->ws->getStyleByColumnAndRow($this->relativex, ($this->relativey+$rowpos))->getFont();
-             $f->setName($arraydata['font'].'');
-             $f-> setSize(intVal($arraydata["fontsize"]));
-                if(strpos($arraydata['fontstyle'],'B')!==false)
-                        $f->setBold(true);
-                else
-                            $f->setBold(false);
+        
+          case "SetFont":
+          if($this->debughtml)
+  	  			   echo  $arraydata['font'].",".$arraydata["fontsize"].",".$arraydata['fontstyle']."<br/>";
+		       $this->SetFonts($this->relativex, ($this->relativey+$rowpos),$arraydata['font'],$arraydata["fontsize"],$arraydata['fontstyle']);     
+  	  			if($this->debughtml)
 
-                if(strpos($arraydata['fontstyle'],'U')!==false)
-                        $f->setUnderline(PHPExcel_Style_Font::UNDERLINE_SINGLE);
-                else
-                        $f->setUnderline(PHPExcel_Style_Font::UNDERLINE_NONE);
 
-                if(strpos($arraydata['fontstyle'],'I')!==false)
-                        $f->setItalic(true);
-                else
-                        $f->setItalic(false);
             break;
+   
           case "SetTextColor":
-              //echo PHPExcel_Style_Color::COLOR_RED;
-           
             $cl= str_replace('#','',$arraydata['forecolor']);
            
               if($cl!=''){
-                  
+              $this->SetTextColor($this->relativex, ($this->relativey+$rowpos),$cl);
 
-              
-              $this->ws->getStyleByColumnAndRow($this->relativex, ($this->relativey+$rowpos))->getFont()->getColor()->setARGB("FF".$cl);
               }
-              break;
+  	  			if($this->debughtml)
+						echo "$cl<br/>";
+              break; 
           case "SetFillColor":
               if($arraydata['fill']==true){
               $cl= str_replace('#','',$arraydata['backcolor']);
                if($cl!=''){
-               $this->ws->getStyleByColumnAndRow($this->relativex, ($this->relativey+$rowpos))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-                $this->ws->getStyleByColumnAndRow($this->relativex, ($this->relativey+$rowpos))->getFill()->getStartColor()->setARGB('FF'.$cl);
+               $this->SetFillColor($this->relativex, ($this->relativey+$rowpos),$cl);
                }
               }
+  	  			if($this->debughtml)
+						echo "$cl<br/>";
+
               break;
+
           case "Line":
-//              if($arraydata["x1"]==$arraydata["x2"]){
-//                       $styleArray = array('borders' => array('left' => array('style' => PHPExcel_Style_Border::BORDER_THIN)));
-//                        $this->ws->getStyleByColumnAndRow('A1:L200')->applyFromArray($styleArray);   
-//                  
-//              }
-//              if($arraydata["y1"]==$arraydata["y2"]){
-//                       $styleArray = array('borders' => array('top' => array('style' => PHPExcel_Style_Border::BORDER_THIN)));
-//                        $this->ws->getStyleByColumnAndRow('A1:L200')->applyFromArray($styleArray);   
-//               
-//              }
+          
+          if($this->uselib==false){
+              $printline=false;
+            if($arraydata['printWhenExpression']=="")
+                $printline=true;
+            else
+                $printline=$this->analyse_expression($arraydata['printWhenExpression']);
+            if($printline){                
               $x1=$arraydata["x1"];
               $x2=$arraydata["x2"];
               $y1=$arraydata["y1"];
               $y2=$arraydata["y2"];
-               
               $linewidth=$arraydata["style"]["width"];
               $linedash=$arraydata["style"]["dash"];
               $linecolor=  str_replace('#','',$arraydata["forecolor"]);
-             // array('color'=>$drawcolor,'width'=>$linewidth,'dash'=>$dash);
               $col1=$this->cols['c'.$x1];
               $col2=$this->cols['c'.$x2];
               $row1=$this->rows['r'.$y1]+$this->maxrow;
               $row2=$this->rows['r'.$y2]+$this->maxrow;
               $col1=PHPExcel_Cell::stringFromColumnIndex($col1);
               $col2=PHPExcel_Cell::stringFromColumnIndex($col2);
-              
-              
               if($linewidth==0)
                   $linewidth=PHPExcel_Style_Border::BORDER_NONE;
               elseif($linewidth<=0.25)
@@ -814,43 +819,20 @@ foreach($this->arraylastPageFooter as $out){
               else
                 $linewidth=PHPExcel_Style_Border::BORDER_HAIR;
                 $linewidth=PHPExcel_Style_Border::BORDER_THIN;
-            //  echo "$col1$row1:$col2$row2<br/>";
-              
-              /*
-               * const BORDER_NONE				= 'none';
-	const BORDER_DASHDOT			= 'dashDot';
-	const BORDER_DASHDOTDOT			= 'dashDotDot';
-	const BORDER_DASHED				= 'dashed';
-	const BORDER_DOTTED				= 'dotted';
-	const BORDER_DOUBLE				= 'double';
-	const BORDER_HAIR				= 'hair';
-	const BORDER_MEDIUM				= 'medium';
-	const BORDER_MEDIUMDASHDOT		= 'mediumDashDot';
-	const BORDER_MEDIUMDASHDOTDOT	= 'mediumDashDotDot';
-	const BORDER_MEDIUMDASHED		= 'mediumDashed';
-	const BORDER_SLANTDASHDOT		= 'slantDashDot';
-	const BORDER_THICK				= 'thick';
-	const BORDER_THIN				= 'thin';
-               * 
-               */
               if($x1==$x2){
                     $styleArray = array('borders' => array('left' => array('style' =>$linewidth,'color'=>array('rgb'=>$linecolor))));
               }elseif($y1==$y2){
                   $styleArray = array('borders' => array('top' => array('style' => $linewidth,'color'=>array('rgb'=>$linecolor))));
-              }
-                  
+              }                  
                     $this->ws->getStyle("$col1$row1:$col2$row2")->applyFromArray($styleArray);   
-              //echo "postion = {$arraydata["x1"]},{$arraydata["y1"]},{$arraydata["x2"]},{$arraydata["y2"]}, col1=$col1,col2=$col2,row1=$row1,row2=$row2<br/>";
-              //echo PHPExcel_Cell::stringFromColumnIndex(10);die;
+            }
+            }
               break;
           case "SetLineWidth":
               break;
           
-          case "SetDrawColor":
-              break;
-          case "SetFillColor":
-              
-              break;
+          
+         
           
         }
         
@@ -951,7 +933,7 @@ foreach($this->arraylastPageFooter as $out){
              }
            else{
                
-            if($av["ans"]!="" && is_numeric($av["ans"])){
+            if($av["ans"]!="" && is_numeric($av["ans"])&& (left($av["ans"],1)||left($av["ans"],1)=='-' )>0){
                  $av["ans"]=str_replace("+",$tmpplussymbol,$av["ans"]);
                  $fm=str_replace('$V_'.$vv.$backcurl,$av["ans"],$fm);
             }
@@ -974,7 +956,7 @@ foreach($this->arraylastPageFooter as $out){
                              $ap=str_replace("'", $singlequote,$ap);
                        $ap=str_replace('"', $doublequote,$ap);
      
-           if(is_numeric($ap)&&$ap!=''){
+           if(is_numeric($ap)&&$ap!=''&& (left($ap,1)>0 || left($ap,1)=='-')){
                   $fm = str_replace('$P_'.$pv.$backcurl, $ap,$fm);
            }
            else{
@@ -989,7 +971,7 @@ foreach($this->arraylastPageFooter as $out){
                                   $tmpfieldvalue=str_replace("'", $singlequote,$tmpfieldvalue);
                        $tmpfieldvalue=str_replace('"', $doublequote,$tmpfieldvalue);
 
-           if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!=""){
+           if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!="" && (left($tmpfieldvalue,1)>0||left($tmpfieldvalue,1)=='-')){
             $fm =str_replace('$F_'.$af.$backcurl,$tmpfieldvalue,$fm);
             
            }
@@ -1022,7 +1004,12 @@ foreach($this->arraylastPageFooter as $out){
 
                        $fm=str_replace($singlequote,"\'" ,$fm);
                        $fm=str_replace( $doublequote,'"',$fm);
-
+        if((strpos('"',$fm)==false) || (strpos("'",$fm)==false)){
+                           $fm=str_replace('--', '- -', $fm);
+                           $fm=str_replace('++', '+ +', $fm);
+                       }
+                       
+                       
       eval("\$result= ".$fm.";");
          
  
@@ -1305,5 +1292,257 @@ private function checkSwitchGroup($type="header"){
        //}
       }	
     
+}
+//publish method = 'd:download, f:store as file'
+
+public function savexls($filename,$type,$publishmethod="d"){
+//echo $filename="/tmp/aaa.xls";
+				$tmpfile=sys_get_temp_dir()."/".rand().".xls";
+	if($this->uselib==1){
+		if($publishmethod=='d'){
+					$this->wb->saveAs($tmpfile);
+					echo file_get_contents($tmpfile);
+		}else{
+					$this->wb->saveAs($filename);
+		}
+	
+	}
+	else{
+	        $objWriter = PHPExcel_IOFactory::createWriter($this->wb, $type);
+	        if($publishmethod=='d')
+	         $objWriter->save('php://output');
+	        else
+            $objWriter->save($filename);
+	}
+//	echo "exported file";die;
+	
+}
+
+
+public function deleteEmptyRow(){
+  	if($this->uselib==0){      
+         for($l=1;$l<$this->maxrow;$l++)
+             $this->ws->getRowDimension($l)->setRowHeight(1);
+         sort($this->rowswithdata);
+         $this->rowswithdata=array_unique($this->rowswithdata);
+           
+         foreach($this->rowswithdata as $index =>$r){
+             $this->ws->getRowDimension($r)->setRowHeight(-1);
+         }
+		$rrow=array();
+		$lastemptyrow=0;
+		 $lastrowcontinual=0;
+		 $emptrowgroup=array();
+         for($l=1;$l<=$this->maxrow;$l++){
+            
+             $rh=$this->ws->getRowDimension($l)->getRowHeight();
+             
+             if($rh==1){
+                    if($lastemptyrow==0){
+                        $lastemptyrow=$l;
+                        $lastrowcontinual=0;
+                    }
+                    elseif($l==$lastemptyrow+$lastrowcontinual+1){
+                        
+                        //$lastemptyrow=$l;
+                        $lastrowcontinual++;
+                    }
+                    else{
+                        
+                        $emptrowgroup[]=array("row"=>$lastemptyrow,"count"=>$lastrowcontinual);
+                        $lastemptyrow=$l;
+                        $lastrowcontinual=0;
+                        
+                    }
+                     
+                 
+             }
+                    
+                 
+         }
+        // print_r($emptrowgroup);
+         //die;
+         
+         for($cc=count($emptrowgroup)-1;$cc>=0;$cc--){
+              $this->ws->removeRow($emptrowgroup[$cc]["row"],$emptrowgroup[$cc]["count"]+1);
+          //    echo $emptrowgroup[$cc]["row"]."->".$emptrowgroup[$cc]["count"]."<br/>";
+              
+         }
+    }else{
+    	//	echo "delete empty rows";
+    }
+         
+}
+
+
+public function setColumnWidth($index,$width){
+if($this->uselib==0)
+	$this->ws->getColumnDimensionByColumn($index)->setWidth($width*$this->hunitmultiply);
+else
+	$this->ws->SetColWidth($index,  $width*40);
+
+
 }   
+
+public function setText($x,$y,$txt,$align){
+
+if($this->uselib==0){
+               $this->ws->setCellValueByColumnAndRow($x,$y,' '.$txt);
+               if($align=='C')
+                      $this->ws->getStyleByColumnAndRow($x, $y)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                elseif($align=='R')
+                    $this->ws->getStyleByColumnAndRow($x, $y)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                else
+                    $this->ws->getStyleByColumnAndRow($x, $y)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+
+
+               }
+else{
+
+	$EXCEL_HALIGN_GENERAL		= 0x00;
+	$EXCEL_HALIGN_LEFT			= 0x01;
+	$EXCEL_HALIGN_CENTRED		= 0x02;
+	$EXCEL_HALIGN_RIGHT			= 0x03;
+	$EXCEL_HALIGN_FILLED			= 0x04;
+	$EXCEL_HALIGN_JUSITFIED		= 0x05;
+	$EXCEL_HALIGN_SEL_CENTRED	= 0x06;	// centred across selection
+	$EXCEL_HALIGN_DISTRIBUTED	= 0x07;	//
+                if($align=='C')
+                     $align=$EXCEL_HALIGN_CENTRED;
+                elseif($align=='R')
+                     $align=$EXCEL_HALIGN_RIGHT;
+                else
+                    $align=$EXCEL_HALIGN_LEFT;
+                    
+	$this->wformat->setAlignment($align);                    
+	$this->wformat->setFont($this->wfont);  
+
+
+
+	
+		//	if(PHP_OS=="Darwin") 
+				$this->ws->setAnsiString($x,$y-1,$txt,$this->wformat); //Mac OSX's iconv not able to convert char * to wchar_t* well.
+		//	else
+		//		$this->ws->setWString($x,$y-1,$txt,$this->wformat);
+				
+					$this->wformat= new ExcelCellFormat($this->wb);
+			        $this->wfont = new ExcelFont(ExcelFont::WEIGHT_NORMAL); 
+
+				}
+			
+}
+
+
+public function mergeCells($x1,$y1,$x2,$y2){
+if($this->uselib==0){
+	if($x2=="")$x2=$x1;
+	if($y2=="")$y2=$y1;
+
+	$this->ws->mergeCellsByColumnAndRow($x1,$y1,$x2, $y2);
+	}
+else{
+	if($x2=="")$x2=0;
+	if($y2=="")$y2=0;
+
+	$this->ws->mergeCells($x1,$y1-1,($x2-$x1)+1, ($y2-$y1)+1);
+	}
+}
+
+
+public function  SetFonts($x,$y,$font,$fontsize,$fontstyle){
+
+
+if($this->uselib==0){
+//echo "phpexcel";
+             $f=$this->ws->getStyleByColumnAndRow($x, $y)->getFont();
+
+             $f->setName($font);
+             
+             $f->setSize(intVal($fontsize));
+             
+                if(strpos($fontstyle,'B')!==false)
+                        $f->setBold(true);
+                else
+                            $f->setBold(false);
+
+                if(strpos($fontstyle,'U')!==false)
+                        $f->setUnderline(PHPExcel_Style_Font::UNDERLINE_SINGLE);
+                else
+                        $f->setUnderline(PHPExcel_Style_Font::UNDERLINE_NONE);
+
+                if(strpos($fontstyle,'I')!==false)
+                        $f->setItalic(true);
+                else
+                        $f->setItalic(false);
+             
+}else{
+
+	if(strpos($fontstyle,'B')!==false)
+		$this->wfont->setWeight(ExcelFont::WEIGHT_BOLD);
+    else	
+		$this->wfont->setWeight(ExcelFont::WEIGHT_NORMAL);
+	
+	
+    if(strpos($fontstyle,'I')!==false)
+        $this->wfont->setItalic(true);
+    else
+        $this->wfont->setItalic(false);
+
+     if(strpos($fontstyle,'U')!==false)
+        $this->wfont->setUnderline(true);
+    else
+     	$this->wfont->setUnderline(false);
+
+	$this->wfont->setFontName($font);
+	$this->wfont->setFontSize($fontsize);
+
+
+}
+}
+
+
+public function SetTextColor($x,$y,$cl){
+	if($this->uselib==0){
+              $this->ws->getStyleByColumnAndRow($x, $y)->getFont()->getColor()->setARGB("FF".$cl);
+ }else{
+/*
+  	EGA_BLACK	= 0,	// 000000H
+	EGA_WHITE	= 1,	// FFFFFFH
+	EGA_RED		= 2,	// FF0000H
+	EGA_GREEN	= 3,	// 00FF00H
+	EGA_BLUE	= 4,	// 0000FFH
+	EGA_YELLOW	= 5,	// FFFF00H
+	EGA_MAGENTA	= 6,	// FF00FFH
+	EGA_CYAN	= 7		// 00FFFFH
+	*/
+//	 	$this->wfont->setColor(0);
+              }
+              
+              } 
+              
+public function SetFillColor($x,$y,$cl){
+	if($this->uselib==0){
+               $this->ws->getStyleByColumnAndRow($x,$y)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+                $this->ws->getStyleByColumnAndRow($x,$y)->getFill()->getStartColor()->setARGB('FF'.$cl);
+ }else{
+ 
+  	/*
+  	EGA_BLACK	= 0,	// 000000H
+	EGA_WHITE	= 1,	// FFFFFFH
+	EGA_RED		= 2,	// FF0000H
+	EGA_GREEN	= 3,	// 00FF00H
+	EGA_BLUE	= 4,	// 0000FFH
+	EGA_YELLOW	= 5,	// FFFF00H
+	EGA_MAGENTA	= 6,	// FF00FFH
+	EGA_CYAN	= 7		// 00FFFFH
+	*/
+// 	$this->wformat->setBackGround(1);
+
+ 
+
+              }
+
+
+}
+
 }
