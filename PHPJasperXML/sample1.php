@@ -9,13 +9,13 @@ include_once ('setting.php');
 
 
 
-$xml =  simplexml_load_file("sample1.jrxml");
+
 
 
 $PHPJasperXML = new PHPJasperXML();
 //$PHPJasperXML->debugsql=true;
 $PHPJasperXML->arrayParameter=array("parameter1"=>1);
-$PHPJasperXML->xml_dismantle($xml);
+$PHPJasperXML->load_xml_file("sample1.jrxml");
 
 $PHPJasperXML->transferDBtoArray($server,$user,$pass,$db);
 $PHPJasperXML->outpage("I");    //page output method I:standard output  D:Download file

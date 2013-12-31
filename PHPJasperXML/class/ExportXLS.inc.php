@@ -36,6 +36,7 @@ class ExportXLS{
     public $uselib=0;
     public $debughtml=false;
     public $forcenolib=false;
+    private $currentband="";
     public function ExportXLS($raw,$filename, $type='Excel5',$out_method='I'){
     $type='Excel5';
                  if(extension_loaded( "excel" ) && !$this->forcenolib){
@@ -43,14 +44,16 @@ class ExportXLS{
   		              $this->wb 	= Excel::create(1, 'UTF-8');
 			          $this->ws	= $this->wb->getWorkSheet(0);
 			          $this->wformat= new ExcelCellFormat($this->wb);
+                                  $this->blankformat=$this->wformat;
 			          $this->wfont = new ExcelFont(ExcelFont::WEIGHT_NORMAL); 
+                                 $this->blankwfont= $this->wfont  ;
 			          
                  }
                  else{
                          include dirname(__FILE__)."/PHPExcel.php";
         	             $this->wb  = new PHPExcel();
                          $this->ws=$this->wb->getActiveSheet(0);
-
+                  
                  }
 
            
@@ -93,12 +96,15 @@ class ExportXLS{
             if($band["name"]== "title"){
                   if($raw->arraytitle[0]["height"]>0){
                             $this->title();
+					$this->maxrow--;
+
                   }
             }
                  elseif($band["name"]== "pageHeader"){
                     
                   if($raw->arraypageHeader[0]["height"]>0){
                         $this->pageHeader();
+                  $this->maxrow--;
                   }
                  }
                  elseif($band["name"]== "detail"){
@@ -116,15 +122,18 @@ class ExportXLS{
                 
                      if($raw->arraylastPageFooter[0]["height"]==0 && $raw->arraypageFooter[0]["height"]>0){
                         $this->pageFooter();
+                       $this->maxrow--;
                      }
                  }
                  elseif(($band["name"]== "lastPageFooter" || $band["name"]== "summary" ) && $printsummary==false){
            
                      if($raw->arraysummary[0]["height"]>0){
-                        $this->summary();
+                        $this->summary();                  
+                        $this->maxrow--;
                      }
                      if($raw->arraylastPageFooter[0]["height"]>0){
-                        $this->lastPageFooter();
+                        $this->lastPageFooter();                  
+                        $this->maxrow--;
                      }
                      $printsummary=true;
 
@@ -134,8 +143,9 @@ class ExportXLS{
 
         }
 
-         
-         $this->deleteEmptyRow();
+         if($this->debughtml==true)
+         die;
+//         $this->deleteEmptyRow();
          //die;
           // $this->ws->removeRow(2,1);
          
@@ -504,14 +514,13 @@ class ExportXLS{
              
              
            //   $this->ws->getRowDimension(1)->setRowHeight(30);
-              
              return ($i-1);
-            
         
     }
     
     
     public function title(){
+    $this->currentband="title";
        $this->titlerowcount=$this->arrangeRows($this->arraytitle,true);
 $i=0;
 foreach($this->arraytitle as $out){
@@ -525,6 +534,7 @@ foreach($this->arraytitle as $out){
     }
     
     public function pageHeader(){
+    $this->currentband="pageHeader";
        $this->headerrowcount= $this->arrangeRows($this->arraypageHeader,false,true);
        
       $this->maxrow=$this->headerrowcount;
@@ -566,14 +576,15 @@ foreach($this->arraytitle as $out){
 $d=0;
 $r=0;
       foreach($this->arraydetail as $detail){
-         
+          $detailheight= $this->arrangeRows($detail);
+               
+          		
+
         foreach($detail as $out){
-           
+    $this->currentband="detail";                    
           //($this->headerrowcount+($this->detailrowcount*$i)
             
          
-          $detailheight= $this->arrangeRows($detail);
-               
                $this->display($out,$this->maxrow);
            
             $d++;
@@ -644,7 +655,8 @@ $r=0;
          $this->report_count=0;
       else
           $this->report_count++;
-     
+          
+     $this->maxrow--;  
     }
     public function showGroupFooter() {
         
@@ -674,6 +686,7 @@ $r=0;
                              $this->group_count[$this->grouplist[$i]["name"]]=1;
                         }
         $this->currentband='';
+        $this->maxrow--;
 
     }
 
@@ -681,6 +694,7 @@ $r=0;
     
     
     public function pageFooter(){
+    $this->currentband="pageFooter";
         $this->footerrowcount=$this->arrangeRows($this->arraypageFooter);
         foreach($this->arraypageFooter as $out){
             $this->display($out,$this->maxrow);
@@ -705,7 +719,7 @@ foreach($this->arraylastPageFooter as $out){
 
     }
     public function summary(){
-
+    $this->currentband="summary";
         $this->summaryrowcount=$this->arrangeRows($this->arraysummary);
         foreach($this->arraysummary as $out){
             $this->display($out,$this->maxrow);
@@ -730,16 +744,17 @@ foreach($this->arraylastPageFooter as $out){
                     $this->mergeCells(    $this->relativex,  ($this->relativey+$rowpos),   ($this->cols['c'.($this->mergex+$arraydata['width'])]-1),   ($this->relativey+$rowpos)  );
     
                $txt=$this->analyse_expression($arraydata['txt']);
-               if($arraydata['pattern']!='')
-                  $txt= $this->formatText ($txt, $arraydata['pattern']);
-                  $this->setText($this->relativex,($this->relativey+$rowpos),  $txt,$arraydata['align']);                
+               //if($arraydata['pattern']!='')
+               //   $txt= $this->formatText ($txt, $arraydata['pattern']);
   	  			if($this->debughtml)
-  	  			   echo  $txt."align:".$arraydata['align']."<br/>";
+  	  			   echo  $txt.",align:".$arraydata['align']."<br/>";
+
+                  $this->setText($this->relativex,($this->relativey+$rowpos),  $txt,$arraydata['align'], $arraydata['pattern']);                
                 break;
             case "Cell":
   
 
-            $this->SetText($this->relativex, ($this->relativey+$rowpos),$this->analyse_expression($arraydata['txt']));
+            $this->SetText($this->relativex, ($this->relativey+$rowpos),$this->analyse_expression($arraydata['txt']),$arraydata['align'], $arraydata['pattern']);
   	  			if($this->debughtml)
   	  			   echo  $txt."<br/>";
 
@@ -756,8 +771,9 @@ foreach($this->arraylastPageFooter as $out){
           case "SetFont":
           if($this->debughtml)
   	  			   echo  $arraydata['font'].",".$arraydata["fontsize"].",".$arraydata['fontstyle']."<br/>";
-		       $this->SetFonts($this->relativex, ($this->relativey+$rowpos),$arraydata['font'],$arraydata["fontsize"],$arraydata['fontstyle']);     
-  	  			if($this->debughtml)
+		       $this->SetFonts($this->relativex, ($this->relativey+$rowpos),$arraydata['font'],$arraydata["fontsize"],
+                                $arraydata['fontstyle']);     
+  	  			//if($this->debughtml)
 
 
             break;
@@ -791,7 +807,7 @@ foreach($this->arraylastPageFooter as $out){
             if($arraydata['printWhenExpression']=="")
                 $printline=true;
             else
-                $printline=$this->analyse_expression($arraydata['printWhenExpression']);
+                $printline=$this->analyse_expression($arraydata['printWhenExpression']);                
             if($printline){                
               $x1=$arraydata["x1"];
               $x2=$arraydata["x2"];
@@ -826,6 +842,11 @@ foreach($this->arraylastPageFooter as $out){
               }                  
                     $this->ws->getStyle("$col1$row1:$col2$row2")->applyFromArray($styleArray);   
             }
+            }else{
+			//ech "12312312<br/>";
+//            echo "format 1,1:".print_r($this->ws->getFormat(0,0),true)."end line";
+            
+            
             }
               break;
           case "SetLineWidth":
@@ -833,6 +854,7 @@ foreach($this->arraylastPageFooter as $out){
           
           
          
+          
           
         }
         
@@ -924,6 +946,10 @@ foreach($this->arraylastPageFooter as $out){
 //               $fm=str_replace('$V_'.$vv."_COUNT",$this->group_count[$this->grouplist[3]["name"]],$fm1);
 //           }
              if(strpos($fm,'_COUNT')!==false){
+             if($this->group_count[$this->grouplist[0]["name"]]==1)$this->group_count[$this->grouplist[0]["name"]]=2;
+             if($this->group_count[$this->grouplist[1]["name"]]==1)$this->group_count[$this->grouplist[1]["name"]]=2;
+             if($this->group_count[$this->grouplist[2]["name"]]==1)$this->group_count[$this->grouplist[2]["name"]]=2;
+             if($this->group_count[$this->grouplist[3]["name"]]==1)$this->group_count[$this->grouplist[3]["name"]]=2;
                  $fm=str_replace('$V_'.$this->grouplist[0]["name"].'_COUNT'.$backcurl,($this->group_count[$this->grouplist[0]["name"]]-1),$fm);
                  $fm=str_replace('$V_'.$this->grouplist[1]["name"].'_COUNT'.$backcurl,($this->group_count[$this->grouplist[1]["name"]]-1),$fm);
                  $fm=str_replace('$V_'.$this->grouplist[2]["name"].'_COUNT'.$backcurl,($this->group_count[$this->grouplist[2]["name"]]-1),$fm);
@@ -933,7 +959,7 @@ foreach($this->arraylastPageFooter as $out){
              }
            else{
                
-            if($av["ans"]!="" && is_numeric($av["ans"])&& (left($av["ans"],1)||left($av["ans"],1)=='-' )>0){
+            if($av["ans"]!="" && is_numeric($av["ans"])&& ($this->left($av["ans"],1)||left($av["ans"],1)=='-' )>0){
                  $av["ans"]=str_replace("+",$tmpplussymbol,$av["ans"]);
                  $fm=str_replace('$V_'.$vv.$backcurl,$av["ans"],$fm);
             }
@@ -956,13 +982,13 @@ foreach($this->arraylastPageFooter as $out){
                              $ap=str_replace("'", $singlequote,$ap);
                        $ap=str_replace('"', $doublequote,$ap);
      
-           if(is_numeric($ap)&&$ap!=''&& (left($ap,1)>0 || left($ap,1)=='-')){
+           if(is_numeric($ap)&&$ap!=''&& ($this->left($ap,1)>0 || $this->left($ap,1)=='-')){
                   $fm = str_replace('$P_'.$pv.$backcurl, $ap,$fm);
            }
            else{
             $fm = str_replace('$P_'.$pv.$backcurl, "'".$ap."'",$fm);
                $isstring=true;
-           }
+           } 
         }
             
        //     print_r($this->arrayfield);
@@ -971,7 +997,7 @@ foreach($this->arraylastPageFooter as $out){
                                   $tmpfieldvalue=str_replace("'", $singlequote,$tmpfieldvalue);
                        $tmpfieldvalue=str_replace('"', $doublequote,$tmpfieldvalue);
 
-           if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!="" && (left($tmpfieldvalue,1)>0||left($tmpfieldvalue,1)=='-')){
+           if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!="" && ($this->left($tmpfieldvalue,1)>0||left($tmpfieldvalue,1)=='-')){
             $fm =str_replace('$F_'.$af.$backcurl,$tmpfieldvalue,$fm);
             
            }
@@ -998,7 +1024,7 @@ foreach($this->arraylastPageFooter as $out){
             $fm=str_replace('+'," . ",$fm);
           if(strpos($fm, "'")!==false)
             $fm=str_replace('+'," . ",$fm);
-     $fm=str_replace('$this->PageNo()',"''",$fm);
+     $fm=str_replace('$this->PageNo()','Not applicable',$fm);
 
 
 
@@ -1384,10 +1410,43 @@ else
 
 }   
 
-public function setText($x,$y,$txt,$align){
-
+public function setText($x,$y,$txt,$align,$pattern){
+$myformat='';
 if($this->uselib==0){
-               $this->ws->setCellValueByColumnAndRow($x,$y,' '.$txt);
+               
+               //$stlen=strlen($txt);
+               
+              
+
+
+               
+               if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){    
+                   $this->ws->getCellByColumnAndRow($x, $y)->setValueExplicit($txt, PHPExcel_Cell_DataType::TYPE_NUMERIC);
+                    $this->ws->getStyleByColumnAndRow($x, $y)->getNumberFormat()->setFormatCode($pattern);	
+               }else{
+                   $this->ws->getCellByColumnAndRow($x, $y)->setValueExplicit($txt, PHPExcel_Cell_DataType::TYPE_STRING);
+                   
+               }
+                 /*if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){    
+                                         
+                                }
+                                else
+                                    $this->ws->getStyleByColumnAndRow($x, $y)->getNumberFormat()->setFormatCode('@');
+               */
+               //$newstrken=($this->ws->getCellByColumnAndRow($x, $y)->getValue());
+               //if($this->left($txt,1)=='0' && $stlen>$newstrken){
+                   
+                  // for($kkk=0;$kkk<$stlen;$kkk++){
+                   //$myformat.="0";
+                  // echo $myformat.",$txt<br/>";
+                 //  }
+                   //$this->ws->getCellByColumnAndRow($x, $y)->getNumberFormat()->setFormatCode($myformat);
+               //}
+
+                       //setCellValueByColumnAndRow($x,$y,$txt);
+               
+
+               
                if($align=='C')
                       $this->ws->getStyleByColumnAndRow($x, $y)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                 elseif($align=='R')
@@ -1413,21 +1472,26 @@ else{
                      $align=$EXCEL_HALIGN_RIGHT;
                 else
                     $align=$EXCEL_HALIGN_LEFT;
-                    
-	$this->wformat->setAlignment($align);                    
-	$this->wformat->setFont($this->wfont);  
+           //$this->wfont = new ExcelFont(ExcelFont::WEIGHT_NORMAL); 
+	   
+        
+           
+                           $this->wformat->setFont($this->wfont);
+                           $this->wformat->setAlignment($align);  
+                                if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){    
+                                         
+                                         $this->wformat->setFormatString($pattern);
+                                         
+                                //         $this->wformat->setFont($this->wfont);  
+                        		$this->ws->setDouble($x,$y-1,$txt,$this->wformat);
+                                }
+                                else{
 
-
-
-	
-		//	if(PHP_OS=="Darwin") 
-				$this->ws->setAnsiString($x,$y-1,$txt,$this->wformat); //Mac OSX's iconv not able to convert char * to wchar_t* well.
-		//	else
-		//		$this->ws->setWString($x,$y-1,$txt,$this->wformat);
-				
-					$this->wformat= new ExcelCellFormat($this->wb);
-			        $this->wfont = new ExcelFont(ExcelFont::WEIGHT_NORMAL); 
-
+                                    
+                                    	$this->ws->setAnsiString($x,$y-1,$txt,$this->wformat); //Mac OSX's iconv not able to convert char * to wchar_t* well.
+                                }
+                                if($this->debughtml==true)
+                                    echo "Reset Font/format to default<br/>";                                
 				}
 			
 }
@@ -1476,28 +1540,46 @@ if($this->uselib==0){
                         $f->setItalic(false);
              
 }else{
-
-	if(strpos($fontstyle,'B')!==false)
-		$this->wfont->setWeight(ExcelFont::WEIGHT_BOLD);
-    else	
-		$this->wfont->setWeight(ExcelFont::WEIGHT_NORMAL);
-	
-	
-    if(strpos($fontstyle,'I')!==false)
+ //$this->ws->setFormat($this->blankformat);
+ //$this->wformat= new ExcelCellFormat($this->wb);
+ 
+     if(strpos($fontstyle,'B')!==false)
+		$this->wfont=new ExcelFont(ExcelFont::WEIGHT_BOLD); 
+        else	
+		$this->wfont=new ExcelFont(ExcelFont::WEIGHT_NORMAL); 
+   
+        
+        
+ if(strpos($fontstyle,'I')!==false)
         $this->wfont->setItalic(true);
     else
         $this->wfont->setItalic(false);
-
-     if(strpos($fontstyle,'U')!==false)
+   if(strpos($fontstyle,'U')!==false)
         $this->wfont->setUnderline(true);
     else
      	$this->wfont->setUnderline(false);
-
-	$this->wfont->setFontName($font);
+    
+     
+   
+ 	$this->wfont->setFontName($font);        
 	$this->wfont->setFontSize($fontsize);
+        
+        
+        //$this->ws->setAnsiString($x,$y-1,"$fontstyle",$this->wformat);
+    /* 
+   
+    * 
+    *     * 
+    */     
+
+	
+	
+
+
 
 
 }
+
 }
 
 
@@ -1544,5 +1626,4 @@ public function SetFillColor($x,$y,$cl){
 
 
 }
-
 }

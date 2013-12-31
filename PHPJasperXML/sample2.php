@@ -10,12 +10,12 @@ include_once ('setting.php');
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
 
-$xml =  simplexml_load_file("sample2.jrxml");
+
 
 $PHPJasperXML = new PHPJasperXML();
 //$PHPJasperXML->debugsql=true;
 $PHPJasperXML->arrayParameter=array("parameter1"=>1);
-$PHPJasperXML->xml_dismantle($xml);
+$PHPJasperXML->load_xml_file("sample2.jrxml");
 
 $PHPJasperXML->transferDBtoArray($server,$user,$pass,$db); //* use this line if you want to connect with mysql
 

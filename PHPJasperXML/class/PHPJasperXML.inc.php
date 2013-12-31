@@ -1,9 +1,9 @@
 <?php
 
-//version 0.9c
+//version 0.9d
 class PHPJasperXML {
     private $adjust=1.2;
-    public $version="0.9c";
+    public $version="0.9d";
     private $pdflib;
     private $lang;
     private $previousarraydata;
@@ -27,12 +27,13 @@ class PHPJasperXML {
     private $offsetposition=0;
     private $detailbandqty=0;
     public $arraysqltable=array();
+    
 	private $report_count=0;		//### New declaration (variable exists in original too)
 	private $group_count = array(); //### New declaration
         public $generatestatus=false;
     public function PHPJasperXML($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
-        $this->setErrorReport(0);
+       $this->setErrorReport(0);
         
         $this->pdflib=$pdflib;
         if($this->fontdir=="")
@@ -1806,6 +1807,13 @@ $font=$data->textElement->font["fontName"];
                         $detailbandprinted=true;
                         $this->detail();
                     }
+                    
+                     $totalpage=$this->pdf->getNumPages();
+         $lastpagefooterpageno=$this->pdf->getPage();
+        if($totalpage>$lastpagefooterpageno)
+            $this->pdf->deletePage($totalpage);
+                //$this->pdf->getNumPages();
+
                     break;
 
                 case "group":
@@ -1826,6 +1834,8 @@ $font=$data->textElement->font["fontName"];
 
         }
 
+       
+        
         if($filename=="")
             $filename=$this->arrayPageSetting["name"].".pdf";
 
@@ -1834,6 +1844,7 @@ $font=$data->textElement->font["fontName"];
          //$this->pdf->IncludeJS($this->createJS());
          //($name, $w, $h, $caption, $action, $prop=array(), $opt=array(), $x='', $y='', $js=false)
          //$this->pdf->Button('print', 100, 10, 'Print', 'Print()',null,null,20,20,true);
+         
         return $this->pdf->Output($filename,$out_method);	//send out the complete page
 
     }
@@ -3175,7 +3186,6 @@ foreach($this->arrayVariable as $name=>$value){
         }
        
         $this->currentband='';
-        
            
     }
 
@@ -3268,6 +3278,8 @@ foreach($this->arrayVariable as $name=>$value){
             }
         }
         $this->currentband='';
+        
+        
     }
 
     public function NbLines($w,$txt) {
@@ -3873,7 +3885,7 @@ foreach($this->arrayVariable as $name=>$value){
             elseif($imgtype=='png'|| $imgtype=='PNG')
                   $imgtype="PNG";
           //echo $path;
-        if(file_exists($path) || left($path,4)=='http' ){  
+        if(file_exists($path) || $this->left($path,4)=='http' ){  
             //$path="/Applications/XAMPP/xamppfiles/simbiz/modules/simantz/images/modulepic.jpg";
                   //  $path="/simbiz/images/pendingno.png";
 
@@ -3899,7 +3911,7 @@ foreach($this->arrayVariable as $name=>$value){
             
             
         }
-        elseif(left($path,22)==  "data:image/jpeg;base64"){
+        elseif($this->left($path,22)==  "data:image/jpeg;base64"){
             $imgtype="JPEG";
             $img=  str_replace('data:image/jpeg;base64,', '', $path);
             $imgdata = base64_decode($img);
@@ -3907,7 +3919,7 @@ foreach($this->arrayVariable as $name=>$value){
                     $arraydata["height"],'',$arraydata["link"]); 
             
         }
-        elseif(left($path,22)==  "data:image/png;base64,"){
+        elseif($this->left($path,22)==  "data:image/png;base64,"){
                   $imgtype="PNG";
                  // $this->pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
@@ -4670,7 +4682,7 @@ foreach($this->arrayVariable as $name=>$value){
              }
            else{
                
-            if($av["ans"]!="" && is_numeric($av["ans"]) && (left($av["ans"],1)||left($av["ans"],1)=='-' )>0){
+            if($av["ans"]!="" && is_numeric($av["ans"]) && ($this->left($av["ans"],1)||$this->left($av["ans"],1)=='-' )>0){
                  $av["ans"]=str_replace("+",$tmpplussymbol,$av["ans"]);
                  $fm=str_replace('$V_'.$vv.$backcurl,$av["ans"],$fm);
             }
@@ -4692,7 +4704,7 @@ foreach($this->arrayVariable as $name=>$value){
            $ap=str_replace("+",$tmpplussymbol,$ap);
                        $ap=str_replace("'", $singlequote,$ap);
                        $ap=str_replace('"', $doublequote,$ap);
-           if(is_numeric($ap)&&$ap!=''&& (left($ap,1)>0 || left($ap,1)=='-')){
+           if(is_numeric($ap)&&$ap!=''&& ($this->left($ap,1)>0 || $this->left($ap,1)=='-')){
                   $fm = str_replace('$P_'.$pv.$backcurl, $ap,$fm);
            }
            else{
@@ -4706,7 +4718,7 @@ foreach($this->arrayVariable as $name=>$value){
            $tmpfieldvalue=str_replace("+",$tmpplussymbol,$this->arraysqltable[$pointerposition][$af.""]);
                        $tmpfieldvalue=str_replace("'", $singlequote,$tmpfieldvalue);
                        $tmpfieldvalue=str_replace('"', $doublequote,$tmpfieldvalue);
-           if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!="" && (left($tmpfieldvalue,1)>0||left($tmpfieldvalue,1)=='-')){
+           if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!="" && ($this->left($tmpfieldvalue,1)>0||$this->left($tmpfieldvalue,1)=='-')){
             $fm =str_replace('$F_'.$af.$backcurl,$tmpfieldvalue,$fm);
             
            }
