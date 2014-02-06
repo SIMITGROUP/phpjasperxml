@@ -34,29 +34,59 @@ class ExportXLS{
     public $arraygrouphead;
     public $rowswithdata=array();
     public $uselib=0;
-    public $debughtml=false;
-    public $forcenolib=false;
+    public $debughtml = false;
+    public $forceexcelib="c_oss"; //php,c_commercial,c_oss
     private $currentband="";
+    public $elementid=0;
+    private $arrfont=array();
+    
     public function ExportXLS($raw,$filename, $type='Excel5',$out_method='I'){
     $type='Excel5';
-                 if(extension_loaded( "excel" ) && !$this->forcenolib){
-					 $this->uselib=1;
-  		              $this->wb 	= Excel::create(1, 'UTF-8');
-			          $this->ws	= $this->wb->getWorkSheet(0);
-			          $this->wformat= new ExcelCellFormat($this->wb);
-                                  $this->blankformat=$this->wformat;
-			          $this->wfont = new ExcelFont(ExcelFont::WEIGHT_NORMAL); 
-                                 $this->blankwfont= $this->wfont  ;
+    global $forceexcelib;
+    if($forceexcelib)
+        $this->forceexcelib=$forceexcelib;
+
+    
+    
+                 if(extension_loaded( "excel" ) && $this->forceexcelib=="c_commercial"){
+                     global $libxl_licensename,$libxl_licensekey;
+             
+			          $this->uselib=1;
 			          
+
+  		              if($libxl_licensename && $libxl_licensekey){
+                                  $this->wb 	= new ExcelBook($libxl_licensename,$libxl_licensekey);
+                                  }
+                                else      {
+                               $this->wb 	= new ExcelBook();
+                               }
+                                $this->wb->setRGBMode(1);
+			          $this->ws	= $this->wb->addSheet(0);
+			          //$this->wformat = new ExcelFormat(  $this->wb);
+			          //$this->wfont = new ExcelFont(  $this->wb );
+			         // $this->wformat=  $this->wb->addFormat();
+					 // $this->wfont = $this->wb->addFont();
+                                 
+                 }
+                 elseif(extension_loaded( "excel" ) && $this->forceexcelib=="c_oss"){
+     
+                                  $this->uselib=1;
+                                  $this->wb 	= Excel::create(1, 'UTF-8');
+			          $this->ws	= $this->wb->getWorkSheet(0);
+
+//			          $this->wformat= new ExcelCellFormat($this->wb);
+//			          $this->wfont = new ExcelFont(ExcelFont::WEIGHT_NORMAL); 
+                      
                  }
                  else{
+          
                          include dirname(__FILE__)."/PHPExcel.php";
         	             $this->wb  = new PHPExcel();
                          $this->ws=$this->wb->getActiveSheet(0);
                   
                  }
 
-           
+//           echo   $this->uselib;die;
            
                 $this->arrayband=$raw->arrayband;
                 $this->arraypageHeader=$raw->arraypageHeader;
@@ -65,6 +95,8 @@ class ExportXLS{
                 $this->arraybackground=$raw->arraybackground;
                 $this->arraytitle=$raw->arraytitle;
                 $this->arraysummary=$raw->arraysummary;
+                $this->arraycolumnHeader=$raw->arraycolumnHeader;
+                $this->arraycolumnFooter=$raw->arraycolumnFooter;
                 $this->arraygroup=$raw->arraygroup;
                 $this->arraylastPageFooter=$raw->arraylastPageFooter;
                 //$this->arraypageFooter=$raw->arraypageFooter;
@@ -107,6 +139,13 @@ class ExportXLS{
                   $this->maxrow--;
                   }
                  }
+                 elseif($band["name"]== "columnHeader"){
+                    
+                  if($raw->arraycolumnHeader[0]["height"]>0){
+                        $this->columnHeader();
+                  $this->maxrow--;
+                  }
+                 }
                  elseif($band["name"]== "detail"){
                 
                      
@@ -118,23 +157,26 @@ class ExportXLS{
                      }
                                       
                  }
-                 elseif($band["name"]== "pageFooter"){
-                
-                     if($raw->arraylastPageFooter[0]["height"]==0 && $raw->arraypageFooter[0]["height"]>0){
-                        $this->pageFooter();
-                       $this->maxrow--;
-                     }
-                 }
-                 elseif(($band["name"]== "lastPageFooter" || $band["name"]== "summary" ) && $printsummary==false){
+                 elseif( $band["name"]== "summary"  && $printsummary==false){
            
                      if($raw->arraysummary[0]["height"]>0){
                         $this->summary();                  
                         $this->maxrow--;
                      }
-                     if($raw->arraylastPageFooter[0]["height"]>0){
-                        $this->lastPageFooter();                  
+                     if($raw->arraycolumnFooter[0]["height"]>0){
+                        $this->columnFooter();                  
                         $this->maxrow--;
                      }
+                     
+                     if($raw->arraylastPageFooter[0]["height"]>0){
+                         
+                        $this->lastPageFooter();                  
+                        $this->maxrow--;
+                     }elseif( $raw->arraypageFooter[0]["height"]>0){
+                        $this->pageFooter();
+                       $this->maxrow--;
+                     }
+                     
                      $printsummary=true;
 
                  }
@@ -203,6 +245,20 @@ class ExportXLS{
         $cols=array();
         $cx=0;
         foreach($this->arraypageHeader as $out){
+          //  print_r($out);echo "<hr>";
+            if($out['type']=="SetXY"){
+                $cols[]=intval($out['x']);
+            $cx=intval($out['x']);
+            
+            }
+            if($out['type']=="Cell" ||$out['type']=="MultiCell"){
+                $cols[]=intval($out['width'] + $cx);
+               // echo $out['width']." + $cx <hr>";
+            }
+            
+            //print_r($cols);echo "<hr>";
+        }
+        foreach($this->arraycolumnHeader as $out){
           //  print_r($out);echo "<hr>";
             if($out['type']=="SetXY"){
                 $cols[]=intval($out['x']);
@@ -370,6 +426,19 @@ class ExportXLS{
         }
         
    
+            foreach($this->arraycolumnFooter as $out){
+          
+            if($out['type']=="SetXY"){
+                $cols[]=intval($out['x']);
+            $cx=intval($out['x']);
+            
+            }
+            if($out['type']=="Cell" ||$out['type']=="MultiCell"){
+                $cols[]=intval($out['width'] + $cx);
+          
+            }
+            
+        }
     
             foreach($this->arraypageFooter as $out){
           
@@ -474,7 +543,7 @@ class ExportXLS{
                              array_multisort($rows);
                              $rows[]=array(0,$myband[0]['height']+0,"band");
                              
-               if($debug==true){
+               if($debughtml==true){
                    echo "row:";print_r($rows);echo "<hr>";
                    echo "pos:"; print_r($pos);echo "<hr>";
              //      die;
@@ -510,7 +579,7 @@ class ExportXLS{
 //               
                
              
-             if($debug==true)die;
+             if($debughtml==true)die;
              
              
            //   $this->ws->getRowDimension(1)->setRowHeight(30);
@@ -543,8 +612,32 @@ foreach($this->arraytitle as $out){
             
         }
         
-        //   $this->lastrow--;
-      // echo "header:".$this->lastrow;echo "<hr>";
+    }
+    public function columnHeader(){
+    $this->currentband="columnHeader";
+    
+       $this->columnheaderrowcount= $this->arrangeRows($this->arraycolumnHeader,false,true);
+       
+      
+        foreach($this->arraycolumnHeader as $out){
+            $this->display($out,$this->maxrow+1);
+            
+        }
+        $this->maxrow+=$this->columnheaderrowcount;
+        
+    }
+    public function columnFooter(){
+        
+    $this->currentband="columnFooter";
+       $this->columnfooterrowcount= $this->arrangeRows($this->arraycolumnFooter,false,true);
+       
+      
+        foreach($this->arraycolumnFooter as $out){
+            $this->display($out,$this->maxrow+1);
+            
+        }
+        
+        $this->maxrow+=$this->columnfooterrowcount;
     }
     
     public function detail(){
@@ -610,8 +703,8 @@ $r=0;
     
      public function showGroupHeader($printgroupfooter=false) {
         $this->currentband='groupHeader';
-
         
+        $this->maxrow++;
         if($printgroupfooter==true)
             $this->showGroupFooter();
         else
@@ -620,7 +713,7 @@ $r=0;
         
             for($groupno=$this->groupnochange+1; $groupno  <$this->totalgroup;$groupno++){
             $groupname=$this->grouplist[$groupno]["name"];
-      
+            
             foreach($this->arrayVariable as $v=>$a){
                 
                 if($a["resetGroup"]!=""&& $a["resetGroup"]==$groupname){
@@ -632,14 +725,19 @@ $r=0;
          $rr=$this->analyse_expression($headercontent[0]["printWhenExpression"]);
             //echo "Header:".print_r($headercontent[0],true)."<br/><br/>";
          if($headercontent[0]["printWhenExpression"]!=""){
+             
                 if(!$rr){
                     $yplusbandheight-=$y;
+                    $deductrow++;
                     continue;
                 }
          }
+
          
                 $j=0;
                 $currentheaderheight=$this->arrangeRows($headercontent,false,true);
+                
+                    //$this->maxrow++;
                 foreach ($headercontent as $out){
                          $this->display($out,$this->maxrow);
                     $j++;
@@ -655,8 +753,9 @@ $r=0;
          $this->report_count=0;
       else
           $this->report_count++;
-          
-     $this->maxrow--;  
+      
+      $this->maxrow++;
+     
     }
     public function showGroupFooter() {
         
@@ -733,15 +832,15 @@ foreach($this->arraylastPageFooter as $out){
     
         if($this->relativex=='')
             $this->relativex=0;
-            
-      if($this->debughtml)
+            $this->elementid=$arraydata['elementid'];
+      if($this->debughtml){
         echo $arraydata['type']." :";
-
+        echo "elementid=".$arraydata['elementid']."<br>";
+      }
         switch($arraydata['type']){
             case "MultiCell":       
                 if($this->relativey=="")
                     $this->relativey=0;
-                    $this->mergeCells(    $this->relativex,  ($this->relativey+$rowpos),   ($this->cols['c'.($this->mergex+$arraydata['width'])]-1),   ($this->relativey+$rowpos)  );
     
                $txt=$this->analyse_expression($arraydata['txt']);
                //if($arraydata['pattern']!='')
@@ -749,7 +848,9 @@ foreach($this->arraylastPageFooter as $out){
   	  			if($this->debughtml)
   	  			   echo  $txt.",align:".$arraydata['align']."<br/>";
 
-                  $this->setText($this->relativex,($this->relativey+$rowpos),  $txt,$arraydata['align'], $arraydata['pattern']);                
+                  $this->setText($this->relativex,($this->relativey+$rowpos),  $txt,$arraydata['align'], $arraydata['pattern']); 
+                                      $this->mergeCells(    $this->relativex,  ($this->relativey+$rowpos),   ($this->cols['c'.($this->mergex+$arraydata['width'])]-1),   ($this->relativey+$rowpos)  );
+
                 break;
             case "Cell":
   
@@ -777,7 +878,6 @@ foreach($this->arraylastPageFooter as $out){
 
 
             break;
-   
           case "SetTextColor":
             $cl= str_replace('#','',$arraydata['forecolor']);
            
@@ -799,10 +899,17 @@ foreach($this->arraylastPageFooter as $out){
 						echo "$cl<br/>";
 
               break;
+            case "SetDrawColor":
+           
+              //$cl= str_replace('#','',$arraydata['backcolor']);
+     
+               $this->SetDrawColor($arraydata['r'],$arraydata['g'],$arraydata['b'],$arraydata['border']);
+           
+  	  			
 
+              break;
           case "Line":
           
-          if($this->uselib==false){
               $printline=false;
             if($arraydata['printWhenExpression']=="")
                 $printline=true;
@@ -813,41 +920,16 @@ foreach($this->arraylastPageFooter as $out){
               $x2=$arraydata["x2"];
               $y1=$arraydata["y1"];
               $y2=$arraydata["y2"];
+            //  print_r($arraydata);
               $linewidth=$arraydata["style"]["width"];
               $linedash=$arraydata["style"]["dash"];
               $linecolor=  str_replace('#','',$arraydata["forecolor"]);
-              $col1=$this->cols['c'.$x1];
-              $col2=$this->cols['c'.$x2];
-              $row1=$this->rows['r'.$y1]+$this->maxrow;
-              $row2=$this->rows['r'.$y2]+$this->maxrow;
-              $col1=PHPExcel_Cell::stringFromColumnIndex($col1);
-              $col2=PHPExcel_Cell::stringFromColumnIndex($col2);
-              if($linewidth==0)
-                  $linewidth=PHPExcel_Style_Border::BORDER_NONE;
-              elseif($linewidth<=0.25)
-                  $linewidth=PHPExcel_Style_Border::BORDER_HAIR;
-              elseif($linewidth<=0.5)
-                  $linewidth=PHPExcel_Style_Border::BORDER_THIN;
-              elseif($linewidth<=0.75)
-                  $linewidth=PHPExcel_Style_Border::medium;
-              elseif($linewidth<=1)
-                  $linewidth=PHPExcel_Style_Border::thick;
-              else
-                $linewidth=PHPExcel_Style_Border::BORDER_HAIR;
-                $linewidth=PHPExcel_Style_Border::BORDER_THIN;
-              if($x1==$x2){
-                    $styleArray = array('borders' => array('left' => array('style' =>$linewidth,'color'=>array('rgb'=>$linecolor))));
-              }elseif($y1==$y2){
-                  $styleArray = array('borders' => array('top' => array('style' => $linewidth,'color'=>array('rgb'=>$linecolor))));
-              }                  
-                    $this->ws->getStyle("$col1$row1:$col2$row2")->applyFromArray($styleArray);   
-            }
-            }else{
-			//ech "12312312<br/>";
-//            echo "format 1,1:".print_r($this->ws->getFormat(0,0),true)."end line";
-            
+              
+             $this->printBorder($x1,$y1,$x2,$y2,$linewidth,$linedash,$linecolor);
+             
             
             }
+            
               break;
           case "SetLineWidth":
               break;
@@ -862,7 +944,7 @@ foreach($this->arraylastPageFooter as $out){
         
     }
     
-        public function formatText($txt,$pattern) {
+    public function formatText($txt,$pattern) {
         if($pattern=="###0")
             return number_format($txt,0,"","");
         elseif($pattern=="#,##0")
@@ -899,159 +981,8 @@ foreach($this->arraylastPageFooter as $out){
             return date("d-m-Y H:i:s",strtotime($txt));
         else
             return $txt;
-
-
     }
-    
-    public function analyse_expression($data,$isPrintRepeatedValue="true") {
-       //echo $data."<br/>";
-       $tmpplussymbol='/````/';
-        $pointerposition=$this->global_pointer+$this->offsetposition;
-        $i=0;
-        $backcurl='___';
-                $singlequote="|_q_|";
-        $doublequote="|_qq_|";
-
-       $fm=str_replace('{',"_",$data);
-       $fm=str_replace('}',$backcurl,$fm);
-       
-        //$fm=str_replace('$V_REPORT_COUNT',$this->report_count,$fm);
-       $isstring=false;
-       
-        
-//        if($this->report_count>10 && $data=='$F{qty}' || $data=='$V{qty2}')  {
-//               echo "$data =  $fm<br/>";
-//             }
-       foreach($this->arrayVariable as $vv=>$av){
-            $i++;
-            $vv=str_replace('$V{',"",$vv);
-            $vv=str_replace('}',$backcurl,$vv);
-            $vv=str_replace("'", $singlequote,$vv);
-            $vv=str_replace('"', $doublequote,$vv);
-
-            //echo $vv.' to become '.$this->grouplist[1]["name"]."_COUNT <br/  >";
-//           if($vv==$this->grouplist[0]["name"]."_COUNT" ){
-//               
-//             $fm=str_replace('$V_'.$vv."_COUNT",39992,$fm1);
-//             //echo 39992 . "<br/>";
-//           }
-//           elseif($vv==$this->grouplist[1]["name"]."_COUNT"){
-//             $fm=str_replace('$V_'.$vv."_COUNT",$this->group_count[$this->grouplist[1]["name"]],$fm1);
-//             //echo 39992 . "<br/>";
-//           }
-//           elseif($vv==$this->grouplist[2]["name"]."_COUNT"){
-//               $fm=str_replace('$V_'.$vv."_COUNT",$this->group_count[$this->grouplist[2]["name"]],$fm1);
-//           }
-//           elseif($vv==$this->grouplist[3]["name"]."_COUNT"){
-//               $fm=str_replace('$V_'.$vv."_COUNT",$this->group_count[$this->grouplist[3]["name"]],$fm1);
-//           }
-             if(strpos($fm,'_COUNT')!==false){
-             if($this->group_count[$this->grouplist[0]["name"]]==1)$this->group_count[$this->grouplist[0]["name"]]=2;
-             if($this->group_count[$this->grouplist[1]["name"]]==1)$this->group_count[$this->grouplist[1]["name"]]=2;
-             if($this->group_count[$this->grouplist[2]["name"]]==1)$this->group_count[$this->grouplist[2]["name"]]=2;
-             if($this->group_count[$this->grouplist[3]["name"]]==1)$this->group_count[$this->grouplist[3]["name"]]=2;
-                 $fm=str_replace('$V_'.$this->grouplist[0]["name"].'_COUNT'.$backcurl,($this->group_count[$this->grouplist[0]["name"]]-1),$fm);
-                 $fm=str_replace('$V_'.$this->grouplist[1]["name"].'_COUNT'.$backcurl,($this->group_count[$this->grouplist[1]["name"]]-1),$fm);
-                 $fm=str_replace('$V_'.$this->grouplist[2]["name"].'_COUNT'.$backcurl,($this->group_count[$this->grouplist[2]["name"]]-1),$fm);
-                 $fm=str_replace('$V_'.$this->grouplist[3]["name"].'_COUNT'.$backcurl,($this->group_count[$this->grouplist[3]["name"]]-1),$fm);
-                 $fm=str_replace('$V_REPORT_COUNT'.$backcurl,$this->report_count,$fm);
-                 
-             }
-           else{
-               
-            if($av["ans"]!="" && is_numeric($av["ans"])&& ($this->left($av["ans"],1)||left($av["ans"],1)=='-' )>0){
-                 $av["ans"]=str_replace("+",$tmpplussymbol,$av["ans"]);
-                 $fm=str_replace('$V_'.$vv.$backcurl,$av["ans"],$fm);
-            }
-            else{
-                $av["ans"]=str_replace("+",$tmpplussymbol,$av["ans"]);
-                 $fm=str_replace('$V_'.$vv.$backcurl,"'".$av["ans"]."'",$fm);
-            $isstring=true;
-            }
-                
-            
-            
-
-           }
-       }
-      
-       
-     
-       foreach($this->arrayParameter as  $pv => $ap) {
-           $ap=str_replace("+",$tmpplussymbol,$ap);
-                             $ap=str_replace("'", $singlequote,$ap);
-                       $ap=str_replace('"', $doublequote,$ap);
-     
-           if(is_numeric($ap)&&$ap!=''&& ($this->left($ap,1)>0 || $this->left($ap,1)=='-')){
-                  $fm = str_replace('$P_'.$pv.$backcurl, $ap,$fm);
-           }
-           else{
-            $fm = str_replace('$P_'.$pv.$backcurl, "'".$ap."'",$fm);
-               $isstring=true;
-           } 
-        }
-            
-       //     print_r($this->arrayfield);
-       foreach($this->arrayfield as $af){
-           $tmpfieldvalue=str_replace("+",$tmpplussymbol,$this->arraysqltable[$pointerposition][$af.""]);
-                                  $tmpfieldvalue=str_replace("'", $singlequote,$tmpfieldvalue);
-                       $tmpfieldvalue=str_replace('"', $doublequote,$tmpfieldvalue);
-
-           if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!="" && ($this->left($tmpfieldvalue,1)>0||left($tmpfieldvalue,1)=='-')){
-            $fm =str_replace('$F_'.$af.$backcurl,$tmpfieldvalue,$fm);
-            
-           }
-           else{
-               $fm =str_replace('$F_'.$af.$backcurl,"'".$tmpfieldvalue."'",$fm);
-            $isstring=true;
-           }
-           
-       }
-       
-       if($fm=='')
-           return "";
-       else
-       {
-           
-     
-           //echo $fm."<br/>";
-             $fm=str_replace($tmpplussymbol,"+",$fm);
-             
-             
-//              $fm=str_replace('+',".",$fm);
-             // echo $fm."<br/>";
-          if(strpos($fm, '"')!==false)
-            $fm=str_replace('+'," . ",$fm);
-          if(strpos($fm, "'")!==false)
-            $fm=str_replace('+'," . ",$fm);
-     $fm=str_replace('$this->PageNo()','Not applicable',$fm);
-
-
-
-                       $fm=str_replace($singlequote,"\'" ,$fm);
-                       $fm=str_replace( $doublequote,'"',$fm);
-        if((strpos('"',$fm)==false) || (strpos("'",$fm)==false)){
-                           $fm=str_replace('--', '- -', $fm);
-                           $fm=str_replace('++', '+ +', $fm);
-                       }
-                       
-                       
-      eval("\$result= ".$fm.";");
-         
- 
-          
-      
-     //if($this->debughyperlink==true) 
-    
-      return $result;
-      
-       }
-      
-      
-      
-    }
-  
-
+/*    
     function right($value, $count) {
 
         return substr($value, ($count*-1));
@@ -1061,7 +992,7 @@ foreach($this->arraylastPageFooter as $out){
     function left($string, $count) {
         return substr($string, 0, $count);
     }
-    
+  */  
 
       public function variable_calculation($rowno) {
 
@@ -1325,16 +1256,26 @@ public function savexls($filename,$type,$publishmethod="d"){
 //echo $filename="/tmp/aaa.xls";
 				$tmpfile=sys_get_temp_dir()."/".rand().".xls";
 	if($this->uselib==1){
-		if($publishmethod=='d'){
-					$this->wb->saveAs($tmpfile);
-					echo file_get_contents($tmpfile);
+		if($this->forceexcelib=="c_oss"){
+			if($publishmethod=='d'){
+						$this->wb->saveAs($tmpfile);
+						echo file_get_contents($tmpfile);
+			}else{
+						$this->wb->saveAs($filename);
+			}
 		}else{
-					$this->wb->saveAs($filename);
+		if($publishmethod=='d'){
+						$this->wb->save($tmpfile);
+						echo file_get_contents($tmpfile);
+			}else{
+						$this->wb->save($filename);
+			}
 		}
 	
 	}
 	else{
 	        $objWriter = PHPExcel_IOFactory::createWriter($this->wb, $type);
+                $objWriter->setPreCalculateFormulas(false);
 	        if($publishmethod=='d')
 	         $objWriter->save('php://output');
 	        else
@@ -1344,7 +1285,7 @@ public function savexls($filename,$type,$publishmethod="d"){
 	
 }
 
-
+/*
 public function deleteEmptyRow(){
   	if($this->uselib==0){      
          for($l=1;$l<$this->maxrow;$l++)
@@ -1400,13 +1341,19 @@ public function deleteEmptyRow(){
          
 }
 
+*/
+
 
 public function setColumnWidth($index,$width){
 if($this->uselib==0)
 	$this->ws->getColumnDimensionByColumn($index)->setWidth($width*$this->hunitmultiply);
-else
-	$this->ws->SetColWidth($index,  $width*40);
+else{
 
+if($this->forceexcelib=='c_oss')
+	$this->ws->SetColWidth($index,  $width*40);
+else
+	$this->ws->SetColWidth($index,$index,  $width/5);
+}
 
 }   
 
@@ -1414,11 +1361,6 @@ public function setText($x,$y,$txt,$align,$pattern){
 $myformat='';
 if($this->uselib==0){
                
-               //$stlen=strlen($txt);
-               
-              
-
-
                
                if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){    
                    $this->ws->getCellByColumnAndRow($x, $y)->setValueExplicit($txt, PHPExcel_Cell_DataType::TYPE_NUMERIC);
@@ -1458,41 +1400,66 @@ if($this->uselib==0){
                }
 else{
 
+if($this->forceexcelib=='c_oss'){
 	$EXCEL_HALIGN_GENERAL		= 0x00;
 	$EXCEL_HALIGN_LEFT			= 0x01;
 	$EXCEL_HALIGN_CENTRED		= 0x02;
 	$EXCEL_HALIGN_RIGHT			= 0x03;
 	$EXCEL_HALIGN_FILLED			= 0x04;
 	$EXCEL_HALIGN_JUSITFIED		= 0x05;
-	$EXCEL_HALIGN_SEL_CENTRED	= 0x06;	// centred across selection
 	$EXCEL_HALIGN_DISTRIBUTED	= 0x07;	//
+
+}
+else{
+	
+	
+	$EXCEL_HALIGN_GENERAL		= ExcelFormat::ALIGNH_GENERAL;
+	$EXCEL_HALIGN_LEFT			= ExcelFormat::ALIGNH_LEFT;
+	$EXCEL_HALIGN_CENTRED		= ExcelFormat::ALIGNH_CENTER;
+	$EXCEL_HALIGN_RIGHT			= ExcelFormat::ALIGNH_RIGHT;
+	$EXCEL_HALIGN_FILLED		= ExcelFormat::ALIGNH_FILL;
+	$EXCEL_HALIGN_JUSITFIED		= ExcelFormat::ALIGNH_JUSTIFY;
+	$EXCEL_HALIGN_DISTRIBUTED	= ExcelFormat::ALIGNH_DISTRIBUTED;
+
+
+
+}
                 if($align=='C')
                      $align=$EXCEL_HALIGN_CENTRED;
                 elseif($align=='R')
                      $align=$EXCEL_HALIGN_RIGHT;
                 else
                     $align=$EXCEL_HALIGN_LEFT;
-           //$this->wfont = new ExcelFont(ExcelFont::WEIGHT_NORMAL); 
-	   
-        
            
-                           $this->wformat->setFont($this->wfont);
-                           $this->wformat->setAlignment($align);  
-                                if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){    
-                                         
-                                         $this->wformat->setFormatString($pattern);
-                                         
-                                //         $this->wformat->setFont($this->wfont);  
-                        		$this->ws->setDouble($x,$y-1,$txt,$this->wformat);
-                                }
-                                else{
+            
+		if($this->forceexcelib=='c_oss'){
+                $this->wformat[$this->elementid]->setFont($this->wfont[$this->elementid]);  
+	            $this->wformat[$this->elementid]->setAlignment($align);              
+	            
+    	        if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){                
+        	    	$this->wformat[$this->elementid]->setFormatString($pattern);
+            	    $this->ws->setDouble($x,$y-1,$txt,$this->wformat[$this->elementid]);
+	            }
+    	        else{
 
-                                    
-                                    	$this->ws->setAnsiString($x,$y-1,$txt,$this->wformat); //Mac OSX's iconv not able to convert char * to wchar_t* well.
-                                }
-                                if($this->debughtml==true)
-                                    echo "Reset Font/format to default<br/>";                                
-				}
+        	        $this->ws->setAnsiString($x,$y-1,$txt,$this->wformat[$this->elementid]); //Mac OSX's iconv not able to convert char * to wchar_t* well.
+            	}
+
+            }
+            else{
+            $this->wformat[$this->elementid]->setFont($this->wfont[$this->elementid]);
+	         $nfm = $this->wb->addCustomFormat($pattern);
+                 $this->wformat[$this->elementid]->numberFormat($nfm);
+                 $this->wformat[$this->elementid]->horizontalAlign($align);
+            
+    	        //	$this->wformat->setFormatString($pattern);
+        	    $this->ws->write($y,$x, $txt,$this->wformat[$this->elementid]);
+                    
+            }
+                                
+                                
+	}                
+				
 			
 }
 
@@ -1505,19 +1472,43 @@ if($this->uselib==0){
 	$this->ws->mergeCellsByColumnAndRow($x1,$y1,$x2, $y2);
 	}
 else{
+	
+	if($this->forceexcelib=='c_oss'){
 	if($x2=="")$x2=0;
 	if($y2=="")$y2=0;
 
 	$this->ws->mergeCells($x1,$y1-1,($x2-$x1)+1, ($y2-$y1)+1);
+	}
+	else{
+	if($x2=="")$x2=$x1;
+	if($y2=="")$y2=$y1;
+
+	$this->ws->setMerge($y1, $y2,$x1,$x2);
+	/*if($y1!=$y2){
+	
+             		$myformat=$this->ws->cellFormat($y1,$x1);
+             		 for($k=$y1;$k<$y2;$k++){
+             		$this->ws->setCellFormat($y1,$k,$myformat);
+             		}
+      }
+	if($x1!=$x2){
+		 for($k=$x1;$k<$x2;$k++){
+             		$myformat=$this->ws->cellFormat($y1,$x1);
+             		$this->ws->setCellFormat($k,$x1,$myformat);
+             		}
+
+	
+	}*/
+	}
+	
 	}
 }
 
 
 public function  SetFonts($x,$y,$font,$fontsize,$fontstyle){
 
-
 if($this->uselib==0){
-//echo "phpexcel";
+//echo "\";
              $f=$this->ws->getStyleByColumnAndRow($x, $y)->getFont();
 
              $f->setName($font);
@@ -1539,86 +1530,121 @@ if($this->uselib==0){
                 else
                         $f->setItalic(false);
              
-}else{
- //$this->ws->setFormat($this->blankformat);
- //$this->wformat= new ExcelCellFormat($this->wb);
+}
+else{
+
+          if($this->forceexcelib=='c_oss'){
+              if($this->wformat[$this->elementid])
+                    return;
+                    	
+		   $this->wformat[$this->elementid]= new ExcelCellFormat($this->wb);
+		   
+	      	if( strpos($fontstyle,'B')!==false)
+				$this->wfont[$this->elementid]=new ExcelFont(ExcelFont::WEIGHT_BOLD);           
+	        else
+          		$this->wfont[$this->elementid]=new ExcelFont(ExcelFont::WEIGHT_NORMAL); 
+          		
+          		
+				$this->wfont[$this->elementid]->setFontName($font);        
+		 		$this->wfont[$this->elementid]->setFontSize($fontsize);
+
+          		
+           if(strpos($fontstyle,'I')!==false)
+        		$this->wfont[$this->elementid]->setItalic(true);
+ 		   else
+        		$this->wfont[$this->elementid]->setItalic(false);
+        
+		   if(strpos($fontstyle,'U')!==false)
+        		$this->wfont[$this->elementid]->setUnderline(true);
+			else
+        		$this->wfont[$this->elementid]->setUnderline(false);
+          }
+          else{
+
+              if($this->wformat[$this->elementid])
+                    return;
+              
+            $this->wformat[$this->elementid] = new ExcelFormat($this->wb);
+            $this->wfont[$this->elementid] = new ExcelFont($this->wb );
+ 	    $this->wfont[$this->elementid]->name($font);        
+            $this->wfont[$this->elementid]->size($fontsize);
+ 			
+            	  
+        	    if( strpos($fontstyle,'B')!==false)
+            		$this->wfont[$this->elementid]->bold(true);        
+	            else	  
+		            $this->wfont[$this->elementid]->bold(false);
+	            
+	    	    if(strpos($fontstyle,'I')!==false)
+	        		$this->wfont[$this->elementid]->italics(true);
+				else
+			        $this->wfont[$this->elementid]->italics(false);
+   
+				 if(strpos($fontstyle,'U')!==false)
+		    	    $this->wfont[$this->elementid]->underline(true);
+				 else
+			        $this->wfont[$this->elementid]->underline(false);  
+        	//      }
+	     //   else
+  		   //     $this->wfont=&$this->arrfont[$font.$fontsize.$fontstyle];
+
+
+
+          }
+
+
+
+
+      }   
+        
  
-     if(strpos($fontstyle,'B')!==false)
-		$this->wfont=new ExcelFont(ExcelFont::WEIGHT_BOLD); 
-        else	
-		$this->wfont=new ExcelFont(ExcelFont::WEIGHT_NORMAL); 
-   
-        
-        
- if(strpos($fontstyle,'I')!==false)
-        $this->wfont->setItalic(true);
-    else
-        $this->wfont->setItalic(false);
-   if(strpos($fontstyle,'U')!==false)
-        $this->wfont->setUnderline(true);
-    else
-     	$this->wfont->setUnderline(false);
-    
-     
-   
- 	$this->wfont->setFontName($font);        
-	$this->wfont->setFontSize($fontsize);
-        
-        
-        //$this->ws->setAnsiString($x,$y-1,"$fontstyle",$this->wformat);
-    /* 
-   
-    * 
-    *     * 
-    */     
-
-	
-	
-
-
-
 
 }
 
-}
+public function hex2rgb($hex) {
+   $hex = str_replace("#", "", $hex);
 
+   if(strlen($hex) == 3) {
+      $r = hexdec(substr($hex,0,1).substr($hex,0,1));
+      $g = hexdec(substr($hex,1,1).substr($hex,1,1));
+      $b = hexdec(substr($hex,2,1).substr($hex,2,1));
+   } else {
+      $r = hexdec(substr($hex,0,2));
+      $g = hexdec(substr($hex,2,2));
+      $b = hexdec(substr($hex,4,2));
+   }
+   $rgb = array($r, $g, $b);
+   //return implode(",", $rgb); // returns the rgb values separated by commas
+   return $rgb; // returns an array with the rgb values
+}
 
 public function SetTextColor($x,$y,$cl){
 	if($this->uselib==0){
               $this->ws->getStyleByColumnAndRow($x, $y)->getFont()->getColor()->setARGB("FF".$cl);
- }else{
-/*
-  	EGA_BLACK	= 0,	// 000000H
-	EGA_WHITE	= 1,	// FFFFFFH
-	EGA_RED		= 2,	// FF0000H
-	EGA_GREEN	= 3,	// 00FF00H
-	EGA_BLUE	= 4,	// 0000FFH
-	EGA_YELLOW	= 5,	// FFFF00H
-	EGA_MAGENTA	= 6,	// FF00FFH
-	EGA_CYAN	= 7		// 00FFFFH
-	*/
-//	 	$this->wfont->setColor(0);
-              }
+	 }else{
+            if($this->forceexcelib=="c_commercial"){
+                  $color= $this->hex2rgb($cl);
+              $c =  $this->wb->colorPack($color[0],$color[1],$color[2]);
+              $this->wfont[$this->elementid]->color($c);
+            }
+             
+       }
               
-              } 
-              
+}
+         
 public function SetFillColor($x,$y,$cl){
 	if($this->uselib==0){
                $this->ws->getStyleByColumnAndRow($x,$y)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
                 $this->ws->getStyleByColumnAndRow($x,$y)->getFill()->getStartColor()->setARGB('FF'.$cl);
  }else{
  
-  	/*
-  	EGA_BLACK	= 0,	// 000000H
-	EGA_WHITE	= 1,	// FFFFFFH
-	EGA_RED		= 2,	// FF0000H
-	EGA_GREEN	= 3,	// 00FF00H
-	EGA_BLUE	= 4,	// 0000FFH
-	EGA_YELLOW	= 5,	// FFFF00H
-	EGA_MAGENTA	= 6,	// FF00FFH
-	EGA_CYAN	= 7		// 00FFFFH
-	*/
-// 	$this->wformat->setBackGround(1);
+              if($this->forceexcelib=="c_commercial"){
+                 $color= $this->hex2rgb($cl);
+                $c =  $this->wb->colorPack($color[0],$color[1],$color[2]);
+                $this->wformat[$this->elementid]->fillPattern(ExcelFormat::FILLPATTERN_SOLID);
+                $this->wformat[$this->elementid]->patternForegroundColor($c);
+            }
+
 
  
 
@@ -1626,4 +1652,314 @@ public function SetFillColor($x,$y,$cl){
 
 
 }
+
+public function SetDrawColor($r,$g,$b,$border){
+
+    if($this->debughtml){
+        echo "SetDrawColor: $r,$g,$b<br/>";
+        
+    }
+        
+	if($this->uselib==0){
+               $this->ws->getStyleByColumnAndRow($x,$y)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+                $this->ws->getStyleByColumnAndRow($x,$y)->getFill()->getStartColor()->setARGB('FF'.$cl);
+ }else{
+ 
+              if($this->forceexcelib=="c_commercial"){
+               
+              $c =  $this->wb->colorPack($r,$g,$b);
+              //$this->wformat[$this->elementid]->borderColor(2);
+              foreach($border as $borderset =>$borderstyle){
+                 if($borderstyle['dash']=='0,1')
+                      $bstyle=ExcelFormat::BORDERSTYLE_DOTTED;
+                  if($borderstyle['dash']=='4,2')
+                      $bstyle=ExcelFormat::BORDERSTYLE_DASHED;
+                  else
+                      $bstyle=ExcelFormat::BORDERSTYLE_THIN;
+                  
+                  
+                if($borderset=="TLBR"){
+                $this->wformat[$this->elementid]->borderStyle($bstyle);
+                }
+                else{
+                    
+                    /*  if($data->box->pen["lineStyle"]=="Dotted")
+                    $dash="0,1";
+                elseif($data->box->pen["lineStyle"]=="Dashed")
+                    $dash="4,2"; 
+                else
+                    $dash="";
+                     * 
+                     */
+                    
+                
+                 if(strpos($borderset, "T")!==false)
+                         $this->wformat[$this->elementid]->borderTopStyle($bstyle);
+                 if(strpos($borderset, "B")!==false)
+                         $this->wformat[$this->elementid]->borderBottomStyle($bstyle);
+                 if(strpos($borderset, "L")!==false)
+                         $this->wformat[$this->elementid]->borderLeftStyle($bstyle);
+                 if(strpos($borderset, "R")!==false)
+                         $this->wformat[$this->elementid]->borderRightStyle($bstyle);
+                 
+                 
+                    
+                }
+              }
+            }
+
+
+ 
+
+              }
+
+
+}
+
+ 
+public function printBorder($x1,$y1,$x2,$y2,$linewidth,$linedash,$linecolor){
+
+            $col1=$this->cols['c'.$x1];
+              $col2=$this->cols['c'.$x2];
+              $row1=$this->rows['r'.$y1]+$this->maxrow;
+              $row2=$this->rows['r'.$y2]+$this->maxrow;
+               // echo "Line width $linewidth,<br/>";
+
+    if($this->uselib==0){
+              echo "1";
+              $col1=PHPExcel_Cell::stringFromColumnIndex($col1);
+              $col2=PHPExcel_Cell::stringFromColumnIndex($col2);
+            
+            
+              if($linewidth==0)
+                  $linewidth=PHPExcel_Style_Border::BORDER_NONE;
+              elseif($linewidth<=0.25)
+                  $linewidth=PHPExcel_Style_Border::BORDER_HAIR;
+              elseif($linewidth<=0.5)
+                  $linewidth=PHPExcel_Style_Border::BORDER_THIN;
+              elseif($linewidth<=0.75)
+                  $linewidth=PHPExcel_Style_Border::medium;
+              elseif($linewidth<=1)
+                  $linewidth=PHPExcel_Style_Border::thick;
+              else
+                $linewidth=PHPExcel_Style_Border::BORDER_HAIR;
+//                $linewidth=PHPExcel_Style_Border::BORDER_THIN;
+              if($x1==$x2){
+                    $styleArray = array('borders' => array('left' => array('style' =>$linewidth,'color'=>array('rgb'=>$linecolor))));
+              }elseif($y1==$y2){
+                  $styleArray = array('borders' => array('top' => array('style' => $linewidth,'color'=>array('rgb'=>$linecolor))));
+              }                  
+                    $this->ws->getStyle("$col1$row1:$col2$row2")->applyFromArray($styleArray);   
+    }
+    elseif( $this->forceexcelib!="c_oss"){
+              
+		  if($borderstyle['dash']=='0,1')
+                      $bstyle=ExcelFormat::BORDERSTYLE_DOTTED;
+                  if($borderstyle['dash']=='4,2')
+                      $bstyle=ExcelFormat::BORDERSTYLE_DASHED;
+                  else
+                      $bstyle=ExcelFormat::BORDERSTYLE_THIN;
+                      
+            
+             if($x1==$x2){
+             		for($k=$y1;$k<$y2;$k++){
+             		
+             		$myformat=$this->ws->cellFormat($k,$x1);
+             		$color=$this->hex2rgb($linecolor);
+             		$myformat->BorderLeftColor($this->wb->colorPack($color[0],$color[1],$color[2]));
+
+             		$myformat->borderLeftStyle(($bstyle));
+             		$this->ws->setCellFormat($k,$x1,$myformat);
+             		
+             		}
+             }elseif($y1==$y2){
+                     for($k=$x1;$k<$x2;$k++){
+             		$myformat=$this->ws->cellFormat($y1,$k);
+             			$color=$this->hex2rgb($linecolor);
+             		$myformat->BorderLeftColor($this->wb->colorPack($color[0],$color[1],$color[2]));
+             		$myformat->borderTopStyle(($bstyle));
+             		$this->ws->setCellFormat($y1,$k,$myformat);
+             		
+             		}
+                  //$styleArray = array('borders' => array('top' => array('style' => $linewidth,'color'=>array('rgb'=>$linecolor))));
+              }
+              //$this->ws->getStyle("$col1$row1:$col2$row2")->applyFromArray($styleArray);   
+	
+    }else{
+
+    }
+    
+}
+
+
+    function right($value, $count) {
+
+        return substr($value, ($count*-1));
+
+    }
+
+    function left($string, $count) {
+        return substr($string, 0, $count);
+    }
+
+
+
+    public function analyse_expression($data,$isPrintRepeatedValue="true")
+    {
+       if($this->left($data,10)==date("Y-m-d"))
+               $data="'$data'";
+       
+       
+       $tmpplussymbol='/````/';
+        $pointerposition=$this->global_pointer+$this->offsetposition;
+        $i=0;
+        $backcurl='___';
+                $singlequote="|_q_|";
+        $doublequote="|_qq_|";
+
+       $fm=str_replace('{',"_",$data);
+       $fm=str_replace('}',$backcurl,$fm);
+       
+        //$fm=str_replace('$V_REPORT_COUNT',$this->report_count,$fm);
+       $isstring=false;
+       
+        
+//        if($this->report_count>10 && $data=='$F{qty}' || $data=='$V{qty2}')  {
+//               echo "$data =  $fm<br/>";
+//             }
+    //echo $data. gettype($data)."<br/>" ;
+       
+      
+                
+       foreach($this->arrayVariable as $vv=>$av){
+            $i++;
+            $vv=str_replace('$V{',"",$vv);
+            $vv=str_replace('}',$backcurl,$vv);
+            $vv=str_replace("'", $singlequote,$vv);
+            $vv=str_replace('"', $doublequote,$vv);
+
+            //echo $vv.' to become '.$this->grouplist[1]["name"]."_COUNT <br/  >";
+//           if($vv==$this->grouplist[0]["name"]."_COUNT" ){
+//               
+//             $fm=str_replace('$V_'.$vv."_COUNT",39992,$fm1);
+//             //echo 39992 . "<br/>";
+//           }
+//           elseif($vv==$this->grouplist[1]["name"]."_COUNT"){
+//             $fm=str_replace('$V_'.$vv."_COUNT",$this->group_count[$this->grouplist[1]["name"]],$fm1);
+//             //echo 39992 . "<br/>";
+//           }
+//           elseif($vv==$this->grouplist[2]["name"]."_COUNT"){
+//               $fm=str_replace('$V_'.$vv."_COUNT",$this->group_count[$this->grouplist[2]["name"]],$fm1);
+//           }
+//           elseif($vv==$this->grouplist[3]["name"]."_COUNT"){
+//               $fm=str_replace('$V_'.$vv."_COUNT",$this->group_count[$this->grouplist[3]["name"]],$fm1);
+//           }
+             if(strpos($fm,'_COUNT')!==false){
+             if($this->group_count[$this->grouplist[0]["name"]]==1)$this->group_count[$this->grouplist[0]["name"]]=2;
+             if($this->group_count[$this->grouplist[1]["name"]]==1)$this->group_count[$this->grouplist[1]["name"]]=2;
+             if($this->group_count[$this->grouplist[2]["name"]]==1)$this->group_count[$this->grouplist[2]["name"]]=2;
+             if($this->group_count[$this->grouplist[3]["name"]]==1)$this->group_count[$this->grouplist[3]["name"]]=2;
+                 $fm=str_replace('$V_'.$this->grouplist[0]["name"].'_COUNT'.$backcurl,($this->group_count[$this->grouplist[0]["name"]]-1),$fm);
+                 $fm=str_replace('$V_'.$this->grouplist[1]["name"].'_COUNT'.$backcurl,($this->group_count[$this->grouplist[1]["name"]]-1),$fm);
+                 $fm=str_replace('$V_'.$this->grouplist[2]["name"].'_COUNT'.$backcurl,($this->group_count[$this->grouplist[2]["name"]]-1),$fm);
+                 $fm=str_replace('$V_'.$this->grouplist[3]["name"].'_COUNT'.$backcurl,($this->group_count[$this->grouplist[3]["name"]]-1),$fm);
+                 $fm=str_replace('$V_REPORT_COUNT'.$backcurl,$this->report_count,$fm);
+                 
+             }
+           else{
+               
+            if($av["ans"]!="" && is_numeric($av["ans"])&& (($this->left($av["ans"],1)||left($av["ans"],1)=='-' )>0))  {
+                 $av["ans"]=str_replace("+",$tmpplussymbol,$av["ans"]);
+                 $fm=str_replace('$V_'.$vv.$backcurl,$av["ans"],$fm);
+            }
+            else{
+                $av["ans"]=str_replace("+",$tmpplussymbol,$av["ans"]);
+                 $fm=str_replace('$V_'.$vv.$backcurl,"'".$av["ans"]."'",$fm);
+            $isstring=true;
+            }
+                
+            
+            
+ 
+           }
+       }
+      
+       
+     
+       foreach($this->arrayParameter as  $pv => $ap) {
+           $ap=str_replace("+",$tmpplussymbol,$ap);
+                             $ap=str_replace("'", $singlequote,$ap);
+                       $ap=str_replace('"', $doublequote,$ap);
+     
+           if(is_numeric($ap)&&$ap!=''&& ($this->left($ap,1)>0 ||$this->left($ap,1)=='-')){
+                  $fm = str_replace('$P_'.$pv.$backcurl, $ap,$fm);
+           }
+           else{
+            $fm = str_replace('$P_'.$pv.$backcurl, "'".$ap."'",$fm);
+               $isstring=true;
+           }
+        }
+            
+       //     print_r($this->arrayfield);
+       foreach($this->arrayfield as $af){
+           $tmpfieldvalue=str_replace("+",$tmpplussymbol,$this->arraysqltable[$pointerposition][$af.""]);
+                                  $tmpfieldvalue=str_replace("'", $singlequote,$tmpfieldvalue);
+                       $tmpfieldvalue=str_replace('"', $doublequote,$tmpfieldvalue);
+
+           if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!="" && ($this->left($tmpfieldvalue,1)>0||left($tmpfieldvalue,1)=='-')){
+            $fm =str_replace('$F_'.$af.$backcurl,$tmpfieldvalue,$fm);
+            
+           }
+           else{
+               $fm =str_replace('$F_'.$af.$backcurl,"'".$tmpfieldvalue."'",$fm);
+            $isstring=true;
+           }
+           
+       }
+       
+       if($fm=='')
+           return "";
+       else
+       {
+           
+     
+           //echo $fm."<br/>";
+             $fm=str_replace($tmpplussymbol,"+",$fm);
+             
+             
+//              $fm=str_replace('+',".",$fm);
+             // echo $fm."<br/>";
+          if(strpos($fm, '"')!==false)
+            $fm=str_replace('+'," . ",$fm);
+          if(strpos($fm, "'")!==false)
+            $fm=str_replace('+'," . ",$fm);
+     $fm=str_replace('$this->PageNo()','Not applicable',$fm);
+
+
+
+                       $fm=str_replace($singlequote,"\'" ,$fm);
+                       $fm=str_replace( $doublequote,'"',$fm);
+        if((strpos('"',$fm)==false) || (strpos("'",$fm)==false)){
+                           $fm=str_replace('--', '- -', $fm);
+                           $fm=str_replace('++', '+ +', $fm);
+                       }
+                       
+                       
+     eval("\$result= ".$fm.";");
+     //  $result="ASDSAD";  
+ 
+        //echo $result;  
+      
+     //if($this->debughyperlink==true) 
+    
+      return $result;
+      
+       }
+      
+      
+      
+    }
+  
+
+    
 }
