@@ -35,7 +35,7 @@ class ExportXLS{
     public $rowswithdata=array();
     public $uselib=0;
     public $debughtml = false;
-    public $forceexcelib="c_oss"; //php,c_commercial,c_oss
+    public $forceexcelib="c_commercial"; //php,c_commercial,c_oss
     private $currentband="";
     public $elementid=0;
     private $arrfont=array();

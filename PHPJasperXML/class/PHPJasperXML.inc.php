@@ -34,7 +34,7 @@ class PHPJasperXML {
         public $generatestatus=false;
     public function PHPJasperXML($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
-       $this->setErrorReport(0);
+//       $this->setErrorReport(0);
         
         $this->pdflib=$pdflib;
         if($this->fontdir=="")
@@ -4633,7 +4633,7 @@ foreach($this->arrayVariable as $name=>$value){
         $measuremethod =$a['measuremethod'];
         $measurefield =str_replace(array('$F{','}'),"",$a['measurefield']);
         $ce=$a['crosstabcell'];
-       $this->pdf->SetXY($x+$this->arrayPageSetting["leftMargin"],$y+$y_axis);
+       
        //set default font
           $this->pdf->SetFont('freeserif','',10,$this->fontdir.'/freeserif.php');
        foreach($ce as $no =>$v){
@@ -4776,7 +4776,9 @@ foreach($this->arrayVariable as $name=>$value){
     $table.='<td style="text-align:right;background-color:'.$rowtotalbgcolor.'">'.number_format($grantotal,2,'.',',').'</td></tr></table>';
             else
 $table.='<td style="text-align:right;background-color:'.$rowtotalbgcolor.'">'.$grantotal.'</td></tr></table>';
-   $this->pdf->writeHTML($table);
+            
+$this->pdf->SetXY($x+$this->arrayPageSetting["leftMargin"],$this->arrayPageSetting["topMargin"]+$y+$y_axis+20);
+$this->pdf->writeHTML($table);
     
     
          
