@@ -88,6 +88,21 @@ class PHPJasperXML {
                 return true;
             }else
                 return false;
+        }elseif($cndriver=="sqlsrv") {
+
+            if(!$this->con) {
+				$connectionInfo = array( "Database"=>$db_or_dsn_name, "UID"=>$db_user, "PWD"=>"$db_pass");
+                $this->myconn = @sqlsrv_connect($db_host,$connectionInfo);
+                if($this->myconn) {
+					$this->con = true;
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+            return true;
         }
         else {
 
@@ -120,6 +135,9 @@ class PHPJasperXML {
         }elseif($cndriver=="psql") {
             $this->con = false;
             pg_close($this->myconn);
+        }elseif($cndriver=="sqlsrv") {
+            $this->con = false;
+			sqlsrv_close( $this->myconn );
         }
         else {
 
@@ -2910,6 +2928,8 @@ public function dbQuery($sql){
     elseif($this->cndriver=="psql"){
          pg_send_query($this->myconn,$sql);
        return pg_get_result($this->myconn);
+    }elseif($this->cndriver=="sqlsrv"){
+       return @sqlsrv_query( $this->myconn,$sql);
     }       
     elseif($this->cndriver=="odbc")
        return  odbc_exec( $this->myconn,$sql);
@@ -2919,6 +2939,8 @@ public function dbQuery($sql){
 public function dbFetchData($query,$option){
     if($this->cndriver=="mysql" )
        return mysql_fetch_array($query,MYSQL_ASSOC);
+    elseif($this->cndriver=="sqlsrv")
+		return sqlsrv_fetch_array($query,SQLSRV_FETCH_ASSOC);
     elseif($this->cndriver=="psql")
         return pg_fetch_array($query,NULL,PGSQL_ASSOC);
     elseif($this->cndriver=="odbc")
