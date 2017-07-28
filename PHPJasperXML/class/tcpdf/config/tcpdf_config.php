@@ -76,6 +76,14 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 		$k_path_url .= str_replace( '\\', '/', substr(K_PATH_MAIN, (strlen($_SERVER['DOCUMENT_ROOT']) - 1)));
 	}
 
+/* kstan */
+	$tmptcpdffolder=sys_get_temp_dir().'/';	
+	if(!file_exists($tmptcpdffolder))
+	{
+		mkdir($tmpfolder);
+	}
+
+// end of kstan development
 	/**
 	 * URL path to tcpdf installation folder (http://localhost/tcpdf/).
 	 * By default it is automatically calculated but you can also set it as a fixed string to improve performances.
@@ -91,12 +99,12 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * cache directory for temporary files (full path)
 	 */
-	define ('K_PATH_CACHE', K_PATH_MAIN.'cache/');
+	define ('K_PATH_CACHE', $tmptcpdffolder);
 
 	/**
 	 * cache directory for temporary files (url path)
 	 */
-	define ('K_PATH_URL_CACHE', K_PATH_URL.'cache/');
+	define ('K_PATH_URL_CACHE', $tmptcpdffolder);
 
 	/**
 	 *images directory

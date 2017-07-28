@@ -38,6 +38,7 @@ class ExportXLS{
     public $forceexcelib="c_commercial"; //php,c_commercial,c_oss
     private $currentband="";
     public $elementid=0;
+    private $stopatend=false;
     private $arrfont=array();
     
     public function ExportXLS($raw,$filename, $type='Excel5',$out_method='I'){
@@ -128,29 +129,28 @@ class ExportXLS{
             if($band["name"]== "title"){
                   if($raw->arraytitle[0]["height"]>0){
                             $this->title();
-					$this->maxrow--;
-
+                            
                   }
             }
                  elseif($band["name"]== "pageHeader"){
                     
                   if($raw->arraypageHeader[0]["height"]>0){
                         $this->pageHeader();
-                  $this->maxrow--;
+                  		
                   }
                  }
                  elseif($band["name"]== "columnHeader"){
                     
                   if($raw->arraycolumnHeader[0]["height"]>0){
                         $this->columnHeader();
-                  $this->maxrow--;
+                  		
                   }
                  }
                  elseif($band["name"]== "detail"){
                 
                      
                      if($raw->arraydetail[0][0]["height"]>0 && $printeddetail==false){
-                        
+                       
                         $this->detail();
                         $printeddetail=true;
            
@@ -160,21 +160,24 @@ class ExportXLS{
                  elseif( $band["name"]== "summary"  && $printsummary==false){
            
                      if($raw->arraysummary[0]["height"]>0){
+                                                 		$this->fixMaxRow();
+
                         $this->summary();                  
-                        $this->maxrow--;
                      }
                      if($raw->arraycolumnFooter[0]["height"]>0){
+                         
                         $this->columnFooter();                  
-                        $this->maxrow--;
+                        		
                      }
                      
                      if($raw->arraylastPageFooter[0]["height"]>0){
                          
                         $this->lastPageFooter();                  
-                        $this->maxrow--;
+                        		
                      }elseif( $raw->arraypageFooter[0]["height"]>0){
+                         
                         $this->pageFooter();
-                       $this->maxrow--;
+                       		
                      }
                      
                      $printsummary=true;
@@ -190,7 +193,8 @@ class ExportXLS{
 //         $this->deleteEmptyRow();
          //die;
           // $this->ws->removeRow(2,1);
-         
+         if($this->stopatend)
+             die;
  $filename=trim($filename);
 
 
@@ -590,6 +594,7 @@ class ExportXLS{
     
     public function title(){
     $this->currentband="title";
+    $this->fixMaxRow();
        $this->titlerowcount=$this->arrangeRows($this->arraytitle,true);
 $i=0;
 foreach($this->arraytitle as $out){
@@ -605,7 +610,7 @@ foreach($this->arraytitle as $out){
     public function pageHeader(){
     $this->currentband="pageHeader";
        $this->headerrowcount= $this->arrangeRows($this->arraypageHeader,false,true);
-       
+       $this->fixMaxRow();
       $this->maxrow=$this->headerrowcount;
         foreach($this->arraypageHeader as $out){
             $this->display($out,0);
@@ -615,7 +620,7 @@ foreach($this->arraytitle as $out){
     }
     public function columnHeader(){
     $this->currentband="columnHeader";
-    
+    $this->fixMaxRow();
        $this->columnheaderrowcount= $this->arrangeRows($this->arraycolumnHeader,false,true);
        
       
@@ -627,7 +632,7 @@ foreach($this->arraytitle as $out){
         
     }
     public function columnFooter(){
-        
+        $this->fixMaxRow();
     $this->currentband="columnFooter";
        $this->columnfooterrowcount= $this->arrangeRows($this->arraycolumnFooter,false,true);
        
@@ -641,19 +646,21 @@ foreach($this->arraytitle as $out){
     }
     
     public function detail(){
-                                $this->group_count[$this->grouplist[0]["name"]]=0;
+          
+                            
+                            $this->group_count[$this->grouplist[0]["name"]]=0;
                                 $this->group_count[$this->grouplist[1]["name"]]=0;
                                 $this->group_count[$this->grouplist[2]["name"]]=0;
                                 $this->group_count[$this->grouplist[3]["name"]]=0;
         $i=0;
          $this->groupnochange=0;
-        $this->showGroupHeader(false);
-        $isgroupfooterprinted=false;
         
+        $this->showGroupHeader(false);
+        
+        $isgroupfooterprinted=false;
+            
         foreach($this->arraysqltable as $row){
             $this->report_count++;
-           
-            
             if($this->checkSwitchGroup("header"))	{
                                  //   echo '<New group header>';
                                  $this->showGroupHeader(true);
@@ -668,13 +675,16 @@ foreach($this->arraytitle as $out){
                 $this->currentband='detail';
 $d=0;
 $r=0;
+$this->fixMaxRow();
       foreach($this->arraydetail as $detail){
+	
+        
           $detailheight= $this->arrangeRows($detail);
-               
+                
           		
 
         foreach($detail as $out){
-    $this->currentband="detail";                    
+         $this->currentband="detail";                    
           //($this->headerrowcount+($this->detailrowcount*$i)
             
          
@@ -685,9 +695,9 @@ $r=0;
         }
         $d=0;
         $r++;
-        
-          $this->maxrow+= $detailheight;
-         
+        //echo $this->maxrow;
+           $this->maxrow += $detailheight;
+	//$this->fixMaxRow();
       }
      
 	
@@ -702,9 +712,12 @@ $r=0;
     }
     
      public function showGroupHeader($printgroupfooter=false) {
+        if($this->totalgroup==0)
+            return 0;
         $this->currentband='groupHeader';
         
         $this->maxrow++;
+        
         if($printgroupfooter==true)
             $this->showGroupFooter();
         else
@@ -712,6 +725,7 @@ $r=0;
             
         
             for($groupno=$this->groupnochange+1; $groupno  <$this->totalgroup;$groupno++){
+                $this->fixMaxRow();
             $groupname=$this->grouplist[$groupno]["name"];
             
             foreach($this->arrayVariable as $v=>$a){
@@ -755,15 +769,17 @@ $r=0;
           $this->report_count++;
       
       $this->maxrow++;
+      		
      
     }
     public function showGroupFooter() {
-        
+        		
         $this->report_count--;
         $this->offsetposition=-1;
         $this->currentband='groupFooter';
         
        for($groupno=$this->totalgroup;$groupno  >$this->groupnochange;$groupno--){
+           $this->fixMaxRow();
       $footercontent=$this->grouplist[$groupno]["footercontent"];
       
       $rr=$this->analyse_expression($footercontent[0]["printWhenExpression"]);
@@ -785,7 +801,7 @@ $r=0;
                              $this->group_count[$this->grouplist[$i]["name"]]=1;
                         }
         $this->currentband='';
-        $this->maxrow--;
+      //  $this->maxrow--;
 
     }
 
@@ -794,6 +810,7 @@ $r=0;
     
     public function pageFooter(){
     $this->currentband="pageFooter";
+    		$this->fixMaxRow();
         $this->footerrowcount=$this->arrangeRows($this->arraypageFooter);
         foreach($this->arraypageFooter as $out){
             $this->display($out,$this->maxrow);
@@ -803,7 +820,7 @@ $r=0;
     
     public function lastPageFooter(){
 //print_r($this->arraylastPageFooter);echo "<hr>lastpage footer";
-
+$this->fixMaxRow();
 
        $this->lastfooterrowcount=$this->arrangeRows($this->arraylastPageFooter,false);
 
@@ -819,6 +836,7 @@ foreach($this->arraylastPageFooter as $out){
     }
     public function summary(){
     $this->currentband="summary";
+    $this->fixMaxRow();
         $this->summaryrowcount=$this->arrangeRows($this->arraysummary);
         foreach($this->arraysummary as $out){
             $this->display($out,$this->maxrow);
@@ -902,7 +920,9 @@ foreach($this->arraylastPageFooter as $out){
             case "SetDrawColor":
            
               //$cl= str_replace('#','',$arraydata['backcolor']);
-     
+     //print_r($arraydata);
+               // echo "<br/><br/>";
+       //         $this->stopatend=true;
                $this->SetDrawColor($arraydata['r'],$arraydata['g'],$arraydata['b'],$arraydata['border']);
            
   	  			
@@ -924,7 +944,7 @@ foreach($this->arraylastPageFooter as $out){
               $linewidth=$arraydata["style"]["width"];
               $linedash=$arraydata["style"]["dash"];
               $linecolor=  str_replace('#','',$arraydata["forecolor"]);
-              
+              if($x1==$x2 || $y1==$y2)
              $this->printBorder($x1,$y1,$x2,$y2,$linewidth,$linedash,$linecolor);
              
             
@@ -1357,18 +1377,21 @@ else
 
 }   
 
+
+/**
+ * Last Modified: 22 Dec 2015 By: CX
+ */
 public function setText($x,$y,$txt,$align,$pattern){
-$myformat='';
-if($this->uselib==0){
-               
-               
-               if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){    
-                   $this->ws->getCellByColumnAndRow($x, $y)->setValueExplicit($txt, PHPExcel_Cell_DataType::TYPE_NUMERIC);
-                    $this->ws->getStyleByColumnAndRow($x, $y)->getNumberFormat()->setFormatCode($pattern);	
-               }else{
-                   $this->ws->getCellByColumnAndRow($x, $y)->setValueExplicit($txt, PHPExcel_Cell_DataType::TYPE_STRING);
-                   
-               }
+	$myformat='';
+	if($this->uselib==0){ //If use PHPExcel.php
+
+		//If the number format pattern is detect, then text type become numeric
+		if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){    
+			$this->ws->getCellByColumnAndRow($x, $y)->setValueExplicit($txt, PHPExcel_Cell_DataType::TYPE_NUMERIC);
+			$this->ws->getStyleByColumnAndRow($x, $y)->getNumberFormat()->setFormatCode($pattern);	
+		}else{
+			$this->ws->getCellByColumnAndRow($x, $y)->setValueExplicit($txt, PHPExcel_Cell_DataType::TYPE_STRING);
+		}
                  /*if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){    
                                          
                                 }
@@ -1388,80 +1411,80 @@ if($this->uselib==0){
                        //setCellValueByColumnAndRow($x,$y,$txt);
                
 
-               
-               if($align=='C')
-                      $this->ws->getStyleByColumnAndRow($x, $y)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                elseif($align=='R')
-                    $this->ws->getStyleByColumnAndRow($x, $y)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-                else
-                    $this->ws->getStyleByColumnAndRow($x, $y)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-
-
-               }
-else{
-
-if($this->forceexcelib=='c_oss'){
-	$EXCEL_HALIGN_GENERAL		= 0x00;
-	$EXCEL_HALIGN_LEFT			= 0x01;
-	$EXCEL_HALIGN_CENTRED		= 0x02;
-	$EXCEL_HALIGN_RIGHT			= 0x03;
-	$EXCEL_HALIGN_FILLED			= 0x04;
-	$EXCEL_HALIGN_JUSITFIED		= 0x05;
-	$EXCEL_HALIGN_DISTRIBUTED	= 0x07;	//
-
-}
-else{
+		//Set the text alignment               
+		if($align=='C')
+			$this->ws->getStyleByColumnAndRow($x, $y)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		elseif($align=='R')
+			$this->ws->getStyleByColumnAndRow($x, $y)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+		else
+			$this->ws->getStyleByColumnAndRow($x, $y)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
 	
-	
-	$EXCEL_HALIGN_GENERAL		= ExcelFormat::ALIGNH_GENERAL;
-	$EXCEL_HALIGN_LEFT			= ExcelFormat::ALIGNH_LEFT;
-	$EXCEL_HALIGN_CENTRED		= ExcelFormat::ALIGNH_CENTER;
-	$EXCEL_HALIGN_RIGHT			= ExcelFormat::ALIGNH_RIGHT;
-	$EXCEL_HALIGN_FILLED		= ExcelFormat::ALIGNH_FILL;
-	$EXCEL_HALIGN_JUSITFIED		= ExcelFormat::ALIGNH_JUSTIFY;
-	$EXCEL_HALIGN_DISTRIBUTED	= ExcelFormat::ALIGNH_DISTRIBUTED;
+	}else{ //Not use PHPExcel.php
 
-
-
-}
-                if($align=='C')
-                     $align=$EXCEL_HALIGN_CENTRED;
-                elseif($align=='R')
-                     $align=$EXCEL_HALIGN_RIGHT;
-                else
-                    $align=$EXCEL_HALIGN_LEFT;
-           
-            
+		//Set align value: The value is based on library setting
 		if($this->forceexcelib=='c_oss'){
-                $this->wformat[$this->elementid]->setFont($this->wfont[$this->elementid]);  
-	            $this->wformat[$this->elementid]->setAlignment($align);              
-	            
-    	        if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){                
-        	    	$this->wformat[$this->elementid]->setFormatString($pattern);
-            	    $this->ws->setDouble($x,$y-1,$txt,$this->wformat[$this->elementid]);
-	            }
-    	        else{
+			$EXCEL_HALIGN_GENERAL		= 0x00;
+			$EXCEL_HALIGN_LEFT			= 0x01;
+			$EXCEL_HALIGN_CENTRED		= 0x02;
+			$EXCEL_HALIGN_RIGHT			= 0x03;
+			$EXCEL_HALIGN_FILLED		= 0x04;
+			$EXCEL_HALIGN_JUSITFIED		= 0x05;
+			$EXCEL_HALIGN_DISTRIBUTED	= 0x07;
+		}else{
+			$EXCEL_HALIGN_GENERAL		= ExcelFormat::ALIGNH_GENERAL;
+			$EXCEL_HALIGN_LEFT			= ExcelFormat::ALIGNH_LEFT;
+			$EXCEL_HALIGN_CENTRED		= ExcelFormat::ALIGNH_CENTER;
+			$EXCEL_HALIGN_RIGHT			= ExcelFormat::ALIGNH_RIGHT;
+			$EXCEL_HALIGN_FILLED		= ExcelFormat::ALIGNH_FILL;
+			$EXCEL_HALIGN_JUSITFIED		= ExcelFormat::ALIGNH_JUSTIFY;
+			$EXCEL_HALIGN_DISTRIBUTED	= ExcelFormat::ALIGNH_DISTRIBUTED;
+		}
 
-        	        $this->ws->setAnsiString($x,$y-1,$txt,$this->wformat[$this->elementid]); //Mac OSX's iconv not able to convert char * to wchar_t* well.
-            	}
+		//Set align value
+		if($align=='C')
+			$align=$EXCEL_HALIGN_CENTRED;
+		elseif($align=='R')
+			$align=$EXCEL_HALIGN_RIGHT;
+		else
+			$align=$EXCEL_HALIGN_LEFT;
 
-            }
-            else{
-            $this->wformat[$this->elementid]->setFont($this->wfont[$this->elementid]);
-	         $nfm = $this->wb->addCustomFormat($pattern);
-                 $this->wformat[$this->elementid]->numberFormat($nfm);
-                 $this->wformat[$this->elementid]->horizontalAlign($align);
-            
-    	        //	$this->wformat->setFormatString($pattern);
-        	    $this->ws->write($y,$x, $txt,$this->wformat[$this->elementid]);
-                    
-            }
-                                
-                                
-	}                
-				
-			
-}
+		//Set format
+		if($this->forceexcelib=='c_oss'){
+			$this->wformat[$this->elementid]->setFont($this->wfont[$this->elementid]);
+			$this->wformat[$this->elementid]->setAlignment($align);
+
+			//If the number format pattern is detect, then text type become numeric 
+			if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){
+				$this->wformat[$this->elementid]->setFormatString($pattern);
+				if($txt!='' && $txt!="'")
+					$this->ws->setDouble($x,$y-1,$txt,$this->wformat[$this->elementid]);
+			}else{
+				$this->ws->setAnsiString($x,$y-1,$txt,$this->wformat[$this->elementid]); //Mac OSX's iconv not able to convert char * to wchar_t* well.
+			}
+
+		} else{
+			$this->wformat[$this->elementid]->setFont($this->wfont[$this->elementid]);
+
+			//Set the custom format for number based on pattern
+			$nfm = $this->wb->addCustomFormat($pattern);
+			$this->wformat[$this->elementid]->numberFormat($nfm);
+			$this->wformat[$this->elementid]->horizontalAlign($align);
+
+			//If the number format pattern is detect, then text type become float 
+			if(strpos($pattern,".")!==false || strpos($pattern,"#")!==false){
+                if (is_numeric($txt))
+				    $txt = floatval($txt);
+			}
+   //          elseif (is_numeric($txt) && $this->left($txt,2)=="0."){ //If the value contain '0.' then it will become float; This line can be removed. 
+			// 	$txt = floatval($txt);
+			// }
+
+			if($txt == 0 || ($txt!='' && $txt!="'"))
+				$this->ws->write($y,$x, $txt,$this->wformat[$this->elementid]);
+
+		} //End of else
+	} //End of else
+} //End of function setText
 
 
 public function mergeCells($x1,$y1,$x2,$y2){
@@ -1661,8 +1684,8 @@ public function SetDrawColor($r,$g,$b,$border){
     }
         
 	if($this->uselib==0){
-               $this->ws->getStyleByColumnAndRow($x,$y)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-                $this->ws->getStyleByColumnAndRow($x,$y)->getFill()->getStartColor()->setARGB('FF'.$cl);
+           //    $this->ws->getStyleByColumnAndRow($x,$y)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+             //   $this->ws->getStyleByColumnAndRow($x,$y)->getFill()->getStartColor()->setARGB('FF'.$cl);
  }else{
  
               if($this->forceexcelib=="c_commercial"){
@@ -1679,6 +1702,7 @@ public function SetDrawColor($r,$g,$b,$border){
                   
                   
                 if($borderset=="TLBR"){
+                    $this->wformat[$this->elementid]->borderColor($r,$g,$b);
                 $this->wformat[$this->elementid]->borderStyle($bstyle);
                 }
                 else{
@@ -1691,16 +1715,28 @@ public function SetDrawColor($r,$g,$b,$border){
                     $dash="";
                      * 
                      */
-                    
-                
-                 if(strpos($borderset, "T")!==false)
+                   // echo "$r,$g,$b<br/>";
+                    //$this->stopatend=true;
+                 $c =  $this->wb->colorPack($r,$g,$b);
+                 if(strpos($borderset, "T")!==false){
+                     
+                     
                          $this->wformat[$this->elementid]->borderTopStyle($bstyle);
-                 if(strpos($borderset, "B")!==false)
+                         $this->wformat[$this->elementid]->borderTopColor($c);
+                     
+                 }
+                 if(strpos($borderset, "B")!==false){
+                     $this->wformat[$this->elementid]->borderBottomColor($c);
                          $this->wformat[$this->elementid]->borderBottomStyle($bstyle);
-                 if(strpos($borderset, "L")!==false)
+                 }
+                 if(strpos($borderset, "L")!==false){
+                     $this->wformat[$this->elementid]->borderLeftColor($c);
                          $this->wformat[$this->elementid]->borderLeftStyle($bstyle);
-                 if(strpos($borderset, "R")!==false)
+                 }
+                 if(strpos($borderset, "R")!==false){
+                    $this->wformat[$this->elementid]->borderRightColor($c);
                          $this->wformat[$this->elementid]->borderRightStyle($bstyle);
+                 }
                  
                  
                     
@@ -1726,7 +1762,7 @@ public function printBorder($x1,$y1,$x2,$y2,$linewidth,$linedash,$linecolor){
                // echo "Line width $linewidth,<br/>";
 
     if($this->uselib==0){
-              echo "1";
+            
               $col1=PHPExcel_Cell::stringFromColumnIndex($col1);
               $col2=PHPExcel_Cell::stringFromColumnIndex($col2);
             
@@ -1743,48 +1779,50 @@ public function printBorder($x1,$y1,$x2,$y2,$linewidth,$linedash,$linecolor){
                   $linewidth=PHPExcel_Style_Border::thick;
               else
                 $linewidth=PHPExcel_Style_Border::BORDER_HAIR;
-//                $linewidth=PHPExcel_Style_Border::BORDER_THIN;
+
               if($x1==$x2){
                     $styleArray = array('borders' => array('left' => array('style' =>$linewidth,'color'=>array('rgb'=>$linecolor))));
               }elseif($y1==$y2){
                   $styleArray = array('borders' => array('top' => array('style' => $linewidth,'color'=>array('rgb'=>$linecolor))));
               }                  
                     $this->ws->getStyle("$col1$row1:$col2$row2")->applyFromArray($styleArray);   
+  
+ 
     }
     elseif( $this->forceexcelib!="c_oss"){
-              
-		  if($borderstyle['dash']=='0,1')
+        /*
+                if($borderstyle['dash']=='0,1')
                       $bstyle=ExcelFormat::BORDERSTYLE_DOTTED;
                   if($borderstyle['dash']=='4,2')
                       $bstyle=ExcelFormat::BORDERSTYLE_DASHED;
                   else
                       $bstyle=ExcelFormat::BORDERSTYLE_THIN;
-                      
+              
             
              if($x1==$x2){
-             		for($k=$y1;$k<$y2;$k++){
+             		for($k=$row1;$k<$row2;$k++){
              		
-             		$myformat=$this->ws->cellFormat($k,$x1);
+             		$myformat=$this->ws->cellFormat($k,$col1);
+                        
              		$color=$this->hex2rgb($linecolor);
              		$myformat->BorderLeftColor($this->wb->colorPack($color[0],$color[1],$color[2]));
-
-             		$myformat->borderLeftStyle(($bstyle));
-             		$this->ws->setCellFormat($k,$x1,$myformat);
-             		
+             		$myformat->borderLeftStyle(($bstyle));   
+             		$this->ws->setCellFormat($k,$col1,$myformat);
+             
              		}
              }elseif($y1==$y2){
-                     for($k=$x1;$k<$x2;$k++){
-             		$myformat=$this->ws->cellFormat($y1,$k);
-             			$color=$this->hex2rgb($linecolor);
+                     for($k=$col1;$k<$col2;$k++){
+                        
+             		$myformat= new ExcelFormat(  $this->wb);
+                        $myformat=$this->ws->cellFormat($row1,$col1);
+             		$color=$this->hex2rgb($linecolor);
              		$myformat->BorderLeftColor($this->wb->colorPack($color[0],$color[1],$color[2]));
              		$myformat->borderTopStyle(($bstyle));
-             		$this->ws->setCellFormat($y1,$k,$myformat);
-             		
+             		$this->ws->setCellFormat($row1,($k),$myformat);
              		}
-                  //$styleArray = array('borders' => array('top' => array('style' => $linewidth,'color'=>array('rgb'=>$linecolor))));
-              }
-              //$this->ws->getStyle("$col1$row1:$col2$row2")->applyFromArray($styleArray);   
-	
+                        //die;
+             }
+	*/
     }else{
 
     }
@@ -1906,6 +1944,7 @@ public function printBorder($x1,$y1,$x2,$y2,$linewidth,$linedash,$linecolor){
                                   $tmpfieldvalue=str_replace("'", $singlequote,$tmpfieldvalue);
                        $tmpfieldvalue=str_replace('"', $doublequote,$tmpfieldvalue);
 
+            //Remove the expression ($this->left($tmpfieldvalue,1)>0||left($tmpfieldvalue,1)=='-') to allow 0.0-1.0 become number By: CX
            if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!="" && ($this->left($tmpfieldvalue,1)>0||left($tmpfieldvalue,1)=='-')){
             $fm =str_replace('$F_'.$af.$backcurl,$tmpfieldvalue,$fm);
             
@@ -1961,5 +2000,48 @@ public function printBorder($x1,$y1,$x2,$y2,$linewidth,$linedash,$linecolor){
     }
   
 
-    
+public function fixMaxRow(){
+
+
+//for($i=0;$i<=2;$i++){
+$content="";
+$callers=debug_backtrace();
+//$this->stopatend=true;
+
+foreach($this->cols as $cindex=>$cl){
+//    echo 
+    if($this->stopatend)
+echo "reportcount=$this->report_count;rowcount=($this->maxrow-1),cols=".count($this->cols).", ";
+
+  $content.=  $this->getText($cl,($this->maxrow));
+  if($this->stopatend)
+  echo "content='".$content."function=".$callers[1]['function']."'<br/>";
+ 
+}
+if( $content=='')
+    $this->maxrow--;
+}
+
+public function getText($x,$y){
+$myformat='';
+if($this->uselib==0){
+             return      $this->ws->getCellByColumnAndRow($x, $y)->getValue();
+               }
+else{
+
+	if($this->forceexcelib=='c_oss')
+            return	    $this->ws->getValue($x,$y-1);
+
+	else{
+        	return   $this->ws->read($y,$x);//$y,$x);
+                
+        }
+
+            
+            
+                                
+                                
+	}                
+					
+}
 }
