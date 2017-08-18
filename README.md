@@ -46,5 +46,5 @@ $PHPJasperXML->arrayParameter = array('para1'=>'1','para2'=>'2');
 $PHPJasperXML->load_xml_file('file1.jrxml'); //if xml content is string, then $PHPJasperXML->load_xml_string($templatestr);
 //$PHPJasperXML->sql = $sql;  //if you wish to overwrite sql inside jrxml
 $PHPJasperXML->transferDBtoArray(DBSERVER,DBUSER,DBPASS,DBNAME);
-$PHPJasperXML->outpage('I');  //$PHPJasperXML->outpage('D Or F','filename.pdf/filename.xls');
+$PHPJasperXML->outpage('I');  //$PHPJasperXML->outpage('I=render in browser/D=Download/F=same as file','filename.pdf or filename.xls or filename.xls depends on constructor');
 ```
