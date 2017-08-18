@@ -35,3 +35,16 @@ How to Use This Class
 2. You can use any text editor to edit sample1.php and sample2.php, you will found that integrate the report into your project is like peanut.
 3. Due to this project still at initial stage, to documentation is ready yet. However for those familiar with PHP and iReport should have no problem for using this class.
 
+PHP Code
+```
+<?php
+include_once '/class/PHPJasperXML.inc.php';
+include_once '/class/tcpdf/tcpdf.php';
+$PHPJasperXML = new PHPJasperXML("en","TCPDF"); //if export excel, can use PHPJasperXML("en","XLS OR XLSX"); 
+//$PHPJasperXML->debugsql=true;	
+$PHPJasperXML->arrayParameter = array('para1'=>'1','para2'=>'2');
+$PHPJasperXML->load_xml_file('file1.jrxml'); //if xml content is string, then $PHPJasperXML->load_xml_string($templatestr);
+//$PHPJasperXML->sql = $sql;  //if you wish to overwrite sql inside jrxml
+$PHPJasperXML->transferDBtoArray(DBSERVER,DBUSER,DBPASS,DBNAME);
+$PHPJasperXML->outpage('I');  //$PHPJasperXML->outpage('D Or F','filename.pdf/filename.xls');
+```
