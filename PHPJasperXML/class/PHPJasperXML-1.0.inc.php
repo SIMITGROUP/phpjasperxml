@@ -78,6 +78,34 @@ class PHPJasperXML {
             }
             return true;
         }
+        elseif($cndriver=="psql") {
+            global $pgport;
+            if($pgport=="" || $pgport==0)
+                $pgport=5432;
+            $conn_string = "host=$db_host port=$pgport dbname=$db_or_dsn_name user=$db_user password=$db_pass";
+            $this->myconn = pg_connect($conn_string);
+            if($this->myconn) {
+                $this->con = true;
+                return true;
+            }else
+                return false;
+        }
+        elseif($cndriver=="sqlsrv") {
+ 
+             if(!$this->con) {
+               $connectionInfo = array( "Database"=>$db_or_dsn_name, "UID"=>$db_user, "PWD"=>"$db_pass");
+                 $this->myconn = @sqlsrv_connect($db_host,$connectionInfo);
+                 if($this->myconn) {
+                   $this->con = true;
+                     return true;
+                 } else {
+                     return false;
+                 }
+             } else {
+                 return true;
+             }
+             return true;
+          }        
         else 
         {
             if(!$this->con) {
@@ -112,6 +140,10 @@ class PHPJasperXML {
                 }
             }
         }
+        elseif($cndriver=="sqlsrv") {
+             $this->con = false;
+            sqlsrv_close( $this->myconn );
+          }               
         else {
             unset($this->myconn);
             $this->con = false;
@@ -1094,7 +1126,7 @@ class PHPJasperXML {
             $drawcolor=array("r"=>hexdec(substr($data->reportElement["forecolor"],1,2)),"g"=>hexdec(substr($data->reportElement["forecolor"],3,2)),"b"=>hexdec(substr($data->reportElement["forecolor"],5,2)));
         }
 //        $this->pointer[]=array("type"=>"SetDrawColor","r"=>$drawcolor["r"],"g"=>$drawcolor["g"],"b"=>$drawcolor["b"],"hidden_type"=>"drawcolor");
-        if(isset($data->reportElement[positionType])&&$data->reportElement[positionType]=="FixRelativeToBottom") {
+        if(isset($data->reportElement["positionType"])&&$data->reportElement["positionType"]=="FixRelativeToBottom") {
             $hidden_type="relativebottomline";
         }
         
@@ -1483,6 +1515,55 @@ $data->reportElement['uuid']=$data->reportElement['uuid']."";
         }        
 
     }
+
+    public function drawHTMLTable($sql)
+    {
+        $q=$this->dbQuery($sql);
+        $header='<style>td,th{border:solid 1px;}</style><table><thead>';
+        $body='<tbody>';
+        $i=0;
+        $colheader=array();
+        while($r=$this->dbFetchData($q))
+        {
+            if($i==0)
+            {
+                $header.='<tr>';
+                foreach($r as $col=>$colvalue)
+                {
+                    array_push($colheader,$col);
+                    $header.='<th>'.$col.'</th>';
+                }
+                $header.='</tr></thead>';    
+            }
+
+            $body.='<tr>';
+            foreach($r as $col=>$colvalue)
+            {
+                if(strpos($col,'pass')!==false)
+                {
+                    $body.='<td style="color:red">protected</td>';
+                }
+                else
+                {
+                    $body.='<td>'.$colvalue.'</td>';    
+                }
+                
+            }
+            $body.='</tr>';
+            $i++;
+        }
+
+        if($body=='<tbody>')
+        {
+            echo 'No data found';
+        }
+       else
+        {
+            echo $header.$body.'</tbody></table>';    
+        }
+
+        
+    }
     public function transferDBtoArray($host,$user,$password,$db_name,$cndriver="mysqli")
     {
         $this->m=0;
@@ -1496,6 +1577,12 @@ $data->reportElement['uuid']=$data->reportElement['uuid']."";
         if($this->debugsql==true) {
             
             echo "<textarea cols='100' rows='40'>$this->sql</textarea>";
+            if($_GET['showhtmldata']=='1')
+            {
+
+                $this->drawHTMLTable($this->sql);    
+            }
+            
             die;
         }
 
@@ -2969,6 +3056,15 @@ public function drawChartFramework($w,$h,$legendpos,$type,$data)
             $q=$this->myconn->query($sql);
 
             return $q;
+         }
+        elseif($this->cndriver=="psql")
+        {
+            pg_send_query($this->myconn,$sql);
+            return pg_get_result($this->myconn);
+        }
+        elseif($this->cndriver=="sqlsrv")
+        {
+            return @sqlsrv_query( $this->myconn,$sql);
         }
         else
         {
@@ -2981,6 +3077,15 @@ public function drawChartFramework($w,$h,$legendpos,$type,$data)
         if($this->cndriver=="mysql" || $this->cndriver=="mysqli")
         {
            return mysqli_fetch_array($query,MYSQLI_ASSOC);
+        }
+        elseif($this->cndriver=="psql")
+        {
+           return pg_fetch_array($query,NULL,PGSQL_ASSOC);
+        
+        }
+        elseif($this->cndriver=="sqlsrv")
+        {
+            return sqlsrv_fetch_array($query,SQLSRV_FETCH_ASSOC);
         }
         else
         {                
