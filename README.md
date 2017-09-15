@@ -35,6 +35,7 @@ How to Use This Class
 2. You can use any text editor to edit sample1.php and sample2.php, you will found that integrate the report into your project is like peanut.
 3. Due to this project still at initial stage, to documentation is ready yet. However for those familiar with PHP and iReport should have no problem for using this class.
 
+
 PHP Code
 ```
 <?php
@@ -48,3 +49,18 @@ $PHPJasperXML->load_xml_file('file1.jrxml'); //if xml content is string, then $P
 $PHPJasperXML->transferDBtoArray(DBSERVER,DBUSER,DBPASS,DBNAME);
 $PHPJasperXML->outpage('I');  //$PHPJasperXML->outpage('I=render in browser/D=Download/F=same as file','filename.pdf or filename.xls or filename.xls depends on constructor');
 ```
+
+
+Supported Database
+------------------
+at the moment PHPJasperXML support:
+1. mysql (with mysqli)
+2. postgres
+3. sql server
+4. PDO (for others)
+
+
+How to debug?
+-------------
+A lot of time we want to debug and what wrong in our report, easiest way is append at report url with string "debugsql=1&showhtmldata=1" as below:
+<url>/report.php?para1=1&para2=2&debugsql=1&showhtmldata=1
