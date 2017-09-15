@@ -62,6 +62,6 @@ at the moment PHPJasperXML support:
 
 How to debug?
 -------------
-A lot of time we want to debug and what wrong in our report, easiest way is append at report url with string "debugsql=1&showhtmldata=1" as below:
+A lot of time we want to debug and what wrong in our report, easiest way is append at report url with string `debugsql=1&showhtmldata=1` as below:
 
-`myrl/report.php?para1=1&para2=2&debugsql=1&showhtmldata=1`
+`http://www.mydomain.com/myreport.php?para1=1&debugsql=1&showhtmldata=1`
