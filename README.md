@@ -46,7 +46,8 @@ $PHPJasperXML = new PHPJasperXML("en","TCPDF"); //if export excel, can use PHPJa
 $PHPJasperXML->arrayParameter = array('para1'=>'1','para2'=>'2');
 $PHPJasperXML->load_xml_file('file1.jrxml'); //if xml content is string, then $PHPJasperXML->load_xml_string($templatestr);
 //$PHPJasperXML->sql = $sql;  //if you wish to overwrite sql inside jrxml
-$dbdriver="mysql";//or psql,sqlsrv,pdo
+$dbdriver="mysql";//natively is 'mysql', 'psql', or 'sqlsrv'. the rest will use PDO driver. for oracle, use 'oci'
+
 $PHPJasperXML->transferDBtoArray(DBSERVER,DBUSER,DBPASS,DBNAME,$dbdriver);
 $PHPJasperXML->outpage('I');  //$PHPJasperXML->outpage('I=render in browser/D=Download/F=same as file','filename.pdf or filename.xls or filename.xls depends on constructor');
 ```
