@@ -49,7 +49,7 @@ $PHPJasperXML->load_xml_file('file1.jrxml'); //if xml content is string, then $P
 $dbdriver="mysql";//natively is 'mysql', 'psql', or 'sqlsrv'. the rest will use PDO driver. for oracle, use 'oci'
 
 $PHPJasperXML->transferDBtoArray(DBSERVER,DBUSER,DBPASS,DBNAME,$dbdriver);
-$PHPJasperXML->outpage('I');  //$PHPJasperXML->outpage('I=render in browser/D=Download/F=same as file','filename.pdf or filename.xls or filename.xls depends on constructor');
+$PHPJasperXML->outpage('I');  //$PHPJasperXML->outpage('I=render in browser/D=Download/F=save as server side filename according 2nd parameter','filename.pdf or filename.xls or filename.xls depends on constructor');
 ```
 
 
