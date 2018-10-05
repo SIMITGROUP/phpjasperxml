@@ -1,12 +1,12 @@
 PHPJasperXML
 ============
 
->>> PHPJasperXML is actively in use in our product, however we have very tight project plan and a lot of development is running now. We'll once a while transfer our update into github. We won't able to use github to maintain our code phpjasperxml project due to it is part of our another big project and we shall maintain there.
+>>> PHPJasperXML is actively in use in our product, however we have very tight project plan and a lot of development is running now, we dont have much time to improve it (but we change slightly from time to time). Since version 1.1 the structure has been changed, it use move effective algoritm, and it more organize, but it may need sometimes to stabilize.
 
 
 About PHPJasperXML
 ------------------
-We initialize this project to ease the develop web/printer friendly report in php. After many year development this project is stable and created a lot of web report. You can design your report via jasper report studio (http://community.jaspersoft.com/project/jaspersoft-studio) and then use phpjasperxml to render it in php. Now javabridge is required at server side. We borrow tcpdf and phpexcel to export our report in pdf/excel. So far it support up to php7 (only tested in 7.0, it might work in 7.1 but we havent test it)
+We initialize this project to ease the develop web/printer friendly report in php. After many year development this project is stable and created a lot of web report. You can design your report via jasper report studio (http://community.jaspersoft.com/project/jaspersoft-studio) and then use phpjasperxml to render it in php. Now javabridge is required at server side. We borrow tcpdf and phpexcel to export our report in pdf/excel. So far it support up to php7.2 (only tested in 7.0, and 7.2)
 
 If export excel is crucial and you required fast export excel engine (phpexcel is painfully slow), you can get commercial driver from:
 1. Cross platform Excel Library (written in c/c++) http://www.libxl.com/
