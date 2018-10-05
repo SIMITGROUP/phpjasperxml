@@ -39,7 +39,7 @@ How to Use This Class
 PHP Code
 ```
 <?php
-include_once '/phpjasperxml/PHPJasperXML.inc.php';//in this case, phpjasperxml is your submodule from github
+include_once 'path_to_phpjasperxml/PHPJasperXML.inc.php';//in this case, phpjasperxml is your submodule from github
 
 $PHPJasperXML = new PHPJasperXML("en","TCPDF"); //if export excel, can use PHPJasperXML("en","XLS OR XLSX"); 
 //$PHPJasperXML->debugsql=true;	
