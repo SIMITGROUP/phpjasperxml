@@ -39,8 +39,8 @@ How to Use This Class
 PHP Code
 ```
 <?php
-include_once '/class/PHPJasperXML.inc.php';
-include_once '/class/tcpdf/tcpdf.php';
+include_once '/phpjasperxml/PHPJasperXML.inc.php';//in this case, phpjasperxml is your submodule from github
+
 $PHPJasperXML = new PHPJasperXML("en","TCPDF"); //if export excel, can use PHPJasperXML("en","XLS OR XLSX"); 
 //$PHPJasperXML->debugsql=true;	
 $PHPJasperXML->arrayParameter = array('para1'=>'1','para2'=>'2');
