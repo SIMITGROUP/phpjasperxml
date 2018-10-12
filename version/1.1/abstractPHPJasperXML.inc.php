@@ -12,16 +12,16 @@ class abstractPHPJasperXML
         protected $global_pointer;
         protected $offsetposition;
         protected $detailbandqty=0;
-        protected $arraysqltable;
+        public $arraysqltable;
         protected $detailallowtill=0;
         public $sql;
         public $arrayParameter;
         protected $group_count=[];
-        protected $arrayVariable;
+        public $arrayVariable;
         protected $lastrowresult=[];
         protected $currentuuid;
         protected $elementid=0;
-
+        protected $pchartfolder=__DIR__.'/../../pchart2';
 
 
         public function setErrorReport($error_report=0)
@@ -157,7 +157,10 @@ class abstractPHPJasperXML
         
     }
 
+    protected function subDataset_handler($data=[]){
+        $this->subdataset[$data['name'].'']= $data->queryString;
 
+    }
       public function xml_dismantle($xml='') {   
         $this->page_setting($xml);
         $i=0;
@@ -367,11 +370,11 @@ class abstractPHPJasperXML
                     break;
                 case "barChart":
                     $elementres = $element->element_line($out,'barChart',$this->elementid);
-                    $this->element_Chart($out,'barChart');
+                    // $this->element_Chart($out,'barChart');
                     break;
                 case "pieChart":
                     $elementres = $element->element_line($out,'pieChart',$this->elementid);
-                    $this->element_Chart($out,'pieChart');
+                    // $this->element_Chart($out,'pieChart');
                     break;
                 case "pie3DChart":
                     $elementres = $element->element_Chart($out,'pie3DChart',$this->elementid);

@@ -82,7 +82,8 @@ class ExportXLS{
                  }
                  else{
           
-                         include_once dirname(__FILE__)."/PHPExcel.php";
+
+                         include_once dirname(__FILE__)."/../../PHPExcel.php";
         	             $this->wb  = new PHPExcel();
                          $this->ws=$this->wb->getActiveSheet(0);
                   

@@ -31,7 +31,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
     // public $arraysqltable=array();
     private $chartscaling=1.35;
     // public $elementid=0;
-    private $autofetchpara=true;
+    protected $autofetchpara=true;
     private $report_count=0;        //### New declaration (variable exists in original too)
     // private $group_count = array(); //### New declaration
     public $generatestatus=false;       
@@ -40,7 +40,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
 
     public function __construct($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
-       $this->setErrorReport(1);
+       $this->setErrorReport(2);
             
         $this->pdflib=$pdflib;
         if($this->fontdir=="")
@@ -49,10 +49,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
     }
     
 
-    public function subDataset_handler($data=[]){
-    $this->subdataset[$data['name'].'']= $data->queryString;
-
-    }
+ 
 //read level 0,Jasperreport page setting
     public function page_setting($xml_path=[]) {
         $this->arrayPageSetting["orientation"]="P";
@@ -101,12 +98,8 @@ class PHPJasperXML extends abstractPHPJasperXML{
                     $gnam=$xml_path["name"]."";             
                     $this->gnam=$xml_path["name"]."";
 //                                         $this->group_count[$this->grouplist[$this->groupnochange+1]["name"]]++;
-
-                                    $this->group_count[$gnam]=1; // Count rows of groups, we're on the first row of the group.
-                                
-
-
-//### End of modification
+                    $this->group_count[$gnam]=1; // Count rows of groups, we're on the first row of the group.    
+                    //### End of modification
                     foreach($out as $band) {
                         $this->default_handler($band);
 
@@ -465,7 +458,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
               //      echo ",$value<br/>";
                     break;
                 case "Average":
-    $value=$this->arrayVariable[$k]["ans"];
+                    $value=$this->arrayVariable[$k]["ans"];
                     
                     
                     if($out['resetType']==''|| $out['resetType']=='None' ){
@@ -476,8 +469,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
                             }
                             else {
                                          $value=($value*($this->report_count-1)+$this->arraysqltable[$rowno]["$out[target]"])/$this->report_count;
-                            }
-                         
+                            }                         
                     }// finisish resettype=''
                     elseif($out['resetType']=='Group') //reset type='group'
                     {
@@ -496,7 +488,6 @@ class PHPJasperXML extends abstractPHPJasperXML{
                                 }
                                   
                     }
-
                         
                     $this->arrayVariable[$k]["ans"]=$value;
 
@@ -688,219 +679,19 @@ header('Access-Control-Allow-Credentials: true');
             return $this->pdf->Output($filename,$out_method);   //send out the complete page
         }
     }
-public function element_pieChart($data){
-          $height=$data->chart->reportElement["height"];
-          $width=$data->chart->reportElement["width"];
-         $x=$data->chart->reportElement["x"];
-         $y=$data->chart->reportElement["y"];
-          $charttitle['position']=$data->chart->chartTitle['position'];
 
-           $charttitle['text']=$data->chart->chartTitle->titleExpression;
-          $chartsubtitle['text']=$data->chart->chartSubTitle->subtitleExpression;
-          $chartLegendPos=$data->chart->chartLegend['position'];
-
-
-
-         // $ylabel=$data->linePlot->valueAxisLabelExpression;
-
-
-          $param=array();
-          foreach($data->categoryDataset->dataset->datasetRun->datasetParameter as $tag=>$value){
-              $param[]=  array("$value[name]"=>$value->datasetParameterExpression);
-          }
-//          print_r($param);
-
-         $this->pointer[]=array('type'=>'PieChart','x'=>$x,'y'=>$y,'height'=>$height,'width'=>$width,'charttitle'=>$charttitle,
-            'chartsubtitle'=> $chartsubtitle,
-               'chartLegendPos'=> $chartLegendPos,'dataset'=>$dataset,'seriesexp'=>$seriesexp,
-            'valueexp'=>$valueexp,'param'=>$param,'sql'=>$sql,'ylabel'=>$ylabel,"elementid"=>$this->elementid);
-
-    }
     public function element_pie3DChart($data){
 
-
-    }
-
-    public function element_Chart($data,$type=''){
-    
-          $height=$data->chart->reportElement["height"]+0;
-          $width=$data->chart->reportElement["width"]+0;
-         $x=$data->chart->reportElement["x"]+0;
-         $y=$data->chart->reportElement["y"]+0;
-         $charttitle=array();
-         $chartsubtitle=array();
-         $chartlegend=array();
-         $theme=$data->chart['theme'];
-         $defaultfont="times new roman";
-         
-         if($data->chart->chartTitle->titleExpression.""!=""){
-          $charttitle['text']=$data->chart->chartTitle->titleExpression."";
-          $charttitle['position']= ($data->chart->chartTitle['position']."" !="" ? $data->chart->chartTitle['position']."" :'');
-          $charttitle['fontname']=($data->chart->chartTitle->font['fontName']."" ? $data->chart->chartTitle->font['fontName']."":$defaultfont);
-          $charttitle['fontsize']=($data->chart->chartTitle->font['size']+0?$data->chart->chartTitle->font['size']+0:10);
-          $charttitle['color']=($data->chart->chartTitle['color'].""?$data->chart->chartTitle['color']."":'000000');
-          $charttitle['isBold']=($data->chart->chartTitle['isBold'].""?true:false);
-          $charttitle['isUnderline']=($data->chart->chartTitle['isUnderline'].""?true:false);
-          $charttitle['isItalic']=($data->chart->chartTitle['isItalic'].""?true:false);
-         }
-         else{
-             $charttitle=null;
-         }
-         
-          if($data->chart->chartSubtitle->subtitleExpression.""!=''){
-              
-             $chartsubtitle['fontname']=($data->chart->chartSubtitle->font['fontName'].""?"":$defaultfont);
-             
-            $chartsubtitle['text']=($data->chart->chartSubtitle->subtitleExpression.""?"":'');
-             $chartsubtitle['fontsize']=($data->chart->chartSubtitle->font['size']+10?"":9);
-            $chartsubtitle['color']=($data->chart->chartSubtitle['color'].""?"":'000000');
-          $chartsubtitle['isBold']=($data->chart->chartSubtitle['isBold'].""?true:false);
-          $chartsubtitle['isUnderline']=($data->chart->chartSubtitle['isUnderline'].""?true:false);
-          $chartsubtitle['isItalic']=($data->chart->chartSubtitle['isItalic'].""?true:false);
-          }
-          else{
-              $chartsubtitle=null;
-          }
-          
-          if($data->chart['isShowLegend']=='true' || $data->chart['isShowLegend']==''){
-          $chartlegend['position']=($data->chart->chartLegend['position'].""?"":"Right");
-          $chartlegend['color']=($data->chart->chartLegend['textColor'].""?"":'#000000');
-if($data->chart->chartLegend['backgroundColor'].""=="")
-    $chartlegend['backgroundColor']='#FFFFFF';
-else
-    $chartlegend['backgroundColor']=$data->chart->chartLegend['backgroundColor']."";
-
-          $chartlegend['size']=($data->chart->chartLegend['size']+0?"":9);
-          $chartlegend['fontname']=($data->chart->chartLegend['fontName'].""?"":$defaultfont);
-          $chartlegend['isUnderline']=($data->chart->chartLegend['isUnderline'].""?true:false);
-          $chartlegend['isBold']=($data->chart->chartLegend['isBold'].""?true:false);
-          $chartlegend['isItalic']=($data->chart->chartLegend['isItalic'].""?true:false);
-         }else{
-             
-             $chartlegend=null;
-             
-         }
-         
-          /*
-           * <chartLegend textColor="#666666" backgroundColor="#CCCCFF" position="Left">
-                        <font fontName="Times New Roman" size="12" isUnderline="true"/>
-                    </chartLegend>
-           */
-          $dataset=$data->categoryDataset->dataset->datasetRun['subDataset']."";
-
-
-if($type=='pieChart'){
-          $dataset=$data->pieDataset->dataset->datasetRun['subDataset'];
-          $seriesexp=$data->pieDataset->keyExpression;
-          $valueexp=$data->pieDataset->valueExpression;
-          $bb=$data->pieDataset->dataset->datasetRun['subDataset'];
-           $sql=$this->arraysubdataset["$bb"]['sql'];
-}
-else{
-          $i=0;
-           $seriesexp=array();
-          $catexp=array();
-          $valueexp=array();
-          $labelexp=array();
-
-          $subcatdataset=$data->categoryDataset;
-          foreach($subcatdataset as $cat => $catseries){
-            foreach($catseries as $a => $series){
-               if("$series->categoryExpression"!=''){
-
-                    $series->seriesExpression=  str_replace(array('"',"'"), '',$series->seriesExpression);
-                    $series->categoryExpression=  str_replace(array('"',"'"), '',$series->categoryExpression);
-                    $series->valueExpression=  str_replace(array('"',"'"), '',$series->valueExpression);
-                    $series->labelExpression=  str_replace(array('"',"'"), '',$series->labelExpression);
-       
-                array_push( $seriesexp,"$series->seriesExpression");
-                array_push( $catexp,"$series->categoryExpression");
-                array_push( $valueexp,"$series->valueExpression");
-                array_push( $labelexp,"$series->labelExpression");
-                
-               }
-
-            }
-
-          }
-          $bb=$data->categoryDataset->dataset->datasetRun['subDataset'];
-          $sql=$this->arraysubdataset[$bb]['sql'];
-
-}
-
-          switch($type){
-             case "stackedBarChart":
-            case "barChart":
-                $ylabel=$data->barPlot->valueAxisLabelExpression;
-                $xlabel=$data->barPlot->categoryAxisLabelExpression;
-                $maxy=$data->barPlot->rangeAxisMaxValueExpression;
-                $miny=$data->barPlot->rangeAxisMinValueExpression;
-                $valueAxisFormat['linecolor']=$data->barPlot->valueAxisFormat->axisFormat['axisLineColor']."";
-                $valueAxisFormat['labelcolor']=$data->barPlot->valueAxisFormat->axisFormat['tickLabelColor']."";
-                $valueAxisFormat['fontname']=$data->barPlot->valueAxisFormat->axisFormat->tickLabelFont->font['fontName']."";
-                $categoryAxisFormat['linecolor']=$data->barPlot->categoryAxisFormat->axisFormat['axisLineColor']."";
-                $categoryAxisFormat['labelcolor']=$data->barPlot->categoryAxisFormat->axisFormat['tickLabelColor']."";
-                $categoryAxisFormat['fontname']=$data->barPlot->categoryAxisFormat->axisFormat->tickLabelFont->font['fontName']."";
-                break;
-            case "lineChart":
-                $ylabel=$data->linePlot->valueAxisLabelExpression;
-                $xlabel=$data->linePlot->categoryAxisLabelExpression;
-                $maxy=$data->linePlot->rangeAxisMaxValueExpression;
-                $miny=$data->linePlot->rangeAxisMinValueExpression;
-                $valueAxisFormat['linecolor']=$data->linePlot->valueAxisFormat->axisFormat['axisLineColor']."";
-                $valueAxisFormat['labelcolor']=$data->linePlot->valueAxisFormat->axisFormat['tickLabelColor']."";
-                $valueAxisFormat['fontname']=$data->linePlot->valueAxisFormat->axisFormat->tickLabelFont->font['fontName']."";
-                $categoryAxisFormat['linecolor']=$data->linePlot->categoryAxisFormat->axisFormat['axisLineColor']."";
-                $categoryAxisFormat['labelcolor']=$data->linePlot->categoryAxisFormat->axisFormat['tickLabelColor']."";
-                $categoryAxisFormat['fontname']=$data->linePlot->categoryAxisFormat->axisFormat->tickLabelFont->font['fontName']."";
-
-                $showshape=$data->linePlot["isShowShapes"];
-                break;
-             case "stackedAreaChart":
-                      $ylabel=$data->areaPlot->valueAxisLabelExpression;
-                        $xlabel=$data->areaPlot->categoryAxisLabelExpression;
-                        $maxy=$data->areaPlot->rangeAxisMaxValueExpression;
-                        $miny=$data->areaPlot->rangeAxisMinValueExpression;
-                $valueAxisFormat['linecolor']=$data->areaPlot->valueAxisFormat->axisFormat['axisLineColor']."";
-                $valueAxisFormat['labelcolor']=$data->areaPlot->valueAxisFormat->axisFormat['tickLabelColor']."";
-                $valueAxisFormat['fontname']=$data->areaPlot->valueAxisFormat->axisFormat->tickLabelFont->font['fontName']."";
-                $valueAxisFormat['size']=$data->areaPlot->valueAxisFormat->axisFormat->tickLabelFont->font['size']+0;
-                $categoryAxisFormat['linecolor']=$data->areaPlot->categoryAxisFormat->axisFormat['axisLineColor']."";
-                $categoryAxisFormat['labelcolor']=$data->areaPlot->categoryAxisFormat->axisFormat['tickLabelColor']."";
-                $categoryAxisFormat['fontname']=$data->areaPlot->categoryAxisFormat->axisFormat->tickLabelFont->font['fontName']."";
-                $categoryAxisFormat['size']=$data->areaPlot->categoryAxisFormat->axisFormat->tickLabelFont->font['size']+0;
-                 break;
-          }
-          
-
-
-          $param=array();
-          foreach($data->categoryDataset->dataset->datasetRun->datasetParameter as $tag=>$value){
-              $param[]=  array("$value[name]"=>$value->datasetParameterExpression);
-          }
-          if($maxy!='' && $miny!=''){
-              $scalesetting=array(0=>array("Min"=>$miny,"Max"=>$maxy));
-          }
-          else
-              $scalesetting="";
-
-         $this->pointer[]=array('type'=>$type,'x'=>$x,'y'=>$y,'height'=>$height,'width'=>$width,'charttitle'=>$charttitle,
-            'chartsubtitle'=> $chartsubtitle,'chartlegend'=> $chartlegend,
-             'dataset'=>$dataset,'seriesexp'=>$seriesexp,
-             'catexp'=>$catexp,'valueexp'=>$valueexp,'labelexp'=>$labelexp,'param'=>$param,'sql'=>$sql,
-             'xlabel'=>$xlabel,'showshape'=>$showshape,  'ylabel'=>$ylabel,
-             'scalesetting'=>$scalesetting,'valueAxisFormat'=>$valueAxisFormat,'categoryAxisFormat'=>$categoryAxisFormat,
-             "elementid"=>$this->elementid);
 
     }
 
 
 
 public function fetchPieChartDataSet($catexp=[],$seriesexp=[],$valueexp=[],$labelexp=[],$xlabel='',$ylabel='',$data=[]){
-global $pchartfolder;
+
 $categorymethod="";
 //echo "$catexp,$seriesexp,$valueexp,$labelexp";
-include_once("$pchartfolder/class/pData.class.php");
+include_once("$this->pchartfolder/class/pData.class.php");
 $DataSet = new pData();
     $n=0;
     $ds=trim($data['dataset']);
@@ -1016,7 +807,7 @@ public function analyse_dsexpression($data=[],$txt=''){
 
 }
 public function fetchChartDataSet($catexp=[],$seriesexp=[],$valueexp=[],$labelexp='',$xlabel='',$ylabel='',$data=[]){
-global $pchartfolder;
+
 $categorymethod="";
 if(count($catexp)>1){
     if($catexp[0]==$catexp[1] ){
@@ -1031,7 +822,7 @@ if(count($catexp)>1){
 else
         $categorymethod="c";
 
-          include_once("$pchartfolder/class/pData.class.php");
+          include_once("$this->pchartfolder/class/pData.class.php");
     $catarr=array();
     $DataSet = new pData();
     $n=0;
@@ -1421,17 +1212,17 @@ public function drawChartFramework($w=0,$h=0,$legendpos=0,$type='',$data=[])
 
     public function showBarChart($data=[],$y_axis=0,$type='barChart')
     {
-          global $tmpchartfolder,$pchartfolder;
-              include_once("$pchartfolder/class/pData.class.php");
-        if($pchartfolder=="")
-            $pchartfolder=dirname(__FILE__)."/pchart2";
-            include_once("$pchartfolder/class/pDraw.class.php");
+          
+        include_once("$this->pchartfolder/class/pData.class.php");
+        if($this->pchartfolder=="")
+            $this->pchartfolder=dirname(__FILE__)."/pchart2";
+            include_once("$this->pchartfolder/class/pDraw.class.php");
       if($type=='pieChart')
-                include_once("$pchartfolder/class/pPie.class.php");
+                include_once("$this->pchartfolder/class/pPie.class.php");
 
-            include_once("$pchartfolder/class/pImage.class.php");
+            include_once("$this->pchartfolder/class/pImage.class.php");
         if($tmpchartfolder=="")
-             $tmpchartfolder=$pchartfolder."/cache";
+             $tmpchartfolder=$this->pchartfolder."/cache";
 
         if(!is_writable($tmpchartfolder)){
             echo "$tmpchartfolder is not writable for generate chart, please contact software developer or system adminstrator";
@@ -1587,20 +1378,19 @@ public function drawChartFramework($w=0,$h=0,$legendpos=0,$type='',$data=[])
     }
 
 public function showPieChart($data=[],$y_axis=0){
-      global $tmpchartfolder,$pchartfolder;
+      global $tmpchartfolder;
 
 
-    if($pchartfolder=="")
-        $pchartfolder=dirname(__FILE__)."/pchart2";
-//echo "$pchartfolder/class/pData.class.php";die;
+    
+//echo "$this->pchartfolder/class/pData.class.php";die;
 
-        include_once("$pchartfolder/class/pData.class.php");
-        include_once("$pchartfolder/class/pDraw.class.php");
-        include_once("$pchartfolder/class/pPie.class.php");
-        include_once("$pchartfolder/class/pImage.class.php");
+        include_once("$this->pchartfolder/class/pData.class.php");
+        include_once("$this->pchartfolder/class/pDraw.class.php");
+        include_once("$this->pchartfolder/class/pPie.class.php");
+        include_once("$this->pchartfolder/class/pImage.class.php");
 
     if($tmpchartfolder=="")
-         $tmpchartfolder=$pchartfolder."/cache";
+         $tmpchartfolder=$this->pchartfolder."/cache";
 
      $w=$data['width']+0;
      $h=$data['height']+0;
@@ -1905,19 +1695,14 @@ if($type=='stackedBarChart')
 
 
 public function showAreaChart($data=[],$y_axis=0,$type=''){
-    global $tmpchartfolder,$pchartfolder;
+    global $tmpchartfolder;
 
+        include_once("$this->pchartfolder/class/pData.class.php");
+        include_once("$this->pchartfolder/class/pDraw.class.php");
+        include_once("$this->pchartfolder/class/pImage.class.php");
 
-    if($pchartfolder=="")
-        $pchartfolder="./pchart2";
-//echo "$pchartfolder/class/pData.class.php";die;
-
-        include_once("$pchartfolder/class/pData.class.php");
-        include_once("$pchartfolder/class/pDraw.class.php");
-        include_once("$pchartfolder/class/pImage.class.php");
-
-    if($tmpchartfolder=="")
-         $tmpchartfolder=$pchartfolder."/cache";
+    
+         $tmpchartfolder=$this->pchartfolder."/cache";
 
      $w=$data['width']+0;
      $h=$data['height']+0;
@@ -2190,7 +1975,7 @@ $Title=$data['charttitle']['text'];
 $titlefontname=strtolower($titlefontname);
 
 
-    $textsetting=array('DrawBox'=>FALSE,'FontSize'=>$titlefontsize,'FontName'=>"$pchartfolder/fonts/".$titlefontname.".ttf",'align'=>TEXT_ALIGN_TOPMIDDLE);
+    $textsetting=array('DrawBox'=>FALSE,'FontSize'=>$titlefontsize,'FontName'=>"$this->pchartfolder/fonts/".$titlefontname.".ttf",'align'=>TEXT_ALIGN_TOPMIDDLE);
 
     $this->chart->drawText($w/3,($titlefontsize+10),$Title,$textsetting);
     }
@@ -3095,7 +2880,7 @@ foreach($this->arrayVariable as $name=>$value){
         $this->currentuuid=$arraydata["uuid"];
         $this->Rotate($arraydata["rotation"]);
     
-    if($arraydata["rotation"]!=""){
+        if($arraydata["rotation"]!=""){
             if($arraydata["rotation"]=="Left"){
                  $w=$arraydata["width"];
                 $arraydata["width"]=$arraydata["height"];
@@ -3117,8 +2902,8 @@ foreach($this->arrayVariable as $name=>$value){
                 //$arraydata["height"]=$w;
                 $this->pdf->SetXY($this->pdf->GetX()- $arraydata["width"],$this->pdf->GetY()-$arraydata["height"]);
             }
-    }
-    if($arraydata["type"]=="SetFont") {
+        }
+        if($arraydata["type"]=="SetFont") {
         //echo $arraydata["font"]."<br/>";
                        $arraydata["font"]=  strtolower(str_replace(' ', '', $arraydata["font"]));
 
@@ -3341,23 +3126,26 @@ foreach($this->arrayVariable as $name=>$value){
             $this->pdf->SetFillColor($arraydata["r"],$arraydata["g"],$arraydata["b"]);
         }
       elseif($arraydata["type"]=="lineChart") {
-
+        // echo 'lineChart';
           $this->showBarChart($arraydata, $y_axis,'lineChart');
         }
-      elseif($arraydata["type"]=="barChart") {
-
+      elseif($arraydata["type"]=="barChart") 
+      {
+        // echo 'barChart';
             $this->showBarChart($arraydata, $y_axis,'barChart');
         }
       elseif($arraydata["type"]=="pieChart") {
 
             $this->showBarChart($arraydata, $y_axis,'pieChart');
         }
-      elseif($arraydata["type"]=="stackedBarChart") {
-
+      elseif($arraydata["type"]=="stackedBarChart") 
+      {
+          // echo 'stackbarChart';
             $this->showBarChart($arraydata, $y_axis,'stackedBarChart');
         }
-      elseif($arraydata["type"]=="stackedAreaChart") {
-
+      elseif($arraydata["type"]=="stackedAreaChart") 
+      {
+        // echo 'stackareaChart';
             $this->showAreaChart($arraydata, $y_axis,$arraydata["type"]);
         }
         elseif($arraydata["type"]=="Barcode"){

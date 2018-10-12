@@ -5,7 +5,7 @@
  */
 
 
-include_once("../PHPJasperXML/PHPJasperXML.inc.php");
+include_once("../PHPJasperXML.inc.php");
 
 include_once ('setting.php');
 
@@ -19,7 +19,4 @@ $PHPJasperXML->load_xml_file("sample5.jrxml");
 
 $PHPJasperXML->transferDBtoArray($server,$user,$pass,$db);
 $PHPJasperXML->outpage("I");    //page output method I:standard output  D:Download file
-
-
-?>
 

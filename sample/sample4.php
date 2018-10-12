@@ -1,6 +1,6 @@
 <?php
 
-include_once("../PHPJasperXML/PHPJasperXML.inc.php");
+include_once("../PHPJasperXML.inc.php");
 // Creating a workbook
 include ('setting.php');
 //$xml =  simplexml_load_file("sample9.jrxml");

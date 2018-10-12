@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-include_once("../PHPJasperXML/PHPJasperXML.inc.php");
+include_once("../PHPJasperXML.inc.php");
 include_once ('setting.php');
 
 
