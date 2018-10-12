@@ -22,11 +22,17 @@ class abstractPHPJasperXML
         protected $currentuuid;
         protected $elementid=0;
         protected $pchartfolder=__DIR__.'/../../pchart2';
-
+        protected $chartobj ;
 
         public function setErrorReport($error_report=0)
         {
           error_reporting($error_report);
+        }
+
+        public function setData($data=[])
+        {
+            $this->arraysqltable=$data;
+            $this->m=count($data);
         }
 
         protected function connect($db_host='',$db_user='',$db_pass='',$dbname='',$cndriver="mysql") {
@@ -34,8 +40,12 @@ class abstractPHPJasperXML
             $this->db_user=$db_user;
             $this->db_pass=$db_pass;
             $this->dbname=$dbname;
-            $this->cndriver=$cndriver;
-          
+            $this->cndriver=$cndriver;        
+                
+            $this->chartobj->sql=$this->sql;
+            $this->chartobj->cndriver=$this->cndriver;                   
+            
+            
             if($cndriver=="mysql" ||  $cndriver=="mysqli") 
             {
 
@@ -306,6 +316,56 @@ class abstractPHPJasperXML
 
 
     
+public function analyse_dsexpression($data=[],$txt=''){
+        $i=0;
+        $backcurl='___';
+        $singlequote="|_q_|";
+        $doublequote="|_qq_|";
+        $fm=str_replace('{',"_",$txt);
+        $fm=str_replace('}',$backcurl,$fm);
+        $isstring=false;
+        $tmpplussymbol='|_plus_|';
+       foreach($data as $key=> $datavalue){
+            $tmpfieldvalue=str_replace("+",$tmpplussymbol,$datavalue);
+            $tmpfieldvalue=str_replace("'", $singlequote,$tmpfieldvalue);
+            $tmpfieldvalue=str_replace('"', $doublequote,$tmpfieldvalue);
+           if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!="" && ($this->left($tmpfieldvalue,1)>0||$this->left($tmpfieldvalue,1)=='-')){
+            $fm =str_replace('$F_'.$key.$backcurl,$tmpfieldvalue,$fm);
+            
+           }
+           else{
+               $fm =str_replace('$F_'.$key.$backcurl,"'".$tmpfieldvalue."'",$fm);
+            $isstring=true;
+           }
+           
+       }
+
+
+     //  echo $fm.",";
+       if($fm=='')
+           return "";
+       else
+       {
+          if(strpos($fm, '"')!==false)
+            $fm=str_replace('+'," . ",$fm);
+          if(strpos($fm, "'")!==false)
+            $fm=str_replace('+'," . ",$fm);
+            $fm=str_replace($tmpplussymbol,"+",$fm);
+            $fm=str_replace('$this->PageNo()',"''",$fm);
+            $fm=str_replace($singlequote,"\'" ,$fm);
+            $fm=str_replace( $doublequote,'"',$fm);
+                       
+            if((strpos('"',$fm)==false) || (strpos("'",$fm)==false)){
+                           $fm=str_replace('--', '- -', $fm);
+                           $fm=str_replace('++', '+ +', $fm);
+            }
+
+      eval("\$result= ".$fm.";");
+    
+      return $result;
+      
+       }
+}
 
     protected function default_handler($xml_path=[]) {
   
@@ -313,10 +373,15 @@ class abstractPHPJasperXML
         // echo $elementpath;
         include_once $elementpath;
         $element= new PHPJasperXMLElement();
+        //ensure all chart element have connection
+
+        
 
         foreach($xml_path as $k=>$out) {
+
             $this->elementid++;
             $elementres=[];
+            
             switch($k) {
                 case "staticText":                   
                    $elementres = $element->element_staticText($out,$this->elementid);
@@ -346,50 +411,40 @@ class abstractPHPJasperXML
                     $elementres = $element->element_textField($out,$this->elementid);
                     // $this->element_textField($out);
                     break;
-//                case "stackedBarChart":
-//                    $this->element_barChart($out,'StackedBarChart');
-//                    break;
-//                case "barChart":
-//                    $this->element_barChart($out,'BarChart');
-//                    break;
-           //     case "pieChart":
-             //       $this->element_pieChart($out);
-//                    break;
-//                case "pie3DChart":
-//                    $this->element_pie3DChart($out);
-//                    break;
-//                case "lineChart":
-//                    $this->element_lineChart($out);
-//                    break;
-//                case "stackedAreaChart":
-//                    $this->element_areaChart($out,'stackedAreaChart');
-//                    break;
                 case "stackedBarChart":
+
                     $elementres = $element->element_Chart($out,'stackedBarChart',$this->elementid);
+                    
                     // $this->element_Chart($out,'stackedBarChart');
                     break;
                 case "barChart":
                     $elementres = $element->element_line($out,'barChart',$this->elementid);
+                    
                     // $this->element_Chart($out,'barChart');
                     break;
                 case "pieChart":
                     $elementres = $element->element_line($out,'pieChart',$this->elementid);
+                    
                     // $this->element_Chart($out,'pieChart');
                     break;
                 case "pie3DChart":
                     $elementres = $element->element_Chart($out,'pie3DChart',$this->elementid);
+                    
                     // $this->element_Chart($out,'pie3DChart');
                     break;
                 case "lineChart":
                     $elementres = $element->element_Chart($out,'lineChart',$this->elementid);
+                    
                     // $this->element_Chart($out,'lineChart');
                     break;
                 case "stackedAreaChart":
                     $elementres = $element->element_Chart($out,'stackedAreaChart',$this->elementid);
+                    
                     // $this->element_Chart($out,'stackedAreaChart');
                     break;
                 case "subreport":
                     $elementres = $this->element_subReport($out);
+
                     // $this->element_subReport($out);
                     break;
                 case "break":
@@ -416,6 +471,53 @@ class abstractPHPJasperXML
     }
 
 
+
+    public function dbQuery($sql='')
+    {
+        
+        if($this->cndriver=="mysql" || $this->cndriver=="mysqli")
+        {
+
+            $a=$this->myconn->query("set names 'utf8'");            
+            $q=$this->myconn->query($sql);
+            return $q;
+         }
+        elseif($this->cndriver=="psql")
+        {
+            pg_send_query($this->myconn,$sql);
+            return pg_get_result($this->myconn);
+        }
+        elseif($this->cndriver=="sqlsrv")
+        {
+            return @sqlsrv_query( $this->myconn,$sql);
+        }
+        else
+        {
+              return $this->myconn->query($sql);            
+        }    
+    }
+
+    public function dbFetchData($query='',$option='')
+    {
+        if($this->cndriver=="mysql" || $this->cndriver=="mysqli")
+        {
+           return mysqli_fetch_array($query,MYSQLI_ASSOC);
+        }
+        elseif($this->cndriver=="psql")
+        {
+           return pg_fetch_array($query,NULL,PGSQL_ASSOC);
+        
+        }
+        elseif($this->cndriver=="sqlsrv")
+        {
+            return sqlsrv_fetch_array($query,SQLSRV_FETCH_ASSOC);
+        }
+        else
+        {                
+            $stmt= $query->fetch(PDO::FETCH_ASSOC);        
+            return $stmt;
+        }
+    }
         public function load_xml_string($jrxml=''){
             $keyword="<queryString>
             <![CDATA[";

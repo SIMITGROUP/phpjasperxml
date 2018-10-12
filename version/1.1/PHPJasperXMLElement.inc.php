@@ -808,9 +808,13 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
 
 
           $param=array();
-          foreach($data->categoryDataset->dataset->datasetRun->datasetParameter as $tag=>$value){
+          if(isset($data->categoryDataset->dataset->datasetRun->datasetParameter ))
+          {
+            foreach($data->categoryDataset->dataset->datasetRun->datasetParameter as $tag=>$value){
               $param[]=  array($value['name']=>$value->datasetParameterExpression);
+            }  
           }
+          
           if($maxy!='' && $miny!=''){
               $scalesetting=array(0=>array("Min"=>$miny,"Max"=>$maxy));
           }
