@@ -41,7 +41,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
 
     public function __construct($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
-       $this->setErrorReport(50);
+       $this->setErrorReport(5);
        // echo 'sdsdd';die;
            
            
@@ -1947,9 +1947,10 @@ if($type=='stackedBarChart')
         }
         elseif($arraydata["type"]=="MultiCell") {
           
+         
            // echo $arraydata["txt"].':'. $this->currenttextfield."<br>"; 
 //echo " $this->report_count $this->currenttextfield".print_r($arraydata,true)."<br/><br/>";
-            if($fielddata==false) {
+            if($arraydata["hidden_type"]=='statictext' || $fielddata==false) {
                 $this->checkoverflow($arraydata,$this->updatePageNo($arraydata["txt"]),'',$maxheight);
             }
             elseif($fielddata==true) {

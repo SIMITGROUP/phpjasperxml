@@ -23,7 +23,7 @@ class abstractPHPJasperXML
         protected $lastrowresult=[];
         protected $currentuuid;
         protected $elementid=0;
-        protected $arrayfield=[];
+        public $arrayfield=[];
         protected $pchartfolder=__DIR__.'/../../pchart2';
         protected $chartobj ;
 
@@ -614,8 +614,8 @@ public function analyse_dsexpression($data=[],$txt=''){
         }
         protected function variable_handler($xml_path=[]) 
         {
-
-            $this->arrayVariable[$xml_path['name']]=array(
+            $name=(string)$xml_path['name'];
+            $this->arrayVariable[$name]=array(
                 "calculation"=>(string)$xml_path["calculation"],
                 "target"=>$xml_path->variableExpression ,
                 "class"=>$xml_path["class"] ."",
@@ -1157,7 +1157,8 @@ protected function convertDigit($digit=0)
         return str_replace('$this->PageNo()', $this->pdf->PageNo(),$s);
     }
 
-    protected function staticText($xml_path) {//$this->pointer[]=array("type"=>"SetXY","x"=>$xml_path->reportElement["x"],"y"=>$xml_path->reportElement["y"]);
+    protected function staticText($xml_path) {
+        // $this->pointer[]=array("type"=>"SetXY","x"=>$xml_path->reportElement["x"],"y"=>$xml_path->reportElement["y"]);
     }
 
      protected function showBarcode($data=[],$y=0)
@@ -1468,8 +1469,7 @@ protected function convertDigit($digit=0)
             $pngkey = "data:image/png;base64,";        
             if($datatype == "Image" && ($this->left($data, 22) == $jpgkey || $this->left($data, 22) == $pngkey))
             {
-                echo $datatype;
-                echo $fm;
+                
                  $evalstr="\$result= '".$fm."';";
                  eval($evalstr);
                  return $result;
@@ -1483,9 +1483,10 @@ protected function convertDigit($digit=0)
            else 
            {                                 
                    $fm=str_replace('convertNumber', '', $fm);
-                   $evalstr="\$result= ".$fm.";";           
+                   // echo $fm.'<br/>';
+                  $evalstr="\$result= ".$fm.";";           
                    eval($evalstr);
-               
+                    // echo $result."<hr/>";
                 if($isPrintRepeatedValue=="true" ||$isPrintRepeatedValue=="")
                 {
                     return $result;
