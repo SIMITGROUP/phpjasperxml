@@ -23,6 +23,7 @@ class abstractPHPJasperXML
         protected $lastrowresult=[];
         protected $currentuuid;
         protected $elementid=0;
+        protected $arrayfield=[];
         protected $pchartfolder=__DIR__.'/../../pchart2';
         protected $chartobj ;
 
@@ -586,10 +587,11 @@ public function analyse_dsexpression($data=[],$txt=''){
 
         }
 
-        protected function field_handler($xml_path=[]) {
-            $this->arrayfield[]=$xml_path["name"];
-            $this->arrayfieldtype[$xml_path['name']] = $xml_path['class'];
-        // echo "<pre>".var_export($this->arrayfieldtype,true)."</pre>";
+        protected function field_handler($xml_path=[]) 
+        {            
+            $name=(string)$xml_path["name"];
+            $this->arrayfield[]=$name;
+            $this->arrayfieldtype[$name] = (string)$xml_path['class'];        
         }
 
 
@@ -725,7 +727,7 @@ public function analyse_dsexpression($data=[],$txt=''){
     {
       
 
-        $fontpatharr=array("$this->pchartfolder/fonts");
+        $fontpatharr=array("$this->pchartfolder/pChart/fonts");
         $defaultfont="MankSans";
         if(PHP_OS=='Linux'){
             array_push($fontpatharr,"/usr/share/fonts/truetype/freefont");
@@ -760,7 +762,7 @@ public function analyse_dsexpression($data=[],$txt=''){
 
         }
 
-         return "$this->pchartfolder/fonts/GeosansLight.ttf";
+         return "$this->pchartfolder/pChart/fonts/GeosansLight.ttf";
  }
  
 protected function convertNumberWithDynamicDecimal($txt='',$decimalpoint='.',$thousandseparator=',')

@@ -1,89 +1,93 @@
 <?php   
- /* Library settings */
- define("CLASS_PATH", "../../../class");
- define("FONT_PATH", "../../../fonts");
 
- /* pChart library inclusions */
- include(CLASS_PATH."/pData.class.php");
- include(CLASS_PATH."/pDraw.class.php");
- include(CLASS_PATH."/pImage.class.php");
- include(CLASS_PATH."/pScatter.class.php");
+/* pChart library inclusions */
+chdir("../../");
+require_once("bootstrap.php");
 
- /* Create the pData object */
- $myData = new pData();  
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pScatter;
+use pChart\pImageMap\pImageMapFile;
 
- /* Create the X axis and the binded series */
- for ($i=0;$i<=360;$i=$i+10) { $myData->addPoints(cos(deg2rad($i))*20,"Probe 1"); }
- for ($i=0;$i<=360;$i=$i+10) { $myData->addPoints(sin(deg2rad($i))*20,"Probe 2"); }
- $myData->setAxisName(0,"Index");
- $myData->setAxisXY(0,AXIS_X);
- $myData->setAxisPosition(0,AXIS_POSITION_BOTTOM);
+/* Create the pChart object */
+/* 							X, Y, TransparentBackground, UniqueID, StorageFolder*/
+$myPicture = new pImageMapFile(400,400,FALSE,"ScatterPlotChart","temp");
 
- /* Create the Y axis and the binded series */
- for ($i=0;$i<=360;$i=$i+10) { $myData->addPoints($i,"Probe 3"); }
- $myData->setSerieOnAxis("Probe 3",1);
- $myData->setAxisName(1,"Degree");
- $myData->setAxisXY(1,AXIS_Y);
- $myData->setAxisUnit(1,"°");
- $myData->setAxisPosition(1,AXIS_POSITION_RIGHT);
+/* Retrieve the image map */
+if (isset($_GET["ImageMap"])){
+	$myPicture->dumpImageMap();
+}
 
- /* Create the 1st scatter chart binding */
- $myData->setScatterSerie("Probe 1","Probe 3",0);
- $myData->setScatterSerieDescription(0,"This year");
- $myData->setScatterSerieColor(0,array("R"=>0,"G"=>0,"B"=>0));
+/* Create the X axis and the binded series */
+$Points_1 = [];
+$Points_2 = [];
+$Points_3 = [];
+for ($i=0;$i<=360;$i=$i+10) {
+	$Points_1[] = cos(deg2rad($i))*20;
+	$Points_2[] = sin(deg2rad($i))*20;
+	$Points_3[] = $i;
+}
+$myPicture->myData->addPoints($Points_1,"Probe 1"); 
+$myPicture->myData->addPoints($Points_2,"Probe 2"); 
+$myPicture->myData->addPoints($Points_3,"Probe 3"); 
 
- /* Create the 2nd scatter chart binding */
- $myData->setScatterSerie("Probe 2","Probe 3",1);
- $myData->setScatterSerieDescription(1,"Last Year");
+$myPicture->myData->setAxisName(0,"Index");
+$myPicture->myData->setAxisXY(0,AXIS_X);
+$myPicture->myData->setAxisPosition(0,AXIS_POSITION_BOTTOM);
 
- /* Create the pChart object */
- $myPicture = new pImage(400,400,$myData);
+/* Create the Y axis and the binded series */
+$myPicture->myData->setSerieOnAxis("Probe 3",1);
+$myPicture->myData->setAxisName(1,"Degree");
+$myPicture->myData->setAxisXY(1,AXIS_Y);
+$myPicture->myData->setAxisUnit(1,"°");
+$myPicture->myData->setAxisPosition(1,AXIS_POSITION_RIGHT);
 
- /* Turn of Antialiasing */
- $myPicture->Antialias = FALSE;
+/* Create the 1st scatter chart binding */
+$myPicture->myData->setScatterSerie("Probe 1","Probe 3",0);
+$myPicture->myData->setScatterSerieDescription(0,"This year");
+$myPicture->myData->setScatterSerieColor(0,new pColor(0,0,0));
 
- /* Retrieve the image map */
- if (isset($_GET["ImageMap"]) || isset($_POST["ImageMap"]))
-  $myPicture->dumpImageMap("ImageMapScatterPlotChart",IMAGE_MAP_STORAGE_FILE,"ScatterPlotChart","../tmp");
+/* Create the 2nd scatter chart binding */
+$myPicture->myData->setScatterSerie("Probe 2","Probe 3",1);
+$myPicture->myData->setScatterSerieDescription(1,"Last Year");
 
- /* Set the image map name */
- $myPicture->initialiseImageMap("ImageMapScatterPlotChart",IMAGE_MAP_STORAGE_FILE,"ScatterPlotChart","../tmp");
+/* Turn off Anti-aliasing */
+$myPicture->Antialias = FALSE;
 
- /* Draw the background */
- $Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
- $myPicture->drawFilledRectangle(0,0,400,400,$Settings);
+/* Draw the background */
+$myPicture->drawFilledRectangle(0,0,400,400,["Color"=>new pColor(170,183,87), "Dash"=>TRUE, "DashColor"=>new pColor(190,203,107)]);
 
- /* Overlay with a gradient */
- $Settings = array("StartR"=>219, "StartG"=>231, "StartB"=>139, "EndR"=>1, "EndG"=>138, "EndB"=>68, "Alpha"=>50);
- $myPicture->drawGradientArea(0,0,400,400,DIRECTION_VERTICAL,$Settings);
+/* Overlay with a gradient */
+$myPicture->drawGradientArea(0,0,400,400,DIRECTION_VERTICAL,["StartColor"=>new pColor(219,231,139,50), "EndColor"=>new pColor(1,138,68,50)]);
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,399,399,array("R"=>0,"G"=>0,"B"=>0));
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,399,399,["Color"=>new pColor(0,0,0)]);
 
- /* Set the default font */
- $myPicture->setFontProperties(array("FontName"=>FONT_PATH."/pf_arma_five.ttf","FontSize"=>6));
- 
- /* Set the graph area */
- $myPicture->setGraphArea(50,30,350,330);
+/* Set the default font */
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/pf_arma_five.ttf","FontSize"=>6));
 
- /* Create the Scatter chart object */
- $myScatter = new pScatter($myPicture,$myData);
+/* Set the graph area */
+$myPicture->setGraphArea(50,30,350,330);
 
- /* Draw the scale */
- $myScatter->drawScatterScale();
+/* Create the Scatter chart object */
+$myScatter = new pScatter($myPicture);
 
- /* Turn on shadow computing */
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
+/* Draw the scale */
+$myScatter->drawScatterScale();
 
- /* Turn of Antialiasing */
- $myPicture->Antialias = TRUE;
+/* Turn on shadow computing */
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,10)]);
 
- /* Draw a scatter plot chart */
- $myScatter->drawScatterPlotChart(array("RecordImageMap"=>TRUE));
+/* Turn off Anti-aliasing */
+$myPicture->Antialias = TRUE;
 
- /* Draw the legend */
- $myScatter->drawScatterLegend(260,375,array("Mode"=>LEGEND_HORIZONTAL,"Style"=>LEGEND_NOBORDER));
+/* Draw a scatter plot chart */
+$myScatter->drawScatterPlotChart(["RecordImageMap"=>TRUE]);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("../tmp/ScatterPlotChart.png");
+/* Draw the legend */
+$myScatter->drawScatterLegend(260,375,["Mode"=>LEGEND_HORIZONTAL,"Style"=>LEGEND_NOBORDER]);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/ScatterPlotChart.png");
+
 ?>

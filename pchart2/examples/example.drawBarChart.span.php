@@ -1,46 +1,58 @@
 <?php   
- /* CAT:Bar Chart */
+/* CAT:Bar Chart */
 
- /* pChart library inclusions */
- include("../class/pData.class.php");
- include("../class/pDraw.class.php");
- include("../class/pImage.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
 
- /* Create and populate the pData object */
- $MyData = new pData();  
- $MyData->loadPalette("../palettes/blind.color",TRUE);
- $MyData->addPoints(array(150,220,300,250,420,200,300,200,110),"Server A");
- $MyData->addPoints(array("January","February","March","April","May","Juin","July","August","September"),"Months");
- $MyData->setSerieDescription("Months","Month");
- $MyData->setAbscissa("Months");
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pCharts;
 
- /* Create the floating 0 data serie */
- $MyData->addPoints(array(60,80,20,40,40,50,90,30,100),"Floating 0");
- $MyData->setSerieDrawable("Floating 0",FALSE);
+/* Create the pChart object */
+$myPicture = new pDraw(700,230);
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230,$MyData);
+/* Populate the pData object */
+$myPicture->myData->loadPalette("pChart/palettes/blind.color",TRUE);
+$myPicture->myData->addPoints([150,220,300,250,420,200,300,200,110],"Server A");
+$myPicture->myData->addPoints(["January","February","March","April","May","June","July","August","September"],"Months");
+$myPicture->myData->setSerieDescription("Months","Month");
+$myPicture->myData->setAbscissa("Months");
 
- /* Set the default font */
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Forgotte.ttf","FontSize"=>10,"R"=>110,"G"=>110,"B"=>110));
+/* Create the floating 0 data serie */
+$myPicture->myData->addPoints([60,80,20,40,40,50,90,30,100],"Floating 0");
+$myPicture->myData->setSerieDrawable("Floating 0",FALSE);
 
- /* Write the title */
- $myPicture->drawText(10,13,"Net Income 2k8");
+/* Set the default font */
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/Forgotte.ttf","FontSize"=>10,"Color"=>new pColor(110,110,110)));
 
- /* Set the graphical area  */
- $myPicture->setGraphArea(50,30,680,180);
+/* Write the title */
+$myPicture->drawText(10,13,"Net Income 2k8");
 
- /* Draw the scale  */
- $AxisBoundaries = array(0=>array("Min"=>0,"Max"=>500));
- $myPicture->drawScale(array("InnerTickWidth"=>0,"OuterTickWidth"=>0,"Mode"=>SCALE_MODE_MANUAL,"ManualScale"=>$AxisBoundaries,"LabelRotation"=>45,"DrawXLines"=>FALSE,"GridR"=>0,"GridG"=>0,"GridB"=>0,"GridTicks"=>0,"GridAlpha"=>30,"AxisAlpha"=>0));
+/* Set the graphical area  */
+$myPicture->setGraphArea(50,30,680,180);
 
- /* Turn on shadow computing */ 
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
+/* Draw the scale  */
+$AxisBoundaries = [0=>array("Min"=>0,"Max"=>500)];
+$myPicture->drawScale([
+	"InnerTickWidth"=>0,
+	"OuterTickWidth"=>0,
+	"Mode"=>SCALE_MODE_MANUAL,
+	"ManualScale"=>$AxisBoundaries,
+	"LabelRotation"=>45,
+	"DrawXLines"=>FALSE,
+	"GridColor"=>new pColor(0,0,0,30),
+	"GridTicks"=>0,
+	"AxisColor"=>new pColor(0,0,0,50),
+	"RemoveYAxis" => TRUE
+]);
 
- /* Draw the chart */
- $settings = array("Floating0Serie"=>"Floating 0","Surrounding"=>10);
- $myPicture->drawBarChart($settings);
+/* Turn on shadow computing */ 
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,10)]);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawBarChart.span.png");
+/* Draw the chart */
+(new pCharts($myPicture))->drawBarChart(["Floating0Serie"=>"Floating 0","Surrounding"=>10]);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawBarChart.span.png");
+
 ?>

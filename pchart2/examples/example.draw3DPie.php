@@ -1,73 +1,73 @@
 <?php   
- /* CAT:Pie charts */
+/* CAT:Pie charts */
 
- /* pChart library inclusions */
- include("../class/pData.class.php");
- include("../class/pDraw.class.php");
- include("../class/pPie.class.php");
- include("../class/pImage.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
+require_once("functions.inc.php");
 
- /* Create and populate the pData object */
- $MyData = new pData();   
- $MyData->addPoints(array(40,30,20),"ScoreA");  
- $MyData->setSerieDescription("ScoreA","Application A");
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pPie;
 
- /* Define the absissa serie */
- $MyData->addPoints(array("A","B","C"),"Labels");
- $MyData->setAbscissa("Labels");
+/* Create the pChart object */
+$myPicture = new pDraw(700,230,TRUE);
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230,$MyData,TRUE);
+/* Populate the pData object */ 
+$myPicture->myData->addPoints([40,30,20],"ScoreA");
+$myPicture->myData->setSerieDescription("ScoreA","Application A");
 
- /* Draw a solid background */
- $Settings = array("R"=>173, "G"=>152, "B"=>217, "Dash"=>1, "DashR"=>193, "DashG"=>172, "DashB"=>237);
- $myPicture->drawFilledRectangle(0,0,700,230,$Settings);
+/* Define the abscissa serie */
+$myPicture->myData->addPoints(["A","B","C"],"Labels");
+$myPicture->myData->setAbscissa("Labels");
 
- /* Draw a gradient overlay */
- $Settings = array("StartR"=>209, "StartG"=>150, "StartB"=>231, "EndR"=>111, "EndG"=>3, "EndB"=>138, "Alpha"=>50);
- $myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,$Settings);
- $myPicture->drawGradientArea(0,0,700,20,DIRECTION_VERTICAL,array("StartR"=>0,"StartG"=>0,"StartB"=>0,"EndR"=>50,"EndG"=>50,"EndB"=>50,"Alpha"=>100));
+/* Draw a solid background */
+$myPicture->drawFilledRectangle(0,0,700,230,["Color"=>new pColor(173,152,217), "Dash"=>TRUE, "DashColor"=>new pColor(193,172,237)]);
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
+/* Draw a gradient overlay */
+$myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,["StartColor"=>new pColor(209,150,231,50), "EndColor"=>new pColor(111,3,138,50)]);
+$myPicture->drawGradientArea(0,0,700,20, DIRECTION_VERTICAL,["StartColor"=>ColorBlack(), "EndColor"=>new pColor(50,50,50,100)]);
 
- /* Write the picture title */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Silkscreen.ttf","FontSize"=>6));
- $myPicture->drawText(10,13,"pPie - Draw 3D pie charts",array("R"=>255,"G"=>255,"B"=>255));
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,699,229,["Color"=>ColorBlack()]);
 
- /* Set the default font properties */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Forgotte.ttf","FontSize"=>10,"R"=>80,"G"=>80,"B"=>80));
+/* Write the picture title */ 
+$myPicture->setFontProperties(["FontName"=>"pChart/fonts/Silkscreen.ttf","FontSize"=>6]);
+$myPicture->drawText(10,13,"pPie - Draw 3D pie charts",["Color"=>ColorWhite()]);
 
- /* Create the pPie object */ 
- $PieChart = new pPie($myPicture,$MyData);
+/* Set the default font properties */ 
+$myPicture->setFontProperties(["FontName"=>"pChart/fonts/Forgotte.ttf","FontSize"=>10,"Color"=>new pColor(80,80,80)]);
 
- /* Define the slice color */
- $PieChart->setSliceColor(0,array("R"=>143,"G"=>197,"B"=>0));
- $PieChart->setSliceColor(1,array("R"=>97,"G"=>77,"B"=>63));
- $PieChart->setSliceColor(2,array("R"=>97,"G"=>113,"B"=>63));
+/* Create the pPie object */ 
+$PieChart = new pPie($myPicture);
 
- /* Draw a simple pie chart */ 
- $PieChart->draw3DPie(120,125,array("SecondPass"=>FALSE));
+/* Define the slice color */
+$PieChart->setSliceColor(0,new pColor(143,197,0));
+$PieChart->setSliceColor(1,new pColor(97,77,63));
+$PieChart->setSliceColor(2,new pColor(97,113,63));
 
- /* Draw an AA pie chart */ 
- $PieChart->draw3DPie(340,125,array("DrawLabels"=>TRUE,"Border"=>TRUE));
+/* Draw a simple pie chart */ 
+$PieChart->draw3DPie(120,125,["SecondPass"=>FALSE]);
 
- /* Enable shadow computing */ 
- $myPicture->setShadow(TRUE,array("X"=>3,"Y"=>3,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
+/* Draw an AA pie chart */ 
+$PieChart->draw3DPie(340,125,["DrawLabels"=>TRUE,"Border"=>TRUE]);
 
- /* Draw a splitted pie chart */ 
- $PieChart->draw3DPie(560,125,array("WriteValues"=>TRUE,"DataGapAngle"=>10,"DataGapRadius"=>6,"Border"=>TRUE));
+/* Enable shadow computing */ 
+$myPicture->setShadow(TRUE,["X"=>3,"Y"=>3,"Color"=>ColorBlack($Alpha=10)]);
 
- /* Write the legend */
- $myPicture->setFontProperties(array("FontName"=>"../fonts/pf_arma_five.ttf","FontSize"=>6));
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
- $myPicture->drawText(120,200,"Single AA pass",array("DrawBox"=>TRUE,"BoxRounded"=>TRUE,"R"=>0,"G"=>0,"B"=>0,"Align"=>TEXT_ALIGN_TOPMIDDLE));
- $myPicture->drawText(440,200,"Extended AA pass / Splitted",array("DrawBox"=>TRUE,"BoxRounded"=>TRUE,"R"=>0,"G"=>0,"B"=>0,"Align"=>TEXT_ALIGN_TOPMIDDLE));
+/* Draw a split pie chart */ 
+$PieChart->draw3DPie(560,125,["WriteValues"=>TRUE,"DataGapAngle"=>10,"DataGapRadius"=>6,"Border"=>TRUE]);
 
- /* Write the legend box */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Silkscreen.ttf","FontSize"=>6,"R"=>255,"G"=>255,"B"=>255));
- $PieChart->drawPieLegend(600,8,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
+/* Write the legend */
+$myPicture->setFontProperties(["FontName"=>"pChart/fonts/pf_arma_five.ttf","FontSize"=>6]);
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>ColorBlack($Alpha=20)]);
+$myPicture->drawText(120,200,"Single AA pass",["DrawBox"=>TRUE,"BoxRounded"=>TRUE,"Color"=>ColorBlack(),"Align"=>TEXT_ALIGN_TOPMIDDLE]);
+$myPicture->drawText(440,200,"Extended AA pass / Split",["DrawBox"=>TRUE,"BoxRounded"=>TRUE,"Color"=>ColorBlack(),"Align"=>TEXT_ALIGN_TOPMIDDLE]);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.draw3DPie.png");
+/* Write the legend box */ 
+$myPicture->setFontProperties(["FontName"=>"pChart/fonts/Silkscreen.ttf","FontSize"=>6,"Color"=>ColorWhite()]);
+$PieChart->drawPieLegend(600,8,["Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL]);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.draw3DPie.png");
+
 ?>

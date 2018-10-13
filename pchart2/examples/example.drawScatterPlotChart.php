@@ -1,80 +1,87 @@
 <?php   
- /* CAT:Scatter chart */
+/* CAT:Scatter chart */
 
- /* pChart library inclusions */
- include("../class/pData.class.php");
- include("../class/pDraw.class.php");
- include("../class/pImage.class.php");
- include("../class/pScatter.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
 
- /* Create the pData object */
- $myData = new pData();  
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pScatter;
 
- /* Create the X axis and the binded series */
- for ($i=0;$i<=360;$i=$i+10) { $myData->addPoints(cos(deg2rad($i))*20,"Probe 1"); }
- for ($i=0;$i<=360;$i=$i+10) { $myData->addPoints(sin(deg2rad($i))*20,"Probe 2"); }
- $myData->setAxisName(0,"Index");
- $myData->setAxisXY(0,AXIS_X);
- $myData->setAxisPosition(0,AXIS_POSITION_BOTTOM);
+/* Create the pChart object */
+$myPicture = new pDraw(400,400);
 
- /* Create the Y axis and the binded series */
- for ($i=0;$i<=360;$i=$i+10) { $myData->addPoints($i,"Probe 3"); }
- $myData->setSerieOnAxis("Probe 3",1);
- $myData->setAxisName(1,"Degree");
- $myData->setAxisXY(1,AXIS_Y);
- $myData->setAxisUnit(1,"°");
- $myData->setAxisPosition(1,AXIS_POSITION_RIGHT);
+/* Create the X axis and the binded series */
+$Points_1 = [];
+$Points_2 = [];
+$Points_3 = [];
+for($i=0;$i<=360;$i=$i+10) 
+{
+	$Points_1[] = cos(deg2rad($i))*20;
+	$Points_2[] = sin(deg2rad($i))*20;
+	$Points_3[] = $i;
+}
+$myPicture->myData->addPoints($Points_1,"Probe 1");
+$myPicture->myData->addPoints($Points_2,"Probe 2");
+$myPicture->myData->addPoints($Points_3,"Probe 3");
 
- /* Create the 1st scatter chart binding */
- $myData->setScatterSerie("Probe 1","Probe 3",0);
- $myData->setScatterSerieDescription(0,"This year");
- $myData->setScatterSerieColor(0,array("R"=>0,"G"=>0,"B"=>0));
+$myPicture->myData->setAxisName(0,"Index");
+$myPicture->myData->setAxisXY(0,AXIS_X);
+$myPicture->myData->setAxisPosition(0,AXIS_POSITION_BOTTOM);
 
- /* Create the 2nd scatter chart binding */
- $myData->setScatterSerie("Probe 2","Probe 3",1);
- $myData->setScatterSerieDescription(1,"Last Year");
- $myData->setScatterSeriePicture(1,"resources/accept.png");
+/* Create the Y axis and the binded series */
+$myPicture->myData->setSerieOnAxis("Probe 3",1);
+$myPicture->myData->setAxisName(1,"Degree");
+$myPicture->myData->setAxisXY(1,AXIS_Y);
+$myPicture->myData->setAxisUnit(1,"°");
+$myPicture->myData->setAxisPosition(1,AXIS_POSITION_RIGHT);
 
- /* Create the pChart object */
- $myPicture = new pImage(400,400,$myData);
+/* Create the 1st scatter chart binding */
+$myPicture->myData->setScatterSerie("Probe 1","Probe 3",0);
+$myPicture->myData->setScatterSerieDescription(0,"This year");
+$myPicture->myData->setScatterSerieColor(0,new pColor(0,0,0));
 
- /* Draw the background */
- $Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
- $myPicture->drawFilledRectangle(0,0,400,400,$Settings);
+/* Create the 2nd scatter chart binding */
+$myPicture->myData->setScatterSerie("Probe 2","Probe 3",1);
+$myPicture->myData->setScatterSerieDescription(1,"Last Year");
+$myPicture->myData->setScatterSeriePicture(1,"examples/resources/accept.png");
 
- /* Overlay with a gradient */
- $Settings = array("StartR"=>219, "StartG"=>231, "StartB"=>139, "EndR"=>1, "EndG"=>138, "EndB"=>68, "Alpha"=>50);
- $myPicture->drawGradientArea(0,0,400,400,DIRECTION_VERTICAL,$Settings);
- $myPicture->drawGradientArea(0,0,400,20,DIRECTION_VERTICAL,array("StartR"=>0,"StartG"=>0,"StartB"=>0,"EndR"=>50,"EndG"=>50,"EndB"=>50,"Alpha"=>80));
+/* Draw the background */
+$myPicture->drawFilledRectangle(0,0,400,400,["Color"=>new pColor(170,183,87), "Dash"=>TRUE, "DashColor"=>new pColor(190,203,107)]);
 
- /* Write the picture title */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Silkscreen.ttf","FontSize"=>6));
- $myPicture->drawText(10,13,"drawScatterPlotChart() - Draw a scatter plot chart",array("R"=>255,"G"=>255,"B"=>255));
+/* Overlay with a gradient */
+$myPicture->drawGradientArea(0,0,400,400,DIRECTION_VERTICAL,["StartColor"=>new pColor(219,231,139,50),"EndColor"=>new pColor(1,138,68,50)]);
+$myPicture->drawGradientArea(0,0,400,20,DIRECTION_VERTICAL, ["StartColor"=>new pColor(0,0,0,80),"EndColor"=>new pColor(50,50,50,80)]);
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,399,399,array("R"=>0,"G"=>0,"B"=>0));
+/* Write the picture title */ 
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/Silkscreen.ttf","FontSize"=>6));
+$myPicture->drawText(10,13,"drawScatterPlotChart() - Draw a scatter plot chart",["Color"=>new pColor(255,255,255)]);
 
- /* Set the default font */
- $myPicture->setFontProperties(array("FontName"=>"../fonts/pf_arma_five.ttf","FontSize"=>6));
- 
- /* Set the graph area */
- $myPicture->setGraphArea(50,50,350,350);
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,399,399,["Color"=>new pColor(0,0,0)]);
 
- /* Create the Scatter chart object */
- $myScatter = new pScatter($myPicture,$myData);
+/* Set the default font */
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/pf_arma_five.ttf","FontSize"=>6));
 
- /* Draw the scale */
- $myScatter->drawScatterScale();
+/* Set the graph area */
+$myPicture->setGraphArea(50,50,350,350);
 
- /* Turn on shadow computing */
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
+/* Create the Scatter chart object */
+$myScatter = new pScatter($myPicture);
 
- /* Draw a scatter plot chart */
- $myScatter->drawScatterPlotChart();
+/* Draw the scale */
+$myScatter->drawScatterScale();
 
- /* Draw the legend */
- $myScatter->drawScatterLegend(260,375,array("Mode"=>LEGEND_HORIZONTAL,"Style"=>LEGEND_NOBORDER));
+/* Turn on shadow computing */
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,10)]);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawScatterPlotChart.png");
+/* Draw a scatter plot chart */
+$myScatter->drawScatterPlotChart();
+
+/* Draw the legend */
+$myScatter->drawScatterLegend(260,375,["Mode"=>LEGEND_HORIZONTAL,"Style"=>LEGEND_NOBORDER]);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawScatterPlotChart.png");
+
 ?>

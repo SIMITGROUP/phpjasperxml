@@ -1,50 +1,47 @@
 <?php   
- /* CAT:Misc */
+/* CAT:Misc */
 
- /* pChart library inclusions */
- include("../class/pDraw.class.php");
- include("../class/pImage.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
+require_once("myColors.php");
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230);
+use pChart\pDraw;
 
- /* Define default font settings */
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Forgotte.ttf","FontSize"=>14)); 
+/* Create the pChart object */
+$myPicture = new pDraw(700,230);
 
- /* Create the background */
- $myPicture->drawGradientArea(0,0,500,230,DIRECTION_HORIZONTAL,array("StartR"=>217,"StartG"=>250,"StartB"=>116,"EndR"=>181,"EndG"=>209,"EndB"=>27,"Alpha"=>100));
- $RectangleSettings = array("R"=>181,"G"=>209,"B"=>27,"Alpha"=>100);
- $myPicture->drawFilledRectangle(500,0,700,230,$RectangleSettings);
+/* Define default font settings */
+$myPicture->setFontProperties(["FontName"=>"pChart/fonts/Forgotte.ttf","FontSize"=>14]); 
 
- /* Enable shadow computing on a (+1,+1) basis */
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
+/* Create the background */
+$myPicture->drawGradientArea(0,0,500,230,DIRECTION_HORIZONTAL,myColors::myGreenGradient());
+$myPicture->drawFilledRectangle(500,0,700,230,["Color"=>myColors::LightGreen($Alpha=100)]);
 
- /* Draw the left area */
- $RectangleSettings = array("R"=>181,"G"=>209,"B"=>27,"Alpha"=>100);
- $myPicture->drawRoundedFilledRectangle(-5,0,20,240,10,$RectangleSettings); 
- $TextSettings = array("R"=>255,"G"=>255,"B"=>255,"Angle"=>90,"Align"=>TEXT_ALIGN_MIDDLELEFT); 
- $myPicture->drawText(10,220,"My first chart",$TextSettings);
+/* Enable shadow computing on a (+1,+1) basis */
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>myColors::Black($Alpha=20)]);
 
- /* Draw the right area */
- $RectangleSettings = array("R"=>191,"G"=>219,"B"=>37,"Alpha"=>100,"Surrounding"=>20,"Ticks"=>2);
- $myPicture->drawFilledRectangle(510,10,689,219,$RectangleSettings);
+/* Draw the left area */
+$myPicture->drawRoundedFilledRectangle(-5,0,20,240,10,["Color"=>myColors::LightGreen()]); 
+$myPicture->drawText(10,220,"My first chart",["Color"=>myColors::White(),"Angle"=>90,"Align"=>TEXT_ALIGN_MIDDLELEFT]);
 
- /* Write the legend */
- $TextSettings = array("R"=>255,"G"=>255,"B"=>255,"Align"=>TEXT_ALIGN_MIDDLEMIDDLE); 
- $myPicture->drawText(600,30,"Weather data",$TextSettings);
- $TextSettings = array("R"=>106,"G"=>125,"B"=>3,"Align"=>TEXT_ALIGN_TOPLEFT,"FontSize"=>11); 
- $myPicture->drawText(520,45,"The   data  shown  here   has   been",$TextSettings);
- $myPicture->drawText(520,60,"collected from European locations",$TextSettings);
- $myPicture->drawText(520,75,"by the French NAVI system.",$TextSettings);
- $myPicture->drawFromPNG(540,90,"resources/blocnote.png");
+/* Draw the right area */
+$myPicture->drawFilledRectangle(510,10,689,219,["Color"=>myColors::LighterGreen($Alpha=100),"Surrounding"=>20,"Ticks"=>2]);
 
- /* Disable shadow computing  */
- $myPicture->setShadow(FALSE);
+/* Write the legend */
+$myPicture->drawText(600,30,"Weather data",["Color"=>myColors::White(),"Align"=>TEXT_ALIGN_MIDDLEMIDDLE]);
+$TextSettings = ["Color"=>myColors::DarkGreen($Alpha=100),"Align"=>TEXT_ALIGN_TOPLEFT,"FontSize"=>11]; 
+$myPicture->drawText(520,45,"The   data  shown  here   has   been",$TextSettings);
+$myPicture->drawText(520,60,"collected from European locations",$TextSettings);
+$myPicture->drawText(520,75,"by the French NAVI system.",$TextSettings);
+$myPicture->drawFromPNG(540,90,"examples/resources/blocnote.png");
 
- /* Draw the picture border */
- $RectangleSettings = array("R"=>181,"G"=>209,"B"=>27,"Alpha"=>100);
- $myPicture->drawRectangle(0,0,699,229,$RectangleSettings);
+/* Disable shadow computing  */
+$myPicture->setShadow(FALSE);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawingObjects.png");
+/* Draw the picture border */
+$myPicture->drawRectangle(0,0,699,229,["Color"=>myColors::LightGreen()]);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawingObjects.png");
+
 ?>

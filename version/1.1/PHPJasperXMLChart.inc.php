@@ -1,10 +1,21 @@
 <?php
+
+
 include_once __DIR__.'/abstractPHPJasperXML.inc.php';
-include_once __DIR__."/../../pchart2/class/pData.class.php";
-include_once __DIR__."/../../pchart2/class/pDraw.class.php";
-include_once __DIR__."/../../pchart2/class/pImage.class.php";
+include_once __DIR__."/../../pchart2/pChart/pCharts.php";
+include_once __DIR__."/../../pchart2/pChart/pData.php";
+include_once __DIR__."/../../pchart2/pChart/pDraw.php";
+include_once __DIR__."/../../pchart2/pChart/pColor.php";
+include_once __DIR__."/../../pchart2/pChart/pPie.php";
+include_once __DIR__."/../../pchart2/pChart/pException.php";
 
 //version 1.1
+
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pCharts;
+use pChart\pData;
+use pChart\pPie;
 class PHPJasperXMLChart extends abstractPHPJasperXML
 {
 	private $defaultchartfont='Times New Roman';
@@ -15,7 +26,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 	{
 			$this->pchartfolder= __DIR__."/../../pchart2";			
 			$this->tmpchartfolder=sys_get_temp_dir().'/chart';			
-			if(!file_exists($photofile))
+			if(!file_exists($this->tmpchartfolder))
 			{
 				mkdir($this->tmpchartfolder);
 			}
@@ -26,10 +37,10 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
     {              
 
     	// echo $type.'<br/>';
-	    if($type=='pieChart')
-	    {
-	      	include_once("$this->pchartfolder/class/pPie.class.php");
-	    }                			
+	    // if($type=='pieChart')
+	    // {
+	    //   	include_once("$this->pchartfolder/class/pPie.php");
+	    // }                			
  		// $type='barChart';
 
         if(!is_writable($this->tmpchartfolder))
@@ -37,6 +48,8 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
             echo "$this->tmpchartfolder is not writable for generate chart, please contact software developer or system adminstrator";
             die;        
         }
+
+        // print_r($data);
         
      $w=(int)($data['width']*$this->chartscaling);
      $h=(int)($data['height']*$this->chartscaling);
@@ -57,25 +70,26 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 
      $titlefontname=$data['titlefontname'].'';
      $titlefontsize=(int)$data['titlefontsize'];
-        
+     // echo $w.'//'.$h;
+     $this->pdraw = new pDraw($w,$h);    
     if($type=='pieChart')
     {
     	
-    	$DataSet=$this->fetchPieChartDataSet($catexp,$seriesexp,$valueexp,$labelexp, $xlabel,$ylabel,$data);	
+    	$this->fetchPieChartDataSet($catexp,$seriesexp,$valueexp,$labelexp, $xlabel,$ylabel,$data);	
     }    
     else
     {    	    	
-	    $DataSet=$this->fetchChartDataSet($catexp,$seriesexp,$valueexp,$labelexp, $xlabel,$ylabel,$data);	
+	    $this->fetchChartDataSet($catexp,$seriesexp,$valueexp,$labelexp, $xlabel,$ylabel,$data);	
     }
      
      // echo '<pre>'.print_r($DataSet,true).'</pre>';
-    $this->chart = new pImage($w,$h,$DataSet);
+    
 
         
-    if($type=='pieChart')
-    {
-            $this->pieChart = new pPie($this->chart,$DataSet);
-    }
+    // if($type=='pieChart')
+    // {
+    //         $this->pieChart = new pPie($this->pdraw,$DataSet);
+    // }
 
     $arrarea=$this->drawChartFramework($w,$h,$legendpos,$type,$data);
     $graphareax1=$arrarea[0];
@@ -97,7 +111,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
     
     $valuexaxisfontname=$valueAxisFormat['fontname'];
     $valuexaxisfontpath=$this->getTTFFontPath($valuexaxisfontname);
-    $this->chart->setFontProperties(array('FontName'=>$valuexaxisfontpath,'FontSize'=>$valuexaxisfontsize,"R"=>$valuexaxislabelcolor['r'],"G"=>$valuexaxislabelcolor['g'],"B"=>$valuexaxislabelcolor['b'])) ;
+    $this->pdraw->setFontProperties(array('FontName'=>$valuexaxisfontpath,'FontSize'=>$valuexaxisfontsize,"R"=>$valuexaxislabelcolor['r'],"G"=>$valuexaxislabelcolor['g'],"B"=>$valuexaxislabelcolor['b'])) ;
      
 
     $scalesetting=array("GridR"=>200, "GridG"=>200,"GridB"=>200,//'ScaleSpacing'=>100,
@@ -115,35 +129,45 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
              
         if($type!='pieChart')           
         {
-            $this->chart->drawScale($scalesetting);
+            $this->pdraw->drawScale($scalesetting);
         }
                 
         $chartfontpath= $this->getTTFFontPath($this->defaultchartfont);
 
-        $this->chart->setFontProperties(array('FontName'=>$chartfontpath,'FontSize'=>7));
+        $this->pdraw->setFontProperties(array('FontName'=>$chartfontpath,'FontSize'=>7));
 
+        $pCharts = new pCharts($this->pdraw);
 
         if($type=='stackedBarChart')
         {
-            $this->chart->drawStackedBarChart();
+            $pCharts->drawStackedBarChart();
         }
         elseif($type=='barChart')
         {
-            $this->chart->drawBarChart();
+            $pCharts->drawBarChart();
         }
         elseif($type=='lineChart')
         {
-         $this->chart->drawLineChart();
+         	$pCharts->drawLineChart();
         }
         elseif($type=='pieChart')
         {
-            $this->pieChart->draw2DPie(($w/2),($h/2+10),array("Border"=>TRUE,"Radius"=>($h/2-20)));
+        	$PieChart = new pPie($this->pdraw);
+
+            $PieChart->draw2DPie(($w/2),($h/2+10),
+            		[
+            			'WriteValues'=>true, 
+            			"Border"=>TRUE,
+            			"Radius"=>($h/2-20),
+            			"ValueColor"=>$this->getColor(),
+            		]
+            	);
         }
      
        $randomchartno=rand();
        $photofile="$this->tmpchartfolder/chart$randomchartno.png";
        	// echo 'before draw image';
-       $this->chart->Render($photofile);
+       $this->pdraw->Render($photofile);
 		// echo 'after draw image';
          if(file_exists($photofile)){
             
@@ -275,18 +299,18 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 	        }
 	        // echo $ylabel;
 	        $DataSet->setAxisName(0,$ylabel);        
-		    $this->chart = new pImage($w,$h,$DataSet);
-		    // echo '<pre>'.print_r($this->chart,true ).'</pre>';
-		    $this->chart->drawRectangle(1,1,$w-2,$h-2);
+		    $this->pdraw = new pImage($w,$h,$DataSet);
+		    // echo '<pre>'.print_r($this->pdraw,true ).'</pre>';
+		    $this->pdraw->drawRectangle(1,1,$w-2,$h-2);
 		    $legendfontsize=8;
-		    $this->chart->setFontProperties(array('FontName'=>$chartfontpath,'FontSize'=>$legendfontsize));
+		    $this->pdraw->setFontProperties(array('FontName'=>$chartfontpath,'FontSize'=>$legendfontsize));
 			$Title=(string)$data['charttitle']['text'];
 
 
 		      switch($legendpos){
 		             case "Top":
 		                 $legendmode=array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL);
-		                 $lgsize=$this->chart->getLegendSize($legendmode);
+		                 $lgsize=$this->pdraw->getLegendSize($legendmode);
 		                 $diffx=$w-$lgsize['Width'];
 		                 if($diffx>0)
 		                 $legendx=$diffx/2;
@@ -317,7 +341,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		                 break;
 		             case "Left":
 		                 $legendmode=array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_VERTICAL);
-		                 $lgsize=$this->chart->getLegendSize($legendmode);
+		                 $lgsize=$this->pdraw->getLegendSize($legendmode);
 		                 $legendx=$lgsize['Width'];
 		                 if($Title==''){
 		                    $legendy=10;
@@ -336,7 +360,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		                 break;
 		             case "Right":
 		             $legendmode=array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_VERTICAL);
-		                 $lgsize=$this->chart->getLegendSize($legendmode);
+		                 $lgsize=$this->pdraw->getLegendSize($legendmode);
 		                 $legendx=$w-$lgsize['Width'];
 		                 if($Title==''){
 		                    $legendy=10;
@@ -355,7 +379,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		                 break;
 		             case "Bottom":
 		                 $legendmode=array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL);
-		                 $lgsize=$this->chart->getLegendSize($legendmode);
+		                 $lgsize=$this->pdraw->getLegendSize($legendmode);
 		                 $diffx=$w-$lgsize['Width'];
 		                 if($diffx>0)
 		                 $legendx=$diffx/2;
@@ -382,7 +406,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		                 break;
 		             default:
 		               $legendmode=array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL);
-		                 $lgsize=$this->chart->getLegendSize($legendmode);
+		                 $lgsize=$this->pdraw->getLegendSize($legendmode);
 		                 $diffx=$w-$lgsize['Width'];
 		                 if($diffx>0)
 		                 $legendx=$diffx/2;
@@ -414,16 +438,16 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		       
 		    
 
-		    $this->chart->setGraphArea($graphareax1,$graphareay1,$graphareax2,$graphareay2);
-		    $this->chart->setFontProperties(array('FontName'=>$chartfontpath,'FontSize'=>8));
+		    $this->pdraw->setGraphArea($graphareax1,$graphareay1,$graphareax2,$graphareay2);
+		    $this->pdraw->setFontProperties(array('FontName'=>$chartfontpath,'FontSize'=>8));
 		    
 		    $ScaleSpacing=5;
 		    $scalesetting= $scaleSettings = array("XMargin"=>10,"YMargin"=>10,"Floating"=>TRUE,"GridR"=>200,"GridG"=>200,
 		            "GridB"=>200,"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE,"Mode"=>SCALE_MODE_ADDALL_START0,'ScaleSpacing'=>$ScaleSpacing);
 
-		    $this->chart->drawScale($scalesetting);
+		    $this->pdraw->drawScale($scalesetting);
 
-		    $this->chart->drawLegend($legendx,$legendy,$legendmode);
+		    $this->pdraw->drawLegend($legendx,$legendy,$legendmode);
 
 
 		    $Title = str_replace(array('"',"'"),'',$data['charttitle']['text']);
@@ -439,15 +463,15 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 
 		    $textsetting=array('DrawBox'=>FALSE,'FontSize'=>$titlefontsize,'FontName'=>"$this->pchartfolder/fonts/".$titlefontname.".ttf",'align'=>TEXT_ALIGN_TOPMIDDLE);
 
-		    $this->chart->drawText($w/3,($titlefontsize+10),$Title,$textsetting);
+		    $this->pdraw->drawText($w/3,($titlefontsize+10),$Title,$textsetting);
 		    }
 
-		    $this->chart->setFontProperties(array('FontName'=>$chartfontpath,'FontSize'=>7));
-			$this->chart->drawStackedAreaChart(array("Surrounding"=>60));
+		    $this->pdraw->setFontProperties(array('FontName'=>$chartfontpath,'FontSize'=>7));
+			$this->pdraw->drawStackedAreaChart(array("Surrounding"=>60));
 		   	$randomchartno=rand();
 		    $photofile="$this->tmpchartfolder/chart$randomchartno.png";
 
-		    $this->chart->Render($photofile);
+		    $this->pdraw->Render($photofile);
 
 	         if(file_exists($photofile)){
 		           $pdf->Image($photofile,$x+$this->arrayPageSetting["leftMargin"],$y_axis+$y1,$w,$h,"PNG");
@@ -508,9 +532,9 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		
 		//=[],$seriesexp=[],$valueexp=[],$labelexp=''
 
-	    include_once("$this->pchartfolder/class/pData.class.php");
+	    // include_once("$this->pchartfolder/pChart/pData.php");
 	    $catarr=array();
-	    $DataSet = new pData();
+	    // $DataSet = new pData();
 
 	    $n=0;
 	    $ds=trim($data['dataset']);
@@ -575,9 +599,9 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
     		}	
     	}	   	
 
-        $DataSet->addPoints($categoryarr,"categoryaxis");  
-        $DataSet->setSerieDescription('categoryaxis',$xlabel);
-        $DataSet->setAbscissa('categoryaxis');
+        $this->pdraw->myData->addPoints($categoryarr,"categoryaxis");  
+        $this->pdraw->myData->setSerieDescription('categoryaxis',$xlabel);
+        $this->pdraw->myData->setAbscissa('categoryaxis');
         $newchartdata=array();
         $devidevalue=1;
         $devidelabel='';
@@ -595,16 +619,16 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
                     
         foreach($seriesarr as $seriesname=>$seriesdata)
         {
-        	 $DataSet->addPoints($seriesdata,$seriesname);
+        	 $this->pdraw->myData->addPoints($seriesdata,$seriesname);
         }
 		          		    
-		$DataSet->setAxisName(0,$ylabel.$devidelabel);
+		$this->pdraw->myData->setAxisName(0,$ylabel.$devidelabel);
   
 	  	if($i==0)
 	  	{
 	  		return 0;	
 	  	}
-	    return  $DataSet;
+	    return  true;
 	}
 
 
@@ -613,7 +637,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 
 		$categorymethod="";
 		//echo "$catexp,$seriesexp,$valueexp,$labelexp";
-		include_once("$this->pchartfolder/class/pData.class.php");
+		
 		$DataSet = new pData();
 		    $n=0;
 		    $ds=trim($data['dataset']);
@@ -661,11 +685,13 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		            $i++;
 		            }
 
-		        $DataSet->addPoints($chartdata,"valuepoint");   
-		        $DataSet->setSerieDescription('valuepoint',"Value");
 
-		         $DataSet->addPoints($seriesname,"label");
-		        $DataSet->setAbscissa('label');
+		        $this->pdraw->myData->addPoints($chartdata,"valuepoint");   
+		        $this->pdraw->myData->setSerieDescription('valuepoint',"Value");
+
+		        $this->pdraw->myData->addPoints($seriesname,"label");
+		        $this->pdraw->myData->setAbscissa("label");
+		        // $DataSet->setAbscissa('label');
 		        //  $DataSet->setAxisName(0,$ylabel);
 		  if($i==0)
 		  {
@@ -673,7 +699,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		  }
 		    
 		      
-		        return  $DataSet;
+		        return  true;
 
 	}
 
@@ -695,7 +721,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 
 
 		        
-		         //$this->chart->setFontProperties(array('FontName'=>$charttitlefontpath,'FontSize'=>7));
+		         //$this->pdraw->setFontProperties(array('FontName'=>$charttitlefontpath,'FontSize'=>7));
 
 		        //echo $h.",".$titlesetting['fontsize'];
 		        $titletextsetting=array('DrawBox'=>false,"Align"=>TEXT_ALIGN_TOPMIDDLE);
@@ -739,15 +765,15 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		        if(isset($Title)&& $Title!=''){
 		            $charttitlefontpath=$this->getTTFFontPath($titlesetting['fontname']);
 		            // echo "'$charttitlefontpath'<br/>";
-		            $this->chart->setFontProperties(array('FontName'=>$charttitlefontpath,'FontSize'=>$titlesetting['fontsize'],"R"=>$titlecolor['r'],"G"=>$titlecolor['g'],"B"=>$titlecolor['b'],'Align'=>TEXT_ALIGN_TOPMIDDLE,));
+		            $this->pdraw->setFontProperties(array('FontName'=>$charttitlefontpath,'FontSize'=>$titlesetting['fontsize'],"R"=>$titlecolor['r'],"G"=>$titlecolor['g'],"B"=>$titlecolor['b'],'Align'=>TEXT_ALIGN_TOPMIDDLE,));
 
-		            $this->chart->drawText($titlew,$titleh,$Title,$titletextsetting);
+		            $this->pdraw->drawText($titlew,$titleh,$Title,$titletextsetting);
 		        }
 
 		          switch($legendsetting['position']){
 		                 case "Top":
 		                     $legendmode=array("Style"=>LEGEND_BOX,"Mode"=>LEGEND_HORIZONTAL);
-		                     $lgsize=$this->chart->getLegendSize($legendmode);
+		                     $lgsize=$this->pdraw->getLegendSize($legendmode);
 		                     $diffx=$w-$lgsize['Width'];
 		                     if($diffx>0)
 		                     $legendx=$diffx/2;
@@ -777,7 +803,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		                     break;
 		                 case "Left":
 		                  //   $legendmode=array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_VERTICAL);
-		                     $lgsize=$this->chart->getLegendSize($legendmode);
+		                     $lgsize=$this->pdraw->getLegendSize($legendmode);
 		                     $legendx=$lgsize['Width'];
 		                     if($Title==''){
 		                        $legendy=10;
@@ -797,7 +823,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		                 case "Right":
 		                 //    echo "ASDASD";
 		                 $legendmode=array("Style"=>LEGEND_BOX,"Mode"=>LEGEND_VERTICAL);
-		                     $lgsize=$this->chart->getLegendSize($legendmode);
+		                     $lgsize=$this->pdraw->getLegendSize($legendmode);
 		                     $legendx=$w-$lgsize['Width']-10;
 		                     if($Title==''){
 		                        $legendy=10;
@@ -817,7 +843,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		                 case "Bottom":
 		                     
 		                    $legendmode=array("Style"=>LEGEND_BOX,"Mode"=>LEGEND_HORIZONTAL);
-		                     $lgsize=$this->chart->getLegendSize($legendmode);
+		                     $lgsize=$this->pdraw->getLegendSize($legendmode);
 		                     $diffx=$w-$lgsize['Width'];
 		                     if($diffx>0)
 		                     $legendx=$diffx/2;
@@ -844,7 +870,7 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		                 default:
 		                     
 		                  $legendmode=array("Style"=>LEGEND_BOX,"Mode"=>LEGEND_VERTICAL);
-		                     $lgsize=$this->chart->getLegendSize($legendmode);
+		                     $lgsize=$this->pdraw->getLegendSize($legendmode);
 		                     $legendx=$w-$lgsize['Width'];
 		                     if($Title==''){
 		                        $legendy=10;
@@ -874,20 +900,20 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		       $legendsetting['fontsize']=10;
 		            $legendcolor=$this->hex_code_color($legendsetting['color']);
 		            $legendBGcolor=$this->hex_code_color($legendsetting['backgroundColor']);
-		            $this->chart->setFontProperties(array('FontName'=>$chartlegendfontpath,'FontSize'=>$legendsetting['fontsize'],"R"=>$legendcolor['r'],"G"=>$legendcolor['g'],"B"=>$legendcolor['b'],'Align'=>TEXT_ALIGN_TOPMIDDLE));        
+		            $this->pdraw->setFontProperties(array('FontName'=>$chartlegendfontpath,'FontSize'=>$legendsetting['fontsize'],"R"=>$legendcolor['r'],"G"=>$legendcolor['g'],"B"=>$legendcolor['b'],'Align'=>TEXT_ALIGN_TOPMIDDLE));        
 		            $legendmode["R"]=$legendBGcolor['r'];
 		            $legendmode["G"]=$legendBGcolor['g'];
 		            $legendmode["B"]=$legendBGcolor['b'];
 		        
 		        if($type!='pieChart') {
-		        $this->chart->setGraphArea($graphareax1,$graphareay1,$graphareax2,$graphareay2);
+		        $this->pdraw->setGraphArea($graphareax1,$graphareay1,$graphareax2,$graphareay2);
 		        
 		        if($legendsetting){
 		            
-		            $this->chart->drawLegend($legendx,$legendy,$legendmode);
+		            $this->pdraw->drawLegend($legendx,$legendy,$legendmode);
 		        }
 		        }else{
-		                $this->pieChart->drawPieLegend($legendx,$legendy,$legendmode);
+		           //     $this->pieChart->drawPieLegend($legendx,$legendy,$legendmode);
 		        }
 		        
 		        
@@ -950,8 +976,8 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
 		        if($subTitle){
 		            
 		            $chartsubtitlefontpath=$this->getTTFFontPath($subtitlesetting['fontname']);
-		            $this->chart->setFontProperties(array('FontName'=>$chartsubtitlefontpath,'FontSize'=>$subtitlesetting['fontsize'],"R"=>$subtitlecolor['r'],"G"=>$subtitlecolor['g'],"B"=>$subtitlecolor['b'],'Align'=>TEXT_ALIGN_TOPMIDDLE,));
-		            $this->chart->drawText($subtitlew,$subtitleh,$subTitle,$titletextsetting);
+		            $this->pdraw->setFontProperties(array('FontName'=>$chartsubtitlefontpath,'FontSize'=>$subtitlesetting['fontsize'],"R"=>$subtitlecolor['r'],"G"=>$subtitlecolor['g'],"B"=>$subtitlecolor['b'],'Align'=>TEXT_ALIGN_TOPMIDDLE,));
+		            $this->pdraw->drawText($subtitlew,$subtitleh,$subTitle,$titletextsetting);
 		        }
 		        
 		        //echo "ASDSAD";die;
@@ -1209,4 +1235,12 @@ class PHPJasperXMLChart extends abstractPHPJasperXML
         return $mydata;
 
     }
+
+   private function getColor($hexcolor='000000',$alpha=100)
+   {
+   	    $c1=(Float)hexdec(substr($hexcolor, 1,2));
+        $c2=(Float)hexdec(substr($hexcolor, 3,2));
+		$c3=(Float)hexdec(substr($hexcolor, 5,2));
+   		return new pChart\pColor($c1,$c2,$c3,(Float)$alpha);
+   }
 }

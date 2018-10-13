@@ -1,50 +1,51 @@
 <?php
- /* CAT:Stock chart */
+/* CAT:Stock chart */
 
- /* pChart library inclusions */
- include("../class/pData.class.php");
- include("../class/pDraw.class.php");
- include("../class/pImage.class.php");
- include("../class/pStock.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
 
- /* Create and populate the pData object */
- $MyData = new pData();  
- $MyData->addPoints(array(35,28,17,27,12,12,20,15,20,28),"Open");
- $MyData->addPoints(array(20,17,25,20,25,23,16,29,26,17),"Close");
- $MyData->addPoints(array(10,11,14,11,9,4,3,7,9,5),"Min");
- $MyData->addPoints(array(37,32,33,29,29,25,22,34,29,31),"Max");
- $MyData->addPoints(array(30,20,21,24,22,18,18,24,22,24),"Median");
- $MyData->setAxisDisplay(0,AXIS_FORMAT_CURRENCY,"$");
+use pChart\{
+	pColor,
+	pDraw,
+	pStock
+};
 
- $MyData->addPoints(array("Dec 13","Dec 14","Dec 15","Dec 16","Dec 17", "Dec 20","Dec 21","Dec 22","Dec 23","Dec 24"),"Time");
- $MyData->setAbscissa("Time");
- $MyData->setAbscissaName("Time");
+/* Create the pChart object */
+$myPicture = new pDraw(700,230);
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230,$MyData);
+/* Populate the pData object */
+$myPicture->myData->addPoints([35,28,17,27,12,12,20,15,20,28],"Open");
+$myPicture->myData->addPoints([20,17,25,20,25,23,16,29,26,17],"Close");
+$myPicture->myData->addPoints([10,11,14,11,9,4,3,7,9,5],"Min");
+$myPicture->myData->addPoints([37,32,33,29,29,25,22,34,29,31],"Max");
+$myPicture->myData->addPoints([30,20,21,24,22,18,18,24,22,24],"Median");
+$myPicture->myData->setAxisDisplay(0,AXIS_FORMAT_CURRENCY,"$");
 
- /* Turn of AAliasing */
- $myPicture->Antialias = FALSE;
+$myPicture->myData->addPoints(["Dec 13","Dec 14","Dec 15","Dec 16","Dec 17", "Dec 20","Dec 21","Dec 22","Dec 23","Dec 24"],"Time");
+$myPicture->myData->setAbscissa("Time");
+$myPicture->myData->setAbscissaName("Time");
 
- /* Draw the border */
- $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
+/* Turn off Anti-aliasing */
+$myPicture->Antialias = FALSE;
 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/pf_arma_five.ttf","FontSize"=>6));
+/* Draw the border */
+$myPicture->drawRectangle(0,0,699,229,["Color"=>new pColor(0,0,0)]);
 
- /* Define the chart area */
- $myPicture->setGraphArea(60,30,650,190);
+$myPicture->setFontProperties(["FontName"=>"pChart/fonts/pf_arma_five.ttf","FontSize"=>6]);
 
- /* Draw the scale */
- $scaleSettings = array("GridR"=>200,"GridG"=>200,"GridB"=>200,"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE);
- $myPicture->drawScale($scaleSettings);
+/* Define the chart area */
+$myPicture->setGraphArea(60,30,650,190);
 
- /* Create the pStock object */
- $mystockChart = new pStock($myPicture,$MyData);
+/* Draw the scale */
+$myPicture->drawScale(["GridColor"=>new pColor(200,200,200),"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE]);
 
- /* Draw the stock chart */
- $stockSettings = array("BoxUpR"=>255,"BoxUpG"=>255,"BoxUpB"=>255,"BoxDownR"=>0,"BoxDownG"=>0,"BoxDownB"=>0,"SerieMedian"=>"Median");
- $mystockChart->drawStockChart($stockSettings);
+/* Create the pStock object */
+$mystockChart = new pStock($myPicture);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawStockChart.median.png");
+/* Draw the stock chart */
+$mystockChart->drawStockChart(["BoxUpColor"=>new pColor(255,255,255),"BoxDownColor"=>new pColor(0,0,0),"SerieMedian"=>"Median"]);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawStockChart.median.png");
+
 ?>

@@ -1,55 +1,48 @@
 <?php   
- /* CAT:Drawing */
+/* CAT:Drawing */
 
- /* pChart library inclusions */
- include("../class/pDraw.class.php");
- include("../class/pImage.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230);
+use pChart\pColor;
+use pChart\pDraw;
 
- /* Draw the background */
- $Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
- $myPicture->drawFilledRectangle(0,0,700,230,$Settings);
+/* Create the pChart object */
+$myPicture = new pDraw(700,230);
 
- /* Overlay with a gradient */
- $Settings = array("StartR"=>219, "StartG"=>231, "StartB"=>139, "EndR"=>1, "EndG"=>138, "EndB"=>68, "Alpha"=>50);
- $myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,$Settings);
- $myPicture->drawGradientArea(0,0,700,20,DIRECTION_VERTICAL,array("StartR"=>0,"StartG"=>0,"StartB"=>0,"EndR"=>50,"EndG"=>50,"EndB"=>50,"Alpha"=>80));
+/* Draw the background */
+$myPicture->drawFilledRectangle(0,0,700,230,["Color"=>new pColor(170,183,87), "Dash"=>TRUE, "DashColor"=>new pColor(190,203,107)]);
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
- 
- /* Write the picture title */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Silkscreen.ttf","FontSize"=>6));
- $myPicture->drawText(10,13,"drawText() - add some text to your charts",array("R"=>255,"G"=>255,"B"=>255));
+/* Overlay with a gradient */
+$myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL, ["StartColor"=>new pColor(219,231,139,50),"EndColor"=>new pColor(1,138,68,50)]);
+$myPicture->drawGradientArea(0,0,700,20, DIRECTION_VERTICAL, ["StartColor"=>new pColor(0,0,0,80),"EndColor"=>new pColor(50,50,50,80)]);
 
- /* Enable shadow computing */ 
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,699,229,["Color"=>new pColor(0,0,0)]);
 
- /* Write some text */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/advent_light.ttf","FontSize"=>20));
- $TextSettings = array("R"=>255,"G"=>255,"B"=>255,"Angle"=>10);
- $myPicture->drawText(60,115,"10 degree text",$TextSettings);
+/* Write the picture title */ 
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/Silkscreen.ttf","FontSize"=>6));
+$myPicture->drawText(10,13,"drawText() - add some text to your charts",["Color"=>new pColor(255,255,255)]);
 
- /* Write some text */ 
- $TextSettings = array("R"=>0,"G"=>0,"B"=>0,"Angle"=>0,"FontSize"=>40);
- $myPicture->drawText(220,130,"Simple text",$TextSettings);
+/* Enable shadow computing */ 
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,20)]);
 
- /* Write some text */ 
- $TextSettings = array("R"=>200,"G"=>100,"B"=>0,"Angle"=>90,"FontSize"=>14);
- $myPicture->drawText(500,170,"Vertical Text",$TextSettings);
+/* Write some text */ 
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/advent_light.ttf","FontSize"=>20));
 
- /* Write some text */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Bedizen.ttf","FontSize"=>6));
- $TextSettings = array("DrawBox"=>TRUE,"BoxRounded"=>TRUE,"R"=>0,"G"=>0,"B"=>0,"Angle"=>0,"FontSize"=>10);
- $myPicture->drawText(220,160,"Encapsulated text",$TextSettings);
+$myPicture->drawText(60,115,"10 degree text",["Color"=>new pColor(255,255,255),"Angle"=>10]);
+$myPicture->drawText(220,130,"Simple text",  ["Color"=>new pColor(0,0,0),"Angle"=>0,"FontSize"=>40]);
+$myPicture->drawText(500,170,"Vertical Text",["Color"=>new pColor(200,100,0),"Angle"=>90,"FontSize"=>14]);
 
- /* Write some text */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Forgotte.ttf","FontSize"=>6));
- $TextSettings = array("DrawBox"=>TRUE,"R"=>0,"G"=>0,"B"=>0,"Angle"=>0,"FontSize"=>10);
- $myPicture->drawText(220,195,"Text in a box",$TextSettings);
+/* Write some text */ 
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/Bedizen.ttf","FontSize"=>6));
+$myPicture->drawText(220,160,"Encapsulated text",["DrawBox"=>TRUE,"BoxRounded"=>TRUE,"Color"=>new pColor(0,0,0),"Angle"=>0,"FontSize"=>10]);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawText.png");
+/* Write some text */ 
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/Forgotte.ttf","FontSize"=>6));
+$myPicture->drawText(220,195,"Text in a box",["DrawBox"=>TRUE,"Color"=>new pColor(0,0,0),"Angle"=>0,"FontSize"=>10]);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawText.png");
+
 ?>

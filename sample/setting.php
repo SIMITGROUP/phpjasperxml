@@ -1,5 +1,5 @@
 <?php
-$server="localhost";
+$server="192.168.56.1";
 $db="phpjasperxml";
 $user="root";
 $pass="root";

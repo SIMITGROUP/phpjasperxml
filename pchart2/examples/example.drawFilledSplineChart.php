@@ -1,74 +1,81 @@
 <?php   
- /* CAT:Spline chart */
+/* CAT:Spline chart */
 
- /* pChart library inclusions */
- include("../class/pData.class.php");
- include("../class/pDraw.class.php");
- include("../class/pImage.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
 
- /* Create and populate the pData object */
- $MyData = new pData();
- $MyData->setAxisName(0,"Strength");
- for($i=0;$i<=720;$i=$i+20)
-  {
-   $MyData->addPoints(cos(deg2rad($i))*100,"Probe 1");
-   $MyData->addPoints(cos(deg2rad($i+90))*60,"Probe 2");
-  }
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pCharts;
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230,$MyData);
- $myPicture->drawGradientArea(0,0,700,304,DIRECTION_VERTICAL,array("StartR"=>47,"StartG"=>47,"StartB"=>47,"EndR"=>17,"EndG"=>17,"EndB"=>17,"Alpha"=>100));
- $myPicture->drawGradientArea(0,230,700,304,DIRECTION_VERTICAL,array("StartR"=>47,"StartG"=>47,"StartB"=>47,"EndR"=>27,"EndG"=>27,"EndB"=>27,"Alpha"=>100));
- $myPicture->drawLine(0,209,847,209,array("R"=>0,"G"=>0,"B"=>0));
- $myPicture->drawLine(0,210,847,210,array("R"=>70,"G"=>70,"B"=>70));
+/* Create the pChart object */
+$myPicture = new pDraw(700,230);
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,846,303,array("R"=>204,"G"=>204,"B"=>204));
- 
- /* Write the picture title */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/pf_arma_five.ttf","FontSize"=>6));
- $myPicture->drawText(340,12,"Cyclic magnetic field strength",array("R"=>255,"G"=>255,"B"=>255,"Align"=>TEXT_ALIGN_MIDDLEMIDDLE));
+/* Populate the pData object */
+$Points_1 = [];
+$Points_2 = [];
+for($i=0;$i<=720;$i=$i+20)
+{
+	$Points_1[] = cos(deg2rad($i))*100;
+	$Points_2[] = cos(deg2rad($i+90))*60;
+}
 
- /* Define the chart area */
- $myPicture->setGraphArea(48,17,680,190);
+$myPicture->myData->addPoints($Points_1,"Probe 1");
+$myPicture->myData->addPoints($Points_2,"Probe 2");
 
- /* Draw a rectangle */
- $myPicture->drawFilledRectangle(53,22,675,185,array("R"=>0,"G"=>0,"B"=>0,"Dash"=>TRUE,"DashR"=>0,"DashG"=>51,"DashB"=>51,"BorderR"=>0,"BorderG"=>0,"BorderB"=>0));
+$myPicture->myData->setAxisName(0,"Strength");
+	
+$myPicture->drawGradientArea(0,0,700,304,  DIRECTION_VERTICAL, ["StartColor"=>new pColor(47,47,47,100), "EndColor"=>new pColor(17,17,17,100)]);
+$myPicture->drawGradientArea(0,230,700,304,DIRECTION_VERTICAL, ["StartColor"=>new pColor(47,47,47,100), "EndColor"=>new pColor(27,27,27,100)]);
+$myPicture->drawLine(0,209,847,209,["Color"=>new pColor(0,0,0)]);
+$myPicture->drawLine(0,210,847,210,["Color"=>new pColor(70,70,70)]);
 
- /* Turn on shadow computing */ 
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
- 
- /* Draw the scale */
- $myPicture->setFontProperties(array("R"=>255,"G"=>255,"B"=>255));
- $ScaleSettings = array("XMargin"=>5,"YMargin"=>5,"Floating"=>TRUE,"DrawSubTicks"=>TRUE,"GridR"=>255,"GridG"=>255,"GridB"=>255,"AxisR"=>255,"AxisG"=>255,"AxisB"=>255,"GridAlpha"=>30,"CycleBackground"=>TRUE);
- $myPicture->drawScale($ScaleSettings);
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,846,303,["Color"=>new pColor(204,204,204)]);
 
- /* Draw the spline chart */
- $myPicture->drawFilledSplineChart();
+/* Write the picture title */ 
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/pf_arma_five.ttf","FontSize"=>6));
+$myPicture->drawText(340,12,"Cyclic magnetic field strength",["Color"=>new pColor(255,255,255),"Align"=>TEXT_ALIGN_MIDDLEMIDDLE]);
 
- /* Write the chart boundaries */
- $BoundsSettings = array("MaxDisplayR"=>237,"MaxDisplayG"=>23,"MaxDisplayB"=>48,"MinDisplayR"=>23,"MinDisplayG"=>144,"MinDisplayB"=>237);
- $myPicture->writeBounds(BOUND_BOTH,$BoundsSettings);
+/* Define the chart area */
+$myPicture->setGraphArea(48,17,680,190);
 
- /* Write the 0 line */
- $myPicture->drawThreshold(0,array("WriteCaption"=>TRUE));
+/* Draw a rectangle */
+$myPicture->drawFilledRectangle(53,22,675,185,["Color"=>new pColor(0,0,0),"Dash"=>TRUE,"DashColor"=>new pColor(0,51,51),"BorderColor"=>new pColor(0,0,0)]);
 
- /* Write the chart legend */
- $myPicture->setFontProperties(array("R"=>255,"G"=>255,"B"=>255));
- $myPicture->drawLegend(580,217,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
+/* Turn on shadow computing */ 
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,20)]);
 
- /* Write the 1st data series statistics */
- $Settings = array("R"=>188,"G"=>224,"B"=>46,"Align"=>TEXT_ALIGN_BOTTOMLEFT);
- $myPicture->drawText(10,222,"Max : ".ceil($MyData->getMax("Probe 1")),$Settings);
- $myPicture->drawText(60,222,"Min : ".ceil($MyData->getMin("Probe 1")),$Settings);
- $myPicture->drawText(110,222,"Avg : ".ceil($MyData->getSerieAverage("Probe 1")),$Settings);
+/* Draw the scale */
+$myPicture->setFontProperties(["Color"=>new pColor(255,255,255)]);
+$myPicture->drawScale(["XMargin"=>5,"YMargin"=>5,"Floating"=>TRUE,"DrawSubTicks"=>TRUE,"GridColor"=>new pColor(255,255,255,50),"AxisColor"=>new pColor(255,255,255,30),"CycleBackground"=>TRUE]);
 
- /* Write the 2nd data series statistics */
- $Settings = array("R"=>224,"G"=>100,"B"=>46,"Align"=>TEXT_ALIGN_BOTTOMLEFT);
- $myPicture->drawText(160,222,"Max : ".ceil($MyData->getMax("Probe 2")),$Settings);
- $myPicture->drawText(210,222,"Min : ".ceil($MyData->getMin("Probe 2")),$Settings);
- $myPicture->drawText(260,222,"Avg : ".ceil($MyData->getSerieAverage("Probe 2")),$Settings);
+/* Draw the spline chart */
+(new pCharts($myPicture))->drawFilledSplineChart();
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawFilledSplineChart.png");
+/* Write the chart boundaries */
+$myPicture->writeBounds(BOUND_BOTH,["MaxDisplayColor"=>new pColor(237,23,48), "MinDisplayColor"=>new pColor(23,144,237)]);
+
+/* Write the 0 line */
+$myPicture->drawThreshold([0],["WriteCaption"=>TRUE]);
+
+/* Write the chart legend */
+$myPicture->setFontProperties(["Color"=>new pColor(255,255,255)]);
+$myPicture->drawLegend(580,217,["Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL]);
+
+/* Write the 1st data series statistics */
+$Settings = ["Color"=>new pColor(188,224,46),"Align"=>TEXT_ALIGN_BOTTOMLEFT];
+$myPicture->drawText(10,222,"Max : ".ceil($myPicture->myData->getMax("Probe 1")),$Settings);
+$myPicture->drawText(60,222,"Min : ".ceil($myPicture->myData->getMin("Probe 1")),$Settings);
+$myPicture->drawText(110,222,"Avg : ".ceil($myPicture->myData->getSerieAverage("Probe 1")),$Settings);
+
+/* Write the 2nd data series statistics */
+$Settings = ["Color"=>new pColor(224,100,46),"Align"=>TEXT_ALIGN_BOTTOMLEFT];
+$myPicture->drawText(160,222,"Max : ".ceil($myPicture->myData->getMax("Probe 2")),$Settings);
+$myPicture->drawText(210,222,"Min : ".ceil($myPicture->myData->getMin("Probe 2")),$Settings);
+$myPicture->drawText(260,222,"Avg : ".ceil($myPicture->myData->getSerieAverage("Probe 2")),$Settings);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawFilledSplineChart.png");
+
 ?>

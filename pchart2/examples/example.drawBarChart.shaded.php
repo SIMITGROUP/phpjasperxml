@@ -1,40 +1,49 @@
 <?php   
- /* CAT:Bar Chart */
+/* CAT:Bar Chart */
 
- /* pChart library inclusions */
- include("../class/pData.class.php");
- include("../class/pDraw.class.php");
- include("../class/pImage.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
 
- /* Create and populate the pData object */
- $MyData = new pData();  
- $MyData->addPoints(array(150,220,300,-250,-420,-200,300,200,100),"Server A");
- $MyData->addPoints(array(140,0,340,-300,-320,-300,200,100,50),"Server B");
- $MyData->setAxisName(0,"Hits");
- $MyData->addPoints(array("January","February","March","April","May","Juin","July","August","September"),"Months");
- $MyData->setSerieDescription("Months","Month");
- $MyData->setAbscissa("Months");
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pCharts;
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230,$MyData);
- $myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,array("StartR"=>240,"StartG"=>240,"StartB"=>240,"EndR"=>180,"EndG"=>180,"EndB"=>180,"Alpha"=>100));
- $myPicture->drawGradientArea(0,0,700,230,DIRECTION_HORIZONTAL,array("StartR"=>240,"StartG"=>240,"StartB"=>240,"EndR"=>180,"EndG"=>180,"EndB"=>180,"Alpha"=>20));
- $myPicture->setFontProperties(array("FontName"=>"../fonts/pf_arma_five.ttf","FontSize"=>6));
+/* Create the pChart object */
+$myPicture = new pDraw(700,230);
 
- /* Draw the scale  */
- $myPicture->setGraphArea(50,30,680,200);
- $myPicture->drawScale(array("CycleBackground"=>TRUE,"DrawSubTicks"=>TRUE,"GridR"=>0,"GridG"=>0,"GridB"=>0,"GridAlpha"=>10));
+/* Populate the pData object */
+$myPicture->myData->addPoints([150,220,300,-250,-420,-200,300,200,100],"Server A");
+$myPicture->myData->addPoints([140,0,340,-300,-320,-300,200,100,50],"Server B");
+$myPicture->myData->setAxisName(0,"Hits");
+$myPicture->myData->addPoints(["January","February","March","April","May","June","July","August","September"],"Months");
+$myPicture->myData->setSerieDescription("Months","Month");
+$myPicture->myData->setAbscissa("Months");
 
- /* Turn on shadow computing */ 
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
+$myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,["StartColor"=>new pColor(240,240,240,100), "EndColor"=>new pColor(180,180,180,100)]);
+$myPicture->drawGradientArea(0,0,700,230,DIRECTION_HORIZONTAL,["StartColor"=>new pColor(240,240,240,20), "EndColor"=>new pColor(180,180,180,20)]);
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/pf_arma_five.ttf","FontSize"=>6));
 
- /* Draw the chart */
- $settings = array("Gradient"=>TRUE,"DisplayPos"=>LABEL_POS_INSIDE,"DisplayValues"=>TRUE,"DisplayR"=>255,"DisplayG"=>255,"DisplayB"=>255,"DisplayShadow"=>TRUE,"Surrounding"=>10);
- $myPicture->drawBarChart($settings);
+/* Draw the scale  */
+$myPicture->setGraphArea(50,30,680,200);
+$myPicture->drawScale(["CycleBackground"=>TRUE,"DrawSubTicks"=>TRUE,"GridColor"=>new pColor(0,0,0,10)]);
 
- /* Write the chart legend */
- $myPicture->drawLegend(580,12,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
+/* Turn on shadow computing */ 
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,10)]);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawBarChart.shaded.png");
+/* Draw the chart */
+(new pCharts($myPicture))->drawBarChart([
+	"Gradient"=>TRUE,
+	"DisplayPos"=>LABEL_POS_INSIDE,
+	"DisplayValues"=>TRUE,
+	"DisplayColor"=>new pColor(255,255,255),
+	"DisplayShadow"=>TRUE,
+	"Surrounding"=>10
+]);
+
+/* Write the chart legend */
+$myPicture->drawLegend(580,12,["Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL]);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawBarChart.shaded.png");
+
 ?>

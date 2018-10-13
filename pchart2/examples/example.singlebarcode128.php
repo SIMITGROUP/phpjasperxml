@@ -1,30 +1,34 @@
 <?php   
- /* CAT:Barcode */
+/* CAT:Barcode */
 
- /* pChart library inclusions */
- include("../class/pDraw.class.php");
- include("../class/pBarcode128.class.php");
- include("../class/pImage.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
 
- /* Create the barcode 128 object */
- $Barcode = new pBarcode128("../");
+use pChart\{
+	pDraw,
+	pBarcode128
+};
 
- /* String to be written on the barcode */
- $String = "This is a test";
+/* String to be written on the barcode */
+$String = "This is a test";
 
- /* Retrieve the barcode projected size */
- $Settings = array("ShowLegend"=>TRUE,"DrawArea"=>TRUE);
- $Size = $Barcode->getSize($String,$Settings);
+/* Create the barcode 128 object */
+$Barcode = new pBarcode128(new pDraw(1, 1));
 
- /* Create the pChart object */
- $myPicture = new pImage($Size["Width"],$Size["Height"]);
+$Settings = ["ShowLegend"=>TRUE,"DrawArea"=>TRUE];
 
- /* Set the font to use */
- $myPicture->setFontProperties(array("FontName"=>"../fonts/GeosansLight.ttf"));
+/* Resize to the barcode projected size */
+list($XSize, $YSize) = $Barcode->getProjection($String, $Settings);
 
- /* Render the barcode */
- $Barcode->draw($myPicture,$String,10,10,$Settings);
+$Barcode->myPicture->resize($XSize, $YSize);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.singlebarcode128.png");
+/* Set the font to use */
+$Barcode->myPicture->setFontProperties(["FontName"=>"pChart/fonts/GeosansLight.ttf"]);
+
+/* Render the barcode */
+$Barcode->draw($String,10,10,$Settings);
+
+/* Render the picture (choose the best way) */
+$Barcode->myPicture->autoOutput("temp/example.singlebarcode128.png");
+
 ?>

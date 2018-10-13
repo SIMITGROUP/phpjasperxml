@@ -1,76 +1,71 @@
 <?php
- /* Library settings */
- define("CLASS_PATH", "../../../class");
- define("FONT_PATH", "../../../fonts");
 
- /* pChart library inclusions */
- include(CLASS_PATH."/pData.class.php");
- include(CLASS_PATH."/pDraw.class.php");
- include(CLASS_PATH."/pImage.class.php");
- include(CLASS_PATH."/pBubble.class.php");
+/* pChart library inclusions */
+chdir("../../");
+require_once("bootstrap.php");
 
- /* Create and populate the pData object */
- $MyData = new pData();  
- $MyData->addPoints(array(34,55,15,62,38,42),"Probe1");
- $MyData->addPoints(array(5,30,20,9,15,10),"Probe1Weight");
- $MyData->addPoints(array(5,10,-5,-1,0,-10),"Probe2");
- $MyData->addPoints(array(6,10,14,10,14,6),"Probe2Weight");
- $MyData->setSerieDescription("Probe1","This year");
- $MyData->setSerieDescription("Probe2","Last year");
- $MyData->setAxisName(0,"Current stock");
- $MyData->addPoints(array("Apple","Banana","Orange","Lemon","Peach","Strawberry"),"Product");
- $MyData->setAbscissa("Product");
- $MyData->setAbscissaName("Selected Products");
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pImageMap\pImageMapFile;
+use pChart\pBubble;
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230,$MyData);
+/* Create the pChart object */
+/* 							X, Y, TransparentBackground, UniqueID, StorageFolder*/
+$myPicture = new pImageMapFile(700,230,FALSE,"BubbleChart","temp");
 
- /* Retrieve the image map */
- if (isset($_GET["ImageMap"]) || isset($_POST["ImageMap"]))
-  $myPicture->dumpImageMap("ImageMapBarChart",IMAGE_MAP_STORAGE_FILE,"BarChart","../tmp");
+/* Retrieve the image map */
+if (isset($_GET["ImageMap"])){
+	$myPicture->dumpImageMap();
+}
 
- /* Set the image map name */
- $myPicture->initialiseImageMap("ImageMapBarChart",IMAGE_MAP_STORAGE_FILE,"BarChart","../tmp");
+/* Populate the pData object */  
+$myPicture->myData->addPoints([34,55,15,62,38,42],"Probe1");
+$myPicture->myData->addPoints([5,30,20,9,15,10],"Probe1Weight");
+$myPicture->myData->addPoints([5,10,-5,-1,0,-10],"Probe2");
+$myPicture->myData->addPoints([6,10,14,10,14,6],"Probe2Weight");
+$myPicture->myData->setSerieDescription("Probe1","This year");
+$myPicture->myData->setSerieDescription("Probe2","Last year");
+$myPicture->myData->setAxisName(0,"Current stock");
+$myPicture->myData->addPoints(["Apple","Banana","Orange","Lemon","Peach","Strawberry"],"Product");
+$myPicture->myData->setAbscissa("Product");
+$myPicture->myData->setAbscissaName("Selected Products");
 
- /* Turn of AAliasing */
- $myPicture->Antialias = FALSE;
+/* Turn off Anti-aliasing */
+$myPicture->Antialias = FALSE;
 
- /* Draw the background */
- $Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
- $myPicture->drawFilledRectangle(0,0,700,230,$Settings);
+/* Draw the background */
+$myPicture->drawFilledRectangle(0,0,700,230,["Color"=>new pColor(170,183,87), "Dash"=>TRUE, "DashColor"=>new pColor(190,203,107)]);
 
- /* Overlay with a gradient */
- $Settings = array("StartR"=>219, "StartG"=>231, "StartB"=>139, "EndR"=>1, "EndG"=>138, "EndB"=>68, "Alpha"=>50);
- $myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,$Settings);
+/* Overlay with a gradient */
+$myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,["StartColor"=>new pColor(219,231,139,50), "EndColor"=>new pColor(1,138,68,50)]);
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,699,229,["Color"=>new pColor(0,0,0)]);
 
- $myPicture->setFontProperties(array("FontName"=>FONT_PATH."/pf_arma_five.ttf","FontSize"=>6));
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/pf_arma_five.ttf","FontSize"=>6));
 
- /* Define the chart area */
- $myPicture->setGraphArea(60,30,650,190);
+/* Define the chart area */
+$myPicture->setGraphArea(60,30,650,190);
 
- /* Draw the scale */
- $scaleSettings = array("GridR"=>200,"GridG"=>200,"GridB"=>200,"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE);
- $myPicture->drawScale($scaleSettings);
+/* Draw the scale */
+$myPicture->drawScale(["GridColor"=>new pColor(200,200,200),"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE]);
 
- /* Create the Bubble chart object and scale up */
- $myPicture->Antialias = TRUE;
- $myBubbleChart = new pBubble($myPicture,$MyData);
+/* Create the Bubble chart object and scale up */
+$myPicture->Antialias = TRUE;
+$myBubbleChart = new pBubble($myPicture);
 
- /* Scale up for the bubble chart */
- $bubbleDataSeries   = array("Probe1","Probe2");
- $bubbleWeightSeries = array("Probe1Weight","Probe2Weight");
- $myBubbleChart->bubbleScale($bubbleDataSeries,$bubbleWeightSeries);
+/* Scale up for the bubble chart */
+$bubbleDataSeries   = ["Probe1","Probe2"];
+$bubbleWeightSeries = ["Probe1Weight","Probe2Weight"];
+$myBubbleChart->bubbleScale($bubbleDataSeries,$bubbleWeightSeries);
 
- /* Draw the bubble chart */
- $Settings = array("RecordImageMap"=>TRUE,"ForceAlpha"=>50);
- $myBubbleChart->drawBubbleChart($bubbleDataSeries,$bubbleWeightSeries,$Settings);
+/* Draw the bubble chart */
+$myBubbleChart->drawBubbleChart($bubbleDataSeries,$bubbleWeightSeries,["RecordImageMap"=>TRUE,"ForceAlpha"=>50]);
 
- /* Write the chart legend */
- $myPicture->drawLegend(570,13,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
+/* Write the chart legend */
+$myPicture->drawLegend(570,13,["Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL]);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("../tmp/Bubble Chart.png");
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/Bubble Chart.png");
+
 ?>

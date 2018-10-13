@@ -1,47 +1,48 @@
 <?php   
- /* CAT:Drawing */
+/* CAT:Drawing */
 
- /* pChart library inclusions */
- include("../class/pDraw.class.php");
- include("../class/pImage.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230);
+use pChart\pColor;
+use pChart\pDraw;
 
- /* Draw the background */
- $Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
- $myPicture->drawFilledRectangle(0,0,700,230,$Settings);
+/* Create the pChart object */
+$myPicture = new pDraw(700,230);
 
- /* Overlay with a gradient */
- $Settings = array("StartR"=>219, "StartG"=>231, "StartB"=>139, "EndR"=>1, "EndG"=>138, "EndB"=>68, "Alpha"=>50);
- $myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,$Settings);
- $myPicture->drawGradientArea(0,0,700,20,DIRECTION_VERTICAL,array("StartR"=>0,"StartG"=>0,"StartB"=>0,"EndR"=>50,"EndG"=>50,"EndB"=>50,"Alpha"=>80));
+/* Draw the background */
+$myPicture->drawFilledRectangle(0,0,700,230,["Color"=>new pColor(170,183,87), "Dash"=>TRUE, "DashColor"=>new pColor(190,203,107)]);
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
- 
- /* Write the picture title */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Silkscreen.ttf","FontSize"=>6));
- $myPicture->drawText(10,13,"drawFromGIF() - add pictures to your charts",array("R"=>255,"G"=>255,"B"=>255));
+/* Overlay with a gradient */
+$myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,["StartColor"=>new pColor(219,231,139,50),"EndColor"=>new pColor(1,138,68,50)]);
+$myPicture->drawGradientArea(0,0,700,20,DIRECTION_VERTICAL, ["StartColor"=>new pColor(0,0,0,80),"EndColor"=>new pColor(50,50,50,80)]);
 
- /* Turn off shadow computing */ 
- $myPicture->setShadow(FALSE);
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,699,229,["Color"=>new pColor(0,0,0)]);
 
- /* Draw a GIF object */
- $myPicture->drawFromGIF(180,50,"resources/computer.gif");
+/* Write the picture title */ 
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/Silkscreen.ttf","FontSize"=>6));
+$myPicture->drawText(10,13,"drawFromGIF() - add pictures to your charts",["Color"=>new pColor(255,255,255)]);
 
- /* Turn on shadow computing */ 
- $myPicture->setShadow(TRUE,array("X"=>2,"Y"=>2,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
+/* Turn off shadow computing */ 
+$myPicture->setShadow(FALSE);
 
- /* Draw a GIF object */
- $myPicture->drawFromGIF(400,50,"resources/computer.gif");
+/* Draw a GIF object */
+$myPicture->drawFromGIF(180,50,"examples/resources/computer.gif");
 
- /* Write the legend */
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
- $TextSettings = array("R"=>255,"G"=>255,"B"=>255,"FontSize"=>10,"FontName"=>"../fonts/calibri.ttf","Align"=>TEXT_ALIGN_BOTTOMMIDDLE);
- $myPicture->drawText(240,200,"Without shadow",$TextSettings);
- $myPicture->drawText(460,200,"With enhanced shadow",$TextSettings);
+/* Turn on shadow computing */ 
+$myPicture->setShadow(TRUE,["X"=>2,"Y"=>2,"Color"=>new pColor(0,0,0,20)]);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawFromGIF.png");
+/* Draw a GIF object */
+$myPicture->drawFromGIF(400,50,"examples/resources/computer.gif");
+
+/* Write the legend */
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,20)]);
+$TextSettings = ["Color"=>new pColor(255,255,255),"FontSize"=>10,"FontName"=>"pChart/fonts/MankSans.ttf","Align"=>TEXT_ALIGN_BOTTOMMIDDLE];
+$myPicture->drawText(240,200,"Without shadow",$TextSettings);
+$myPicture->drawText(460,200,"With enhanced shadow",$TextSettings);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawFromGIF.png");
+
 ?>

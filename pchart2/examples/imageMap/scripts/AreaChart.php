@@ -1,76 +1,75 @@
 <?php   
- /* Library settings */
- define("CLASS_PATH", "../../../class");
- define("FONT_PATH", "../../../fonts");
 
- /* pChart library inclusions */
- include(CLASS_PATH."/pData.class.php");
- include(CLASS_PATH."/pDraw.class.php");
- include(CLASS_PATH."/pImage.class.php");
+/* pChart library inclusions */
+chdir("../../");
+require_once("bootstrap.php");
 
- /* Create and populate the pData object */
- $MyData = new pData();  
- $MyData->addPoints(array(4,2,10,12,8,3),"Probe 1");
- $MyData->addPoints(array(3,12,15,8,5,5),"Probe 2");
- $MyData->addPoints(array(2,7,5,18,15,22),"Probe 3");
- $MyData->setSerieTicks("Probe 2",4);
- $MyData->setAxisName(0,"Temperatures");
- $MyData->addPoints(array("Jan","Feb","Mar","Apr","May","Jun"),"Labels");
- $MyData->setSerieDescription("Labels","Months");
- $MyData->setAbscissa("Labels");
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pCharts;
+use pChart\pImageMap\pImageMapFile;
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230,$MyData);
+/* Create the pChart object */
+/* 							X, Y, TransparentBackground, UniqueID, StorageFolder*/
+$myPicture = new pImageMapFile(700,230,FALSE,"AreaChart","temp");
 
- /* Retrieve the image map */
- if (isset($_GET["ImageMap"]) || isset($_POST["ImageMap"]))
-  $myPicture->dumpImageMap("ImageMapAreaChart",IMAGE_MAP_STORAGE_FILE,"AreaChart","../tmp");
+/* Retrieve the image map */
+if (isset($_GET["ImageMap"])){
+	$myPicture->dumpImageMap();
+}
 
- /* Set the image map name */
- $myPicture->initialiseImageMap("ImageMapAreaChart",IMAGE_MAP_STORAGE_FILE,"AreaChart","../tmp");
+/* Populate the pData object */
+$myPicture->myData->addPoints([4,2,10,12,8,3],"Probe 1");
+$myPicture->myData->addPoints([3,12,15,8,5,5],"Probe 2");
+$myPicture->myData->addPoints([2,7,5,18,15,22],"Probe 3");
+$myPicture->myData->setSerieTicks("Probe 2",4);
+$myPicture->myData->setAxisName(0,"Temperatures");
+$myPicture->myData->addPoints(["Jan","Feb","Mar","Apr","May","Jun"],"Labels");
+$myPicture->myData->setSerieDescription("Labels","Months");
+$myPicture->myData->setAbscissa("Labels");
 
- /* Turn of Antialiasing */
- $myPicture->Antialias = FALSE;
+/* Turn off Anti-aliasing */
+$myPicture->Antialias = FALSE;
 
- /* Draw the background */ 
- $Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
- $myPicture->drawFilledRectangle(0,0,700,230,$Settings); 
+/* Draw the background */ 
+$myPicture->drawFilledRectangle(0,0,700,230,["Color"=>new pColor(170,183,87), "Dash"=>TRUE, "DashColor"=>new pColor(190,203,107)]);
 
- /* Overlay with a gradient */ 
- $Settings = array("StartR"=>219, "StartG"=>231, "StartB"=>139, "EndR"=>1, "EndG"=>138, "EndB"=>68, "Alpha"=>50);
- $myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,$Settings); 
- 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
- 
- /* Write the chart title */ 
- $myPicture->setFontProperties(array("FontName"=>FONT_PATH."/Forgotte.ttf","FontSize"=>11));
- $myPicture->drawText(150,35,"Average temperature",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
+/* Overlay with a gradient */ 
+$myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,["StartColor"=>new pColor(219,231,139,50), "EndColor"=>new pColor(1,138,68,50)]);
 
- /* Set the default font */
- $myPicture->setFontProperties(array("FontName"=>FONT_PATH."/pf_arma_five.ttf","FontSize"=>6));
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,699,229,["Color"=>new pColor(0,0,0)]);
 
- /* Define the chart area */
- $myPicture->setGraphArea(60,40,650,200);
+/* Write the chart title */ 
+$myPicture->setFontProperties(["FontName"=>"pChart/fonts/Forgotte.ttf","FontSize"=>11]);
+$myPicture->drawText(150,35,"Average temperature",["FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE]);
 
- /* Draw the scale */
- $scaleSettings = array("XMargin"=>10,"YMargin"=>10,"Floating"=>TRUE,"GridR"=>255,"GridG"=>255,"GridB"=>255,"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE);
- $myPicture->drawScale($scaleSettings);
+/* Set the default font */
+$myPicture->setFontProperties(["FontName"=>"pChart/fonts/pf_arma_five.ttf","FontSize"=>6]);
 
- /* Write the chart legend */
- $myPicture->drawLegend(540,20,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
+/* Define the chart area */
+$myPicture->setGraphArea(60,40,650,200);
 
- /* Turn on Antialiasing */
- $myPicture->Antialias = TRUE;
+/* Draw the scale */
+$myPicture->drawScale(["XMargin"=>10,"YMargin"=>10,"Floating"=>TRUE,"GridColor"=>new pColor(255,255,255),"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE]);
 
- /* Draw the area chart */
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
- $myPicture->drawAreaChart();
+/* Write the chart legend */
+$myPicture->drawLegend(540,20,["Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL]);
 
- /* Draw a line and a plot chart on top */
- $myPicture->drawLineChart();
- $myPicture->drawPlotChart(array("RecordImageMap"=>TRUE,"PlotBorder"=>TRUE,"PlotSize"=>3,"BorderSize"=>1,"Surrounding"=>-60,"BorderAlpha"=>80));
- 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawAreaChart.simple.png");
+/* Turn on Anti-aliasing */
+$myPicture->Antialias = TRUE;
+
+$myCharts = new pCharts($myPicture);
+
+/* Draw the area chart */
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,10)]);
+$myCharts->drawAreaChart();
+
+/* Draw a line and a plot chart on top */
+$myCharts->drawLineChart();
+$myCharts->drawPlotChart(["RecordImageMap"=>TRUE,"PlotBorder"=>TRUE,"PlotSize"=>3,"BorderSize"=>1,"Surrounding"=>-60,"BorderAlpha"=>80]);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawAreaChart.simple.png");
+
 ?>

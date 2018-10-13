@@ -1,56 +1,56 @@
 <?php   
- /* CAT:Line chart */
+/* CAT:Line chart */
 
- /* pChart library inclusions */
- include("../class/pData.class.php");
- include("../class/pDraw.class.php");
- include("../class/pImage.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
 
- /* Create and populate the pData object */
- $MyData = new pData();  
- $MyData->addPoints(array(-4,VOID,VOID,12,8,3),"Probe 1");
- $MyData->addPoints(array(3,12,15,8,5,-5),"Probe 2");
- $MyData->addPoints(array(2,7,5,18,19,22),"Probe 3");
- $MyData->setSerieTicks("Probe 2",4);
- $MyData->setSerieWeight("Probe 3",2);
- $MyData->setAxisName(0,"Temperatures");
- $MyData->addPoints(array("Jan","Feb","Mar","Apr","May","Jun"),"Labels");
- $MyData->setSerieDescription("Labels","Months");
- $MyData->setAbscissa("Labels");
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pCharts;
 
+/* Create the pChart object */
+$myPicture = new pDraw(700,230);
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230,$MyData);
+/* Populate the pData object */
+$myPicture->myData->addPoints([-4,VOID,VOID,12,8,3],"Probe 1");
+$myPicture->myData->addPoints([3,12,15,8,5,-5],"Probe 2");
+$myPicture->myData->addPoints([2,7,5,18,19,22],"Probe 3");
+$myPicture->myData->setSerieTicks("Probe 2",4);
+$myPicture->myData->setSerieWeight("Probe 3",2);
+$myPicture->myData->setAxisName(0,"Temperatures");
+$myPicture->myData->addPoints(["Jan","Feb","Mar","Apr","May","Jun"],"Labels");
+$myPicture->myData->setSerieDescription("Labels","Months");
+$myPicture->myData->setAbscissa("Labels");
 
- /* Turn of Antialiasing */
- $myPicture->Antialias = FALSE;
+/* Turn off Anti-aliasing */
+$myPicture->Antialias = FALSE;
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
- 
- /* Write the chart title */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Forgotte.ttf","FontSize"=>11));
- $myPicture->drawText(150,35,"Average temperature",array("FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,699,229,["Color"=>new pColor(0,0,0)]);
 
- /* Set the default font */
- $myPicture->setFontProperties(array("FontName"=>"../fonts/pf_arma_five.ttf","FontSize"=>6));
+/* Write the chart title */ 
+$myPicture->setFontProperties(["FontName"=>"pChart/fonts/Forgotte.ttf","FontSize"=>11]);
+$myPicture->drawText(150,35,"Average temperature",["FontSize"=>20,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE]);
 
- /* Define the chart area */
- $myPicture->setGraphArea(60,40,650,200);
+/* Set the default font */
+$myPicture->setFontProperties(["FontName"=>"pChart/fonts/pf_arma_five.ttf","FontSize"=>6]);
 
- /* Draw the scale */
- $scaleSettings = array("XMargin"=>10,"YMargin"=>10,"Floating"=>TRUE,"GridR"=>200,"GridG"=>200,"GridB"=>200,"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE);
- $myPicture->drawScale($scaleSettings);
+/* Define the chart area */
+$myPicture->setGraphArea(60,40,650,200);
 
- /* Turn on Antialiasing */
- $myPicture->Antialias = TRUE;
+/* Draw the scale */
+$myPicture->drawScale(["XMargin"=>10,"YMargin"=>10,"Floating"=>TRUE,"GridColor"=>new pColor(200,200,200),"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE]);
 
- /* Draw the line chart */
- $myPicture->drawLineChart();
+/* Turn on Anti-aliasing */
+$myPicture->Antialias = TRUE;
 
- /* Write the chart legend */
- $myPicture->drawLegend(540,20,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
+/* Draw the line chart */
+(new pCharts($myPicture))->drawLineChart();
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawLineChart.simple.png");
+/* Write the chart legend */
+$myPicture->drawLegend(540,20,["Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL]);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawLineChart.simple.png");
+
 ?>

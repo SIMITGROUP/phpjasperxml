@@ -1,58 +1,54 @@
 <?php   
- /* Library settings */
- define("CLASS_PATH", "../../../class");
- define("FONT_PATH", "../../../fonts");
 
- /* pChart library inclusions */
- include(CLASS_PATH."/pData.class.php");
- include(CLASS_PATH."/pDraw.class.php");
- include(CLASS_PATH."/pImage.class.php");
- include(CLASS_PATH."/pPie.class.php");
+/* pChart library inclusions */
+chdir("../../");
+require_once("bootstrap.php");
 
- /* Create and populate the pData object */
- $MyData = new pData();   
- $MyData->addPoints(array(40,60,15,10,6,4),"ScoreA");  
- $MyData->setSerieDescription("ScoreA","Application A");
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pPie;
+use pChart\pImageMap\pImageMapFile;
 
- /* Define the absissa serie */
- $MyData->addPoints(array("<10","10<>20","20<>40","40<>60","60<>80",">80"),"Labels");
- $MyData->setAbscissa("Labels");
+/* Create the pChart object */
+/* 							X, Y, TransparentBackground, UniqueID, StorageFolder*/
+$myPicture = new pImageMapFile(300,260, FALSE, "2DPieChart", "temp");
 
- /* Create the pChart object */
- $myPicture = new pImage(300,260,$MyData);
+/* Retrieve the image map */
+if (isset($_GET["ImageMap"])){
+	$myPicture->dumpImageMap();
+	/* once called the script ends after the dump */
+}
 
- /* Retrieve the image map */
- if (isset($_GET["ImageMap"]) || isset($_POST["ImageMap"]))
-  $myPicture->dumpImageMap("ImageMap2DPieChart",IMAGE_MAP_STORAGE_FILE,"2DPieChart","../tmp");
+/* Populate the pData object */
+$myPicture->myData->addPoints([40,60,15,10,6,4],"ScoreA");
+$myPicture->myData->setSerieDescription("ScoreA","Application A");
 
- /* Set the image map name */
- $myPicture->initialiseImageMap("ImageMap2DPieChart",IMAGE_MAP_STORAGE_FILE,"2DPieChart","../tmp");
+/* Define the abscissa series */
+$myPicture->myData->addPoints(["<10","10<>20","20<>40","40<>60","60<>80",">80"],"Labels");
+$myPicture->myData->setAbscissa("Labels");
 
- /* Draw a solid background */
- $Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
- $myPicture->drawFilledRectangle(0,0,300,300,$Settings);
+/* Draw a solid background */
+$myPicture->drawFilledRectangle(0,0,300,300,["Color"=>new pColor(170,183,87), "Dash"=>TRUE, "DashColor"=>new pColor(190,203,107)]);
 
- /* Overlay with a gradient */
- $Settings = array("StartR"=>219, "StartG"=>231, "StartB"=>139, "EndR"=>1, "EndG"=>138, "EndB"=>68, "Alpha"=>50);
- $myPicture->drawGradientArea(0,0,300,260,DIRECTION_VERTICAL,$Settings);
+/* Overlay with a gradient */
+$myPicture->drawGradientArea(0,0,300,260,DIRECTION_VERTICAL,["StartColor"=>new pColor(219,231,139,50), "EndColor"=>new pColor(1,138,68,50)]);
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,299,259,array("R"=>0,"G"=>0,"B"=>0));
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,299,259,["Color"=>new pColor(0,0,0)]);
 
- /* Set the default font properties */ 
- $myPicture->setFontProperties(array("FontName"=>FONT_PATH."/Forgotte.ttf","FontSize"=>10,"R"=>80,"G"=>80,"B"=>80));
+/* Set the default font properties */ 
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/Forgotte.ttf","FontSize"=>10,"Color"=>new pColor(80,80,80)));
 
- /* Enable shadow computing */ 
- $myPicture->setShadow(TRUE,array("X"=>2,"Y"=>2,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>50));
+/* Enable shadow computing */ 
+$myPicture->setShadow(TRUE,["X"=>2,"Y"=>2,"Color"=>new pColor(0,0,0,50)]);
 
- /* Create the pPie object */ 
- $Settings = array("RecordImageMap"=>TRUE);
- $PieChart = new pPie($myPicture,$MyData,$Settings);
+/* Create the pPie object */ 
+$PieChart = new pPie($myPicture);
 
- /* Draw an AA pie chart */ 
- $PieSettings = array("DrawLabels"=>TRUE,"LabelStacked"=>TRUE,"Border"=>TRUE,"RecordImageMap"=>TRUE);
- $PieChart->draw2DPie(160,125,$PieSettings);
+/* Draw an AA pie chart */ 
+$PieChart->draw2DPie(160,125, ["DrawLabels"=>TRUE,"LabelStacked"=>TRUE,"Border"=>TRUE,"RecordImageMap"=>TRUE]);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("../tmp/2DPieChart.png");
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/2DPieChart.png");
+
 ?>

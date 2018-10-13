@@ -1,54 +1,45 @@
 <?php   
- /* CAT:Drawing */
+/* CAT:Drawing */
 
- /* pChart library inclusions */
- include("../class/pDraw.class.php");
- include("../class/pImage.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230);
+use pChart\pColor;
+use pChart\pDraw;
 
- /* Draw the background */
- $Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
- $myPicture->drawFilledRectangle(0,0,700,230,$Settings);
+/* Create the pChart object */
+$myPicture = new pDraw(700,230);
 
- /* Overlay with a gradient */
- $Settings = array("StartR"=>219, "StartG"=>231, "StartB"=>139, "EndR"=>1, "EndG"=>138, "EndB"=>68, "Alpha"=>50);
- $myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,$Settings);
- $myPicture->drawGradientArea(0,0,700,20,DIRECTION_VERTICAL,array("StartR"=>0,"StartG"=>0,"StartB"=>0,"EndR"=>50,"EndG"=>50,"EndB"=>50,"Alpha"=>80));
+/* Draw the background */
+$myPicture->drawFilledRectangle(0,0,700,230,["Color"=>new pColor(170,183,87), "Dash"=>TRUE, "DashColor"=>new pColor(190,203,107)]);
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
- 
- /* Write the picture title */ 
- $myPicture->setFontProperties(array("FontName"=>"../fonts/Silkscreen.ttf","FontSize"=>6));
- $myPicture->drawText(10,13,"drawCircle() - Transparency & colors",array("R"=>255,"G"=>255,"B"=>255));
+/* Overlay with a gradient */
+$myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,["StartColor"=>new pColor(219,231,139,50),"EndColor"=>new pColor(1,138,68,50)]);
+$myPicture->drawGradientArea(0,0,700,20,DIRECTION_VERTICAL,["StartColor"=>new pColor(0,0,0,80),"EndColor"=>new pColor(50,50,50,80)]);
 
- /* Draw some circles */ 
- $myPicture->drawCircle(100,125,50,50,array("R"=>213,"G"=>226,"B"=>0,"Alpha"=>100));
- $myPicture->drawCircle(140,125,50,50,array("R"=>213,"G"=>226,"B"=>0,"Alpha"=>70));
- $myPicture->drawCircle(180,125,50,50,array("R"=>213,"G"=>226,"B"=>0,"Alpha"=>40));
- $myPicture->drawCircle(220,125,50,50,array("R"=>213,"G"=>226,"B"=>0,"Alpha"=>20));
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,699,229,["Color"=>new pColor(0,0,0)]);
 
- /* Turn on shadow computing */ 
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
+/* Write the picture title */ 
+$myPicture->setFontProperties(["FontName"=>"pChart/fonts/Silkscreen.ttf","FontSize"=>6]);
+$myPicture->drawText(10,13,"drawCircle() - Transparency & colors",["Color"=>new pColor(255,255,255)]);
 
- /* Draw a customized circles */ 
- $CircleSettings = array("R"=>209,"G"=>31,"B"=>27,"Alpha"=>100);
- $myPicture->drawCircle(480,60,20,20,$CircleSettings);
+/* Draw some circles */ 
+$myPicture->drawCircle(100,125,50,50,["Color"=>new pColor(213,226,0,100)]);
+$myPicture->drawCircle(140,125,50,50,["Color"=>new pColor(213,226,0,70)]);
+$myPicture->drawCircle(180,125,50,50,["Color"=>new pColor(213,226,0,40)]);
+$myPicture->drawCircle(220,125,50,50,["Color"=>new pColor(213,226,0,20)]);
 
- /* Draw a customized circles */ 
- $CircleSettings = array("R"=>209,"G"=>125,"B"=>27,"Alpha"=>100);
- $myPicture->drawCircle(480,100,30,20,$CircleSettings);
+/* Turn on shadow computing */ 
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,20)]);
 
- /* Draw a customized circles */ 
- $CircleSettings = array("R"=>209,"G"=>198,"B"=>27,"Alpha"=>100,"Ticks"=>4);
- $myPicture->drawCircle(480,140,40,20,$CircleSettings);
+/* Draw a customized circles */ 
+$myPicture->drawCircle(480,60,20,20, ["Color"=>new pColor(209,31,27,100)]);
+$myPicture->drawCircle(480,100,30,20,["Color"=>new pColor(209,125,27,100)]);
+$myPicture->drawCircle(480,140,40,20,["Color"=>new pColor(209,198,27,100),"Ticks"=>4]);
+$myPicture->drawCircle(480,180,50,20,["Color"=>new pColor(134,209,27,100),"Ticks"=>4]);
 
- /* Draw a customized circles */ 
- $CircleSettings = array("R"=>134,"G"=>209,"B"=>27,"Alpha"=>100,"Ticks"=>4);
- $myPicture->drawCircle(480,180,50,20,$CircleSettings);
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawCircle.png");
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawCircle.png");
 ?>

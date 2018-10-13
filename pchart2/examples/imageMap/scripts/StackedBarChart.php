@@ -1,67 +1,63 @@
 <?php   
- /* Library settings */
- define("CLASS_PATH", "../../../class");
- define("FONT_PATH", "../../../fonts");
 
- /* pChart library inclusions */
- include(CLASS_PATH."/pData.class.php");
- include(CLASS_PATH."/pDraw.class.php");
- include(CLASS_PATH."/pImage.class.php");
+/* pChart library inclusions */
+chdir("../../");
+require_once("bootstrap.php");
 
- /* Create and populate the pData object */
- $MyData = new pData();  
- $MyData->addPoints(array(150,220,300,-250,-420,-200,300,200,100),"Server A");
- $MyData->addPoints(array(140,0,340,-300,-320,-300,200,100,50),"Server B");
- $MyData->setAxisName(0,"Hits");
- $MyData->addPoints(array("January","February","March","April","May","Juin","July","August","September"),"Months");
- $MyData->setSerieDescription("Months","Month");
- $MyData->setAbscissa("Months");
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pCharts;
+use pChart\pImageMap\pImageMapFile;
 
- /* Create the pChart object */
- $myPicture = new pImage(700,230,$MyData);
+/* Create the pChart object */
+/* 							X, Y, TransparentBackground, UniqueID, StorageFolder*/
+$myPicture = new pImageMapFile(700,230,FALSE,"StackedBarChart","temp");
 
- /* Retrieve the image map */
- if (isset($_GET["ImageMap"]) || isset($_POST["ImageMap"]))
-  $myPicture->dumpImageMap("ImageMapStackedBarChart",IMAGE_MAP_STORAGE_FILE,"StackedBarChart","../tmp");
+/* Retrieve the image map */
+if (isset($_GET["ImageMap"])){
+	$myPicture->dumpImageMap();
+}
 
- /* Set the image map name */
- $myPicture->initialiseImageMap("ImageMapStackedBarChart",IMAGE_MAP_STORAGE_FILE,"StackedBarChart","../tmp");
+/* Populate the pData object */
+$myPicture->myData->addPoints([150,220,300,-250,-420,-200,300,200,100],"Server A");
+$myPicture->myData->addPoints([140,0,340,-300,-320,-300,200,100,50],"Server B");
+$myPicture->myData->setAxisName(0,"Hits");
+$myPicture->myData->addPoints(["January","February","March","April","May","June","July","August","September"],"Months");
+$myPicture->myData->setSerieDescription("Months","Month");
+$myPicture->myData->setAbscissa("Months");
 
- /* Turn of Antialiasing */
- $myPicture->Antialias = FALSE;
+/* Turn off Anti-aliasing */
+$myPicture->Antialias = FALSE;
 
- /* Draw the background */
- $Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
- $myPicture->drawFilledRectangle(0,0,700,230,$Settings);
+/* Draw the background */
+$myPicture->drawFilledRectangle(0,0,700,230,["Color"=>new pColor(170,183,87), "Dash"=>TRUE, "DashColor"=>new pColor(190,203,107)]);
 
- /* Overlay with a gradient */
- $Settings = array("StartR"=>219, "StartG"=>231, "StartB"=>139, "EndR"=>1, "EndG"=>138, "EndB"=>68, "Alpha"=>50);
- $myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,$Settings);
+/* Overlay with a gradient */
+$myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,["StartColor"=>new pColor(219,231,139,50), "EndColor"=>new pColor(1,138,68,50)]);
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
+/* Add a border to the picture */
+$myPicture->drawRectangle(0,0,699,229,["Color"=>new pColor(0,0,0)]);
 
- /* Set the default font */
- $myPicture->setFontProperties(array("FontName"=>FONT_PATH."/pf_arma_five.ttf","FontSize"=>6));
+/* Set the default font */
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/pf_arma_five.ttf","FontSize"=>6));
 
- /* Define the chart area */
- $myPicture->setGraphArea(60,40,650,200);
+/* Define the chart area */
+$myPicture->setGraphArea(60,40,650,200);
 
- /* Draw the scale */
- $scaleSettings = array("Mode"=>SCALE_MODE_ADDALL,"GridR"=>200,"GridG"=>200,"GridB"=>200,"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE);
- $myPicture->drawScale($scaleSettings);
+/* Draw the scale */
+$myPicture->drawScale(["Mode"=>SCALE_MODE_ADDALL,"GridColor"=>new pColor(200,200,200),"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE]);
 
- /* Write the chart legend */
- $myPicture->drawLegend(580,12,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
+/* Write the chart legend */
+$myPicture->drawLegend(580,12,["Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL]);
 
- /* Turn on shadow computing */ 
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
+/* Turn on shadow computing */ 
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,10)]);
 
- /* Draw the chart */
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
- $Settings = array("RecordImageMap"=>TRUE);
- $myPicture->drawStackedBarChart($Settings);
+/* Draw the chart */
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,10)]);
+(new pCharts($myPicture))->drawStackedBarChart(["RecordImageMap"=>TRUE]);
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("../tmp/StackedBarChart.png");
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/StackedBarChart.png");
+
 ?>

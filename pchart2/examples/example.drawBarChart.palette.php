@@ -1,49 +1,55 @@
 <?php   
- /* CAT:Bar Chart */
+/* CAT:Bar Chart */
 
- /* pChart library inclusions */
- include("../class/pData.class.php");
- include("../class/pDraw.class.php");
- include("../class/pImage.class.php");
+/* pChart library inclusions */
+require_once("bootstrap.php");
 
- /* Create and populate the pData object */
- $MyData = new pData();  
- $MyData->addPoints(array(13251,4118,3087,1460,1248,156,26,9,8),"Hits");
- $MyData->setAxisName(0,"Hits");
- $MyData->addPoints(array("Firefox","Chrome","Internet Explorer","Opera","Safari","Mozilla","SeaMonkey","Camino","Lunascape"),"Browsers");
- $MyData->setSerieDescription("Browsers","Browsers");
- $MyData->setAbscissa("Browsers");
- $MyData->setAbscissaName("Browsers");
+use pChart\pColor;
+use pChart\pDraw;
+use pChart\pCharts;
 
- /* Create the pChart object */
- $myPicture = new pImage(500,500,$MyData);
- $myPicture->drawGradientArea(0,0,500,500,DIRECTION_VERTICAL,array("StartR"=>240,"StartG"=>240,"StartB"=>240,"EndR"=>180,"EndG"=>180,"EndB"=>180,"Alpha"=>100));
- $myPicture->drawGradientArea(0,0,500,500,DIRECTION_HORIZONTAL,array("StartR"=>240,"StartG"=>240,"StartB"=>240,"EndR"=>180,"EndG"=>180,"EndB"=>180,"Alpha"=>20));
- $myPicture->setFontProperties(array("FontName"=>"../fonts/pf_arma_five.ttf","FontSize"=>6));
+/* Create the pChart object */
+$myPicture = new pDraw(500,500);
 
- /* Draw the chart scale */ 
- $myPicture->setGraphArea(100,30,480,480);
- $myPicture->drawScale(array("CycleBackground"=>TRUE,"DrawSubTicks"=>TRUE,"GridR"=>0,"GridG"=>0,"GridB"=>0,"GridAlpha"=>10,"Pos"=>SCALE_POS_TOPBOTTOM));
+/* Populate the pData object */
+$myPicture->myData->addPoints([13251,4118,3087,1460,1248,156,26,9,8],"Hits");
+$myPicture->myData->setAxisName(0,"Hits");
+$myPicture->myData->addPoints(["Firefox","Chrome","Internet Explorer","Opera","Safari","Mozilla","SeaMonkey","Camino","Lunascape"],"Browsers");
+$myPicture->myData->setSerieDescription("Browsers","Browsers");
+$myPicture->myData->setAbscissa("Browsers");
+$myPicture->myData->setAbscissaName("Browsers");
 
- /* Turn on shadow computing */ 
- $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
+/* Draw the background */
+$myPicture->drawGradientArea(0,0,500,500,DIRECTION_VERTICAL,["StartColor"=>new pColor(240,240,240,100), "EndColor"=>new pColor(180,180,180,100)]);
+$myPicture->drawGradientArea(0,0,500,500,DIRECTION_HORIZONTAL,["StartColor"=>new pColor(240,240,240,20), "EndColor"=>new pColor(180,180,180,20)]);
+$myPicture->setFontProperties(array("FontName"=>"pChart/fonts/pf_arma_five.ttf","FontSize"=>6));
 
- /* Create the per bar palette */
- $Palette = array("0"=>array("R"=>188,"G"=>224,"B"=>46,"Alpha"=>100),
-                  "1"=>array("R"=>224,"G"=>100,"B"=>46,"Alpha"=>100),
-                  "2"=>array("R"=>224,"G"=>214,"B"=>46,"Alpha"=>100),
-                  "3"=>array("R"=>46,"G"=>151,"B"=>224,"Alpha"=>100),
-                  "4"=>array("R"=>176,"G"=>46,"B"=>224,"Alpha"=>100),
-                  "5"=>array("R"=>224,"G"=>46,"B"=>117,"Alpha"=>100),
-                  "6"=>array("R"=>92,"G"=>224,"B"=>46,"Alpha"=>100),
-                  "7"=>array("R"=>224,"G"=>176,"B"=>46,"Alpha"=>100));
+/* Draw the chart scale */ 
+$myPicture->setGraphArea(100,30,480,480);
+$myPicture->drawScale(["CycleBackground"=>TRUE,"DrawSubTicks"=>TRUE,"GridColor"=>new pColor(0,0,0,10),"Pos"=>SCALE_POS_TOPBOTTOM]);
 
- /* Draw the chart */ 
- $myPicture->drawBarChart(array("DisplayPos"=>LABEL_POS_INSIDE,"DisplayValues"=>TRUE,"Rounded"=>TRUE,"Surrounding"=>30,"OverrideColors"=>$Palette));
+/* Turn on shadow computing */ 
+$myPicture->setShadow(TRUE,["X"=>1,"Y"=>1,"Color"=>new pColor(0,0,0,10)]);
 
- /* Write the legend */ 
- $myPicture->drawLegend(570,215,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
+/* Create the per bar palette */
+$Palette = [
+	0=>new pColor(188,224,46,100),
+	1=>new pColor(224,100,46,100),
+	2=>new pColor(224,214,46,100),
+	3=>new pColor(46,151,224,100),
+	4=>new pColor(176,46,224,100),
+	5=>new pColor(224,46,117,100),
+	6=>new pColor(92,224,46,100),
+	7=>new pColor(224,176,46,100)
+];
 
- /* Render the picture (choose the best way) */
- $myPicture->autoOutput("pictures/example.drawBarChart.palette.png");
+/* Draw the chart */ 
+(new pCharts($myPicture))->drawBarChart(["DisplayPos"=>LABEL_POS_INSIDE,"DisplayValues"=>TRUE,"Rounded"=>TRUE,"Surrounding"=>30,"OverrideColors"=>$Palette]);
+
+/* Write the legend */ 
+$myPicture->drawLegend(570,215,["Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL]);
+
+/* Render the picture (choose the best way) */
+$myPicture->autoOutput("temp/example.drawBarChart.palette.png");
+
 ?>
