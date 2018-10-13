@@ -41,7 +41,8 @@ class PHPJasperXML extends abstractPHPJasperXML{
 
     public function __construct($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
-       $this->setErrorReport(5);
+        ini_set('display_errors', 'Off');
+       // $this->setErrorReport(2);
        // echo 'sdsdd';die;
            
            

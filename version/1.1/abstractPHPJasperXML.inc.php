@@ -30,8 +30,7 @@ class abstractPHPJasperXML
         public function setErrorReport($error_report=0)
         {
             
-             error_reporting($error_report);
-             ini_set('display_errors', 'Off');
+             error_reporting($error_report);             
         }
 
         public function setData($data=[])
@@ -1320,7 +1319,7 @@ protected function convertDigit($digit=0)
     }
     protected function analyse_expression($data='',$isPrintRepeatedValue="true",$datatype='')
     {        
-            
+            // echo $data."<br/>";
 
             //process using general text expression
             $pointerposition=$this->global_pointer+$this->offsetposition;
@@ -1481,10 +1480,19 @@ protected function convertDigit($digit=0)
                return "";
            }
            else 
-           {                                 
+           {       
+
                    $fm=str_replace('convertNumber', '', $fm);
+                   $firstword=$this->left( ltrim($fm) ,1);
+                   // echo ',first word:'.$firstword.'<br/>';
+                   if( in_array($firstword, ['!','=','>','<']))
+                   {
+                     $fm='""'.$fm;
+                   }
                    // echo $fm.'<br/>';
+                   // echo $fm."<br/>";
                   $evalstr="\$result= ".$fm.";";           
+                  // echo $evalstr."<br/>";
                    eval($evalstr);
                     // echo $result."<hr/>";
                 if($isPrintRepeatedValue=="true" ||$isPrintRepeatedValue=="")
