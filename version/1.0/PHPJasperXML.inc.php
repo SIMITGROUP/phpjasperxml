@@ -37,8 +37,9 @@ class PHPJasperXML {
         private $dbpara=array();
     public function __construct($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
-        
-       // $this->setErrorReport(1);
+        // $this->setErrorReport(2);
+        ini_set('display_errors', 'Off');
+       
         
         $this->pdflib=$pdflib;
         if($this->fontdir=="")

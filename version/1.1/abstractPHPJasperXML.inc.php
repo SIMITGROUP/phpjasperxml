@@ -29,7 +29,9 @@ class abstractPHPJasperXML
 
         public function setErrorReport($error_report=0)
         {
-          error_reporting($error_report);
+            
+             error_reporting($error_report);
+             ini_set('display_errors', 'Off');
         }
 
         public function setData($data=[])

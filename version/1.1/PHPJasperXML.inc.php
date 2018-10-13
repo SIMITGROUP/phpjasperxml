@@ -41,7 +41,11 @@ class PHPJasperXML extends abstractPHPJasperXML{
 
     public function __construct($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
-       $this->setErrorReport(5);
+       $this->setErrorReport(50);
+       // echo 'sdsdd';die;
+           
+           
+
         $this->chartobj = new PHPJasperXMLChart();
         $this->pdflib=$pdflib;
         if($this->fontdir=="")
