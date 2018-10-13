@@ -2,9 +2,9 @@
  /*
      pBubble - class to draw bubble charts
 
-     Version     : 2.1.1
+     Version     : 2.1.4
      Made by     : Jean-Damien POGOLOTTI
-     Last Update : 28/03/11
+     Last Update : 19/01/2014
 
      This file can be distributed under the license you can find at :
 
@@ -12,6 +12,9 @@
 
      You can find the whole class documentation on the pChart web site.
  */
+
+ define("BUBBLE_SHAPE_ROUND"		, 700001);
+ define("BUBBLE_SHAPE_SQUARE"		, 700002);
 
  /* pBubble class definition */
  class pBubble
@@ -110,12 +113,14 @@
     {
      $ForceAlpha	= isset($Format["ForceAlpha"]) ? $Format["ForceAlpha"] : VOID;
      $DrawBorder	= isset($Format["DrawBorder"]) ? $Format["DrawBorder"] : TRUE;
-     $DrawSquare	= isset($Format["DrawSquare"]) ? $Format["DrawSquare"] : FALSE;
+     $BorderWidth	= isset($Format["BorderWidth"]) ? $Format["BorderWidth"] : 1;
+     $Shape		= isset($Format["Shape"]) ? $Format["Shape"] : BUBBLE_SHAPE_ROUND;
      $Surrounding	= isset($Format["Surrounding"]) ? $Format["Surrounding"] : NULL;
      $BorderR		= isset($Format["BorderR"]) ? $Format["BorderR"] : 0;
      $BorderG		= isset($Format["BorderG"]) ? $Format["BorderG"] : 0;
      $BorderB		= isset($Format["BorderB"]) ? $Format["BorderB"] : 0;
      $BorderAlpha	= isset($Format["BorderAlpha"]) ? $Format["BorderAlpha"] : 30;
+     $RecordImageMap	= isset($Format["RecordImageMap"]) ? $Format["RecordImageMap"] : FALSE;
 
      if ( !is_array($DataSeries) )	{ $DataSeries = array($DataSeries); }
      if ( !is_array($WeightSeries) )	{ $WeightSeries = array($WeightSeries); }
@@ -137,6 +142,8 @@
        $Format	= $Data["Axis"][$AxisID]["Format"];
        $Unit	= $Data["Axis"][$AxisID]["Unit"];
 
+       if (isset($Data["Series"][$SerieName]["Description"])) { $SerieDescription = $Data["Series"][$SerieName]["Description"]; } else { $SerieDescription = $SerieName; }
+
        $XStep	= ($this->pChartObject->GraphAreaX2-$this->pChartObject->GraphAreaX1-$XMargin*2)/$XDivs;
 
        $X = $this->pChartObject->GraphAreaX1 + $XMargin;
@@ -148,14 +155,25 @@
 
        if ( $DrawBorder )
         {
-         $Color["BorderAlpha"] = $BorderAlpha;
-
-         if ( $Surrounding != NULL )
-          { $Color["BorderR"] = $Palette[$Key]["R"]+$Surrounding; $Color["BorderG"] = $Palette[$Key]["G"]+$Surrounding; $Color["BorderB"] = $Palette[$Key]["B"]+$Surrounding; }
+         if ( $BorderWidth != 1 )
+          {
+           if ( $Surrounding != NULL )
+            { $BorderR = $Palette[$Key]["R"]+$Surrounding; $BorderG = $Palette[$Key]["G"]+$Surrounding; $BorderB = $Palette[$Key]["B"]+$Surrounding; }
+           else
+            { $BorderR = $BorderR; $BorderG = $BorderG; $BorderB = $BorderB; }
+           if ( $ForceAlpha != VOID ) { $BorderAlpha = $ForceAlpha/2; }
+           $BorderColor = array("R"=>$BorderR,"G"=>$BorderG,"B"=>$BorderB,"Alpha"=>$BorderAlpha);
+          }
          else
-          { $Color["BorderR"] = $BorderR; $Color["BorderG"] = $BorderG; $Color["BorderB"] = $BorderB; }
+          {
+           $Color["BorderAlpha"] = $BorderAlpha;
 
-         if ( $ForceAlpha != VOID ) { $Color["BorderAlpha"] = $ForceAlpha/2; }
+           if ( $Surrounding != NULL )
+            { $Color["BorderR"] = $Palette[$Key]["R"]+$Surrounding; $Color["BorderG"] = $Palette[$Key]["G"]+$Surrounding; $Color["BorderB"] = $Palette[$Key]["B"]+$Surrounding; }
+           else
+            { $Color["BorderR"] = $BorderR; $Color["BorderG"] = $BorderG; $Color["BorderB"] = $BorderB; }
+           if ( $ForceAlpha != VOID ) { $Color["BorderAlpha"] = $ForceAlpha/2; }
+          }
         }
 
        foreach($Data["Series"][$SerieName]["Data"] as $iKey => $Point)
@@ -170,10 +188,30 @@
            if ( $XDivs == 0 ) { $XStep = 0; } else { $XStep = ($this->pChartObject->GraphAreaX2-$this->pChartObject->GraphAreaX1-$XMargin*2)/$XDivs; }
            $Y = floor($PosArray); $CircleRadius = floor(abs($PosArray - $WeightArray)/2);
 
-           if ( $DrawSquare )
-            $this->pChartObject->drawFilledRectangle($X-$CircleRadius,$Y-$CircleRadius,$X+$CircleRadius,$Y+$CircleRadius,$Color);
-           else
-            $this->pChartObject->drawFilledCircle($X,$Y,$CircleRadius,$Color);
+           if ( $Shape == BUBBLE_SHAPE_SQUARE )
+            {
+             if ( $RecordImageMap ) { $this->pChartObject->addToImageMap("RECT",floor($X-$CircleRadius).",".floor($Y-$CircleRadius).",".floor($X+$CircleRadius).",".floor($Y+$CircleRadius),$this->pChartObject->toHTMLColor($Palette[$Key]["R"],$Palette[$Key]["G"],$Palette[$Key]["B"]),$SerieDescription,$Data["Series"][$WeightSeries[$Key]]["Data"][$iKey]); }
+
+             if ( $BorderWidth != 1 )
+              {
+               $this->pChartObject->drawFilledRectangle($X-$CircleRadius-$BorderWidth,$Y-$CircleRadius-$BorderWidth,$X+$CircleRadius+$BorderWidth,$Y+$CircleRadius+$BorderWidth,$BorderColor);
+               $this->pChartObject->drawFilledRectangle($X-$CircleRadius,$Y-$CircleRadius,$X+$CircleRadius,$Y+$CircleRadius,$Color);
+              }
+             else
+              $this->pChartObject->drawFilledRectangle($X-$CircleRadius,$Y-$CircleRadius,$X+$CircleRadius,$Y+$CircleRadius,$Color);
+            }
+           elseif ( $Shape == BUBBLE_SHAPE_ROUND )
+            {
+             if ( $RecordImageMap ) { $this->pChartObject->addToImageMap("CIRCLE",floor($X).",".floor($Y).",".floor($CircleRadius),$this->pChartObject->toHTMLColor($Palette[$Key]["R"],$Palette[$Key]["G"],$Palette[$Key]["B"]),$SerieDescription,$Data["Series"][$WeightSeries[$Key]]["Data"][$iKey]); }
+
+             if ( $BorderWidth != 1 )
+              {
+               $this->pChartObject->drawFilledCircle($X,$Y,$CircleRadius+$BorderWidth,$BorderColor);
+               $this->pChartObject->drawFilledCircle($X,$Y,$CircleRadius,$Color);
+              }
+             else
+              $this->pChartObject->drawFilledCircle($X,$Y,$CircleRadius,$Color);
+            }
 
            $X = $X + $XStep;
           }
@@ -182,10 +220,30 @@
            if ( $XDivs == 0 ) { $XStep = 0; } else { $XStep = ($this->pChartObject->GraphAreaY2-$this->pChartObject->GraphAreaY1-$XMargin*2)/$XDivs; }
            $X = floor($PosArray); $CircleRadius = floor(abs($PosArray - $WeightArray)/2);
 
-           if ( $DrawSquare )
-            $this->pChartObject->drawFilledRectangle($X-$CircleRadius,$Y-$CircleRadius,$X+$CircleRadius,$Y+$CircleRadius,$Color);
-           else
-            $this->pChartObject->drawFilledCircle($X,$Y,$CircleRadius,$Color);
+           if ( $Shape == BUBBLE_SHAPE_SQUARE )
+            {
+             if ( $RecordImageMap ) { $this->pChartObject->addToImageMap("RECT",floor($X-$CircleRadius).",".floor($Y-$CircleRadius).",".floor($X+$CircleRadius).",".floor($Y+$CircleRadius),$this->pChartObject->toHTMLColor($Palette[$Key]["R"],$Palette[$Key]["G"],$Palette[$Key]["B"]),$SerieDescription,$Data["Series"][$WeightSeries[$Key]]["Data"][$iKey]); }
+
+             if ( $BorderWidth != 1 )
+              {
+               $this->pChartObject->drawFilledRectangle($X-$CircleRadius-$BorderWidth,$Y-$CircleRadius-$BorderWidth,$X+$CircleRadius+$BorderWidth,$Y+$CircleRadius+$BorderWidth,$BorderColor);
+               $this->pChartObject->drawFilledRectangle($X-$CircleRadius,$Y-$CircleRadius,$X+$CircleRadius,$Y+$CircleRadius,$Color);
+              }
+             else
+              $this->pChartObject->drawFilledRectangle($X-$CircleRadius,$Y-$CircleRadius,$X+$CircleRadius,$Y+$CircleRadius,$Color);
+            }
+           elseif ( $Shape == BUBBLE_SHAPE_ROUND )
+            {
+             if ( $RecordImageMap ) { $this->pChartObject->addToImageMap("CIRCLE",floor($X).",".floor($Y).",".floor($CircleRadius),$this->pChartObject->toHTMLColor($Palette[$Key]["R"],$Palette[$Key]["G"],$Palette[$Key]["B"]),$SerieDescription,$Data["Series"][$WeightSeries[$Key]]["Data"][$iKey]); }
+
+             if ( $BorderWidth != 1 )
+              {
+               $this->pChartObject->drawFilledCircle($X,$Y,$CircleRadius+$BorderWidth,$BorderColor);
+               $this->pChartObject->drawFilledCircle($X,$Y,$CircleRadius,$Color);
+              }
+             else
+              $this->pChartObject->drawFilledCircle($X,$Y,$CircleRadius,$Color);
+            }
 
            $Y = $Y + $XStep;
           }

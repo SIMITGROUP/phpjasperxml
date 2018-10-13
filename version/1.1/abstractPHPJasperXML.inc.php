@@ -3,6 +3,7 @@
 class abstractPHPJasperXML
 {
         protected $adjust=1.2;
+        protected $chartscaling=1.35;
         protected $version="1.1";
         protected $pdflib;
         protected $lang;
@@ -10,6 +11,7 @@ class abstractPHPJasperXML
         protected $myconn;
         protected $fontdir;
         protected $global_pointer;
+        protected $arraysubdataset;
         protected $offsetposition;
         protected $detailbandqty=0;
         public $arraysqltable;
@@ -375,7 +377,7 @@ public function analyse_dsexpression($data=[],$txt=''){
         $element= new PHPJasperXMLElement();
         //ensure all chart element have connection
 
-        
+        $element->chartobj=$this->chartobj;
 
         foreach($xml_path as $k=>$out) {
 
@@ -413,17 +415,17 @@ public function analyse_dsexpression($data=[],$txt=''){
                     break;
                 case "stackedBarChart":
 
-                    $elementres = $element->element_Chart($out,'stackedBarChart',$this->elementid);
-                    
+                    $elementres = $element->element_Chart($out,'stackedBarChart',$this->elementid);                    
                     // $this->element_Chart($out,'stackedBarChart');
                     break;
                 case "barChart":
-                    $elementres = $element->element_line($out,'barChart',$this->elementid);
+                    
+                    $elementres = $element->element_Chart($out,'barChart',$this->elementid);
                     
                     // $this->element_Chart($out,'barChart');
                     break;
                 case "pieChart":
-                    $elementres = $element->element_line($out,'pieChart',$this->elementid);
+                    $elementres = $element->element_Chart($out,'pieChart',$this->elementid);
                     
                     // $this->element_Chart($out,'pieChart');
                     break;
@@ -721,11 +723,9 @@ public function analyse_dsexpression($data=[],$txt=''){
 
     protected function getTTFFontPath($fontname='')
     {
-        global  $pchartfolder;
-               if( $pchartfolder =="")
-                  $pchartfolder=dirname(__FILE__)."/pchart2";
+      
 
-        $fontpatharr=array("$pchartfolder/fonts");
+        $fontpatharr=array("$this->pchartfolder/fonts");
         $defaultfont="MankSans";
         if(PHP_OS=='Linux'){
             array_push($fontpatharr,"/usr/share/fonts/truetype/freefont");
@@ -740,23 +740,27 @@ public function analyse_dsexpression($data=[],$txt=''){
                 
         }
 
-        foreach($fontpatharr as $folder){
-         $smallfontname=$folder."/".$fontname.".ttf";
-          $bigfontname=$folder."/".strtolower($fontname).".ttf";
-        //  echo "$smallfontname<br/>$bigfontname<br/>";
-        if(file_exists($smallfontname)){
-        //echo $smallfontname;die;
-        return $smallfontname;
-        }
-        if(file_exists($bigfontname)){
-        //echo $bigfontname;die;
-        return $bigfontname;
-        }
+        // print_r($fontpatharr);
+        // echo "<hr/>";
+
+        foreach($fontpatharr as $folder)
+        {
+            $smallfontname=$folder."/".$fontname.".ttf";
+            $bigfontname=$folder."/".strtolower($fontname).".ttf";
+        
+            if(file_exists($smallfontname)){
+            //echo $smallfontname;die;
+                 return $smallfontname;
+            }
+            if(file_exists($bigfontname)){
+            //echo $bigfontname;die;
+                 return $bigfontname;
+            }
 
 
         }
 
-         return "$pchartfolder/fonts/GeosansLight.ttf";
+         return "$this->pchartfolder/fonts/GeosansLight.ttf";
  }
  
 protected function convertNumberWithDynamicDecimal($txt='',$decimalpoint='.',$thousandseparator=',')

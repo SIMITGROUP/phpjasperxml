@@ -30,7 +30,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
     // private $offsetposition=0;
     // protected $detailbandqty=0;
     // public $arraysqltable=array();
-    private $chartscaling=1.35;
+    
     // public $elementid=0;
     protected $autofetchpara=true;
     private $report_count=0;        //### New declaration (variable exists in original too)
@@ -690,285 +690,6 @@ header('Access-Control-Allow-Credentials: true');
 
 
 
-
-public function drawChartFramework($w=0,$h=0,$legendpos=0,$type='',$data=[])
-{
-
-    $titlesetting=$data['charttitle'];
-    $subtitlesetting=$data['chartsubtitle'];
-    $legendsetting=$data['chartlegend'];
-
-    $titlecolor=$this->hex_code_color($titlesetting['color']);
-    $subtitlecolor=$this->hex_code_color($subtitlesetting['color']);
-
-    $Title = str_replace(array('"',"'"),'',$titlesetting['text']);
-    $subTitle = str_replace(array('"',"'"),'',$subtitlesetting['text']);
-
-
-
-        
-         //$this->chart->setFontProperties(array('FontName'=>$charttitlefontpath,'FontSize'=>7));
-
-        //echo $h.",".$titlesetting['fontsize'];
-        $titletextsetting=array('DrawBox'=>false,"Align"=>TEXT_ALIGN_TOPMIDDLE);
-        switch($titlesetting['position']){
-            case "Bottom":
-                $titlew=$w/2;
-                $titleh=$h-($titlesetting['fontsize']*1.3);
-                $subtitlew=$w/2;
-                
-                break;
-            case "Left":
-                $titlew=0;
-                $titleh=$h/2;
-                
-                $subtitleh=$h/2;
-                
-                $titletextsetting=array('DrawBox'=>false,"Align"=>TEXT_ALIGN_TOPMIDDLE,"Angle"=>90);
-                
-            break;
-            case "Right":
-                $titlew=$w;
-                $titleh=$h/2;
-                
-                $subtitleh=$h/2;
-                $titletextsetting=array('DrawBox'=>false,"Align"=>TEXT_ALIGN_TOPMIDDLE,"Angle"=>270);
-                
-                
-            break;
-            case "Top":
-            default:
-                $titlew=$w/2;
-                $titleh=0;
-                $subtitlew=$w/2;
-                
-                break;
-            
-        }
-              //  $titletextsetting=array('DrawBox'=>false,"Align"=>TEXT_ALIGN_TOPMIDDLE);
-                
-        if($Title){
-            $charttitlefontpath=$this->getTTFFontPath($titlesetting['fontname']);
-
-            $this->chart->setFontProperties(array('FontName'=>$charttitlefontpath,'FontSize'=>$titlesetting['fontsize'],"R"=>$titlecolor['r'],"G"=>$titlecolor['g'],"B"=>$titlecolor['b'],'Align'=>TEXT_ALIGN_TOPMIDDLE,));
-
-            $this->chart->drawText($titlew,$titleh,$Title,$titletextsetting);
-        }
-
-          switch($legendsetting['position']){
-                 case "Top":
-                     $legendmode=array("Style"=>LEGEND_BOX,"Mode"=>LEGEND_HORIZONTAL);
-                     $lgsize=$this->chart->getLegendSize($legendmode);
-                     $diffx=$w-$lgsize['Width'];
-                     if($diffx>0)
-                     $legendx=$diffx/2;
-                     else
-                     $legendx=0;
-
-                     if($legendy<0)
-                         $legendy=0;
-
-                     if($Title==''){
-
-                         $graphareay1=15;
-                         $legendy=$graphareay1+5;
-                        $graphareax1=40;
-                         $graphareax2=$w-10 ;
-                         $graphareay2=$h-$legentsetting['fontsize']-15;
-                    }
-                    else{
-                        $graphareay1=30;
-                        $legendy=$graphareay1+5;
-                        $graphareax1=40;
-
-                         $graphareax2=$w-10 ;
-                         $graphareay2=$h-$legentsetting['fontsize']-15;
-
-                    }
-                     break;
-                 case "Left":
-                  //   $legendmode=array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_VERTICAL);
-                     $lgsize=$this->chart->getLegendSize($legendmode);
-                     $legendx=$lgsize['Width'];
-                     if($Title==''){
-                        $legendy=10;
-                         $graphareay1=10;
-                        $graphareax1=$legendx+5;
-                         $graphareax2=$w-5;
-                         $graphareay2=$h-20;
-                    }
-                    else{
-                         $legendy=30;
-                         $graphareay1=40;
-                        $graphareax1=$legendx+5;
-                         $graphareax2=$w-5 ;
-                         $graphareay2=$h-20;
-                    }
-                     break;
-                 case "Right":
-                 //    echo "ASDASD";
-                 $legendmode=array("Style"=>LEGEND_BOX,"Mode"=>LEGEND_VERTICAL);
-                     $lgsize=$this->chart->getLegendSize($legendmode);
-                     $legendx=$w-$lgsize['Width']-10;
-                     if($Title==''){
-                        $legendy=10;
-                         $graphareay1=5;
-                        $graphareax1=50;
-                         $graphareax2=$legendx-5 ;
-                         $graphareay2=$h-30;
-                    }
-                    else{
-                         $legendy=30;
-                         $graphareay1=30;
-                        $graphareax1=50;
-                         $graphareax2=$legendx-5 ;
-                         $graphareay2=$h-30;
-                    }
-                     break;
-                 case "Bottom":
-                     
-                    $legendmode=array("Style"=>LEGEND_BOX,"Mode"=>LEGEND_HORIZONTAL);
-                     $lgsize=$this->chart->getLegendSize($legendmode);
-                     $diffx=$w-$lgsize['Width'];
-                     if($diffx>0)
-                     $legendx=$diffx/2;
-                     else
-                     $legendx=0;
-                     $legendy=$h-$lgsize['Height']+$legentsetting['fontsize'];
-
-                     if($legendy<0)$legendy=0;
-
-                     if($Title==''){
-
-                         $graphareay1=15;
-                        $graphareax1=40;
-                         $graphareax2=$w-10 ;
-                         $graphareay2=$legendy-$legentsetting['fontsize']-15;
-                    }
-                    else{
-                        $graphareay1=30;
-                        $graphareax1=40;
-                         $graphareax2=$w-10 ;
-                         $graphareay2=$legendy-$legentsetting['fontsize']-15;
-                    }
-                     break;
-                 default:
-                     
-                  $legendmode=array("Style"=>LEGEND_BOX,"Mode"=>LEGEND_VERTICAL);
-                     $lgsize=$this->chart->getLegendSize($legendmode);
-                     $legendx=$w-$lgsize['Width'];
-                     if($Title==''){
-                        $legendy=10;
-                         $graphareay1=5;
-                        $graphareax1=50;
-                         $graphareax2=$legendx-5 ;
-                         $graphareay2=$h-30;
-                    }
-                    else{
-                         $legendy=30;
-                         $graphareay1=30;
-                        $graphareax1=50;
-                         $graphareax2=$legendx-5 ;
-                         $graphareay2=$h-30;
-                    }
-                  
-                     break;
-
-             }
-             
-             
-
-        
-
-       $chartlegendfontpath=$this->getTTFFontPath($legendsetting['fontname']);
-       if($legendsetting['fontsize']=='')
-       $legendsetting['fontsize']=10;
-            $legendcolor=$this->hex_code_color($legendsetting['color']);
-            $legendBGcolor=$this->hex_code_color($legendsetting['backgroundColor']);
-            $this->chart->setFontProperties(array('FontName'=>$chartlegendfontpath,'FontSize'=>$legendsetting['fontsize'],"R"=>$legendcolor['r'],"G"=>$legendcolor['g'],"B"=>$legendcolor['b'],'Align'=>TEXT_ALIGN_TOPMIDDLE));        
-            $legendmode["R"]=$legendBGcolor['r'];
-            $legendmode["G"]=$legendBGcolor['g'];
-            $legendmode["B"]=$legendBGcolor['b'];
-        
-        if($type!='pieChart') {
-        $this->chart->setGraphArea($graphareax1,$graphareay1,$graphareax2,$graphareay2);
-        
-        if($legendsetting){
-            
-            $this->chart->drawLegend($legendx,$legendy,$legendmode);
-        }
-        }else{
-                $this->pieChart->drawPieLegend($legendx,$legendy,$legendmode);
-        }
-        
-        
-       
-        switch($titlesetting['position']){
-            case "Bottom":
-               if($legendsetting['position']=='Bottom'){
-                $subtitleh=$h-$titlesetting['fontsize']*1.3-$lgsize['Height']*1.3;//top
-                $graphareay1=$subtitlesetting['fontsize']*1.3;
-               }
-               else{
-                   $subtitleh=$h-$titlesetting['fontsize']*1.3;
-                   $graphareay1=$subtitlesetting['fontsize']*1.3;
-               }
-                
-
-               break;
-            case "Left":
-                if($legendsetting['position']=='Left'){
-                        $subtitlew=$graphareax1+$lgsize['Width'];//left
-                        $graphareax1=$subtitlew+$subtitlesetting['fontsize'];
-                }
-                else{
-                    $subtitlew=$graphareax1;
-                    $graphareax1=$subtitlew+$subtitlesetting['fontsize'];
-                    
-                    //$graphareax1+=$subtitlesetting['fontsize'];
-                }
-                
-                
-            break;
-            case "Right":
-                     if($legendsetting['position']=='Right'){
-                        $subtitlew=$graphareax2-$lgsize['Width']-$subtitlesetting['fontsize']*1.3;//left
-                        //$graphareax2=$subtitlew
-                }
-                else{
-                    $subtitlew=$graphareax2;
-                    $graphareax2=$subtitlew+$subtitlesetting['fontsize'];
-                    
-                    //$graphareax1+=$subtitlesetting['fontsize'];
-                }
-                
-            break;
-            case "Top":
-            default:
-               if($legendsetting['position']=='Top'){
-                $subtitleh=$titlesetting['fontsize']*1.3+$lgsize['Height']*1.3;//top
-                $graphareay1+=$subtitlesetting['fontsize']*1.3+$lgsize['Height']*1.3;
-               }
-               else{
-                   $subtitleh=$titlesetting['fontsize']*1.3;
-                   $graphareay1+=$subtitlesetting['fontsize']*1.3;
-               }
-                
-                break;
-            
-        }
-        
-        if($subTitle){
-            
-            $chartsubtitlefontpath=$this->getTTFFontPath($subtitlesetting['fontname']);
-            $this->chart->setFontProperties(array('FontName'=>$chartsubtitlefontpath,'FontSize'=>$subtitlesetting['fontsize'],"R"=>$subtitlecolor['r'],"G"=>$subtitlecolor['g'],"B"=>$subtitlecolor['b'],'Align'=>TEXT_ALIGN_TOPMIDDLE,));
-            $this->chart->drawText($subtitlew,$subtitleh,$subTitle,$titletextsetting);
-        }
-        
-        //echo "ASDSAD";die;
-        
-        return array(  $graphareax1, $graphareay1,  $graphareax2, $graphareay2);
-}
 
 
 
@@ -2395,26 +2116,26 @@ if($type=='stackedBarChart')
         }
       elseif($arraydata["type"]=="lineChart") {
         // echo 'lineChart';
-          $this->chartobj->showBarChart($arraydata, $y_axis,'lineChart');
+          $this->chartobj->showChart($arraydata, $y_axis,'lineChart',$this->pdf);
         }
       elseif($arraydata["type"]=="barChart") 
       {
         // echo 'barChart';
-            $this->chartobj->showBarChart($arraydata, $y_axis,'barChart');
+            $this->chartobj->showChart($arraydata, $y_axis,'barChart',$this->pdf);
         }
       elseif($arraydata["type"]=="pieChart") {
 
-            $this->chartobj->showBarChart($arraydata, $y_axis,'pieChart');
+            $this->chartobj->showChart($arraydata, $y_axis,'pieChart',$this->pdf);
         }
       elseif($arraydata["type"]=="stackedBarChart") 
       {
           // echo 'stackbarChart';
-            $this->chartobj->showBarChart($arraydata, $y_axis,'stackedBarChart');
+            $this->chartobj->showChart($arraydata, $y_axis,'stackedBarChart',$this->pdf);
         }
       elseif($arraydata["type"]=="stackedAreaChart") 
       {
         // echo 'stackareaChart';
-            $this->chartobj->showAreaChart($arraydata, $y_axis,$arraydata["type"]);
+            $this->chartobj->showAreaChart($arraydata, $y_axis,$arraydata["type"],$this->pdf);
         }
         elseif($arraydata["type"]=="Barcode"){
             
