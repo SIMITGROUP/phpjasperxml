@@ -622,12 +622,27 @@ class PHPJasperXML {
               $rightattr=$data->box->rightPen->attributes();
 
               // echo "<br/><br/>";
-                  $borderstyles=[
-                          'T'=>['width'=>$topattr["lineWidth"],'style'=>(string)$topattr["lineStyle"], 'hexcolor'=>(string)$topattr["lineColor"]],
-                          'B'=>['width'=>$bottomattr["lineWidth"],'style'=>(string)$bottomattr["lineStyle"],'hexcolor'=>(string)$bottomattr["lineColor"] ],
-                          'L'=>['width'=>$leftattr["lineWidth"],'style'=>(string)$leftattr["lineStyle"],'hexcolor'=>(string)$leftattr["lineColor"] ],
-                          'R'=>['width'=>$rightattr["lineWidth"],'style'=>(string)$rightattr["lineStyle"],'hexcolor'=>(string)$rightattr["lineColor"]]
-                        ];
+               
+          $borderstyles=[];
+
+
+        if($topattr["lineWidth"]>0)
+        {
+            $borderstyles['T']=['width'=>$topattr["lineWidth"],'style'=>(string)$topattr["lineStyle"], 'hexcolor'=>(string)$topattr["lineColor"]];
+        }
+        if($bottomattr["lineWidth"]>0)
+        {
+            $borderstyles['B']=['width'=>$bottomattr["lineWidth"],'style'=>(string)$bottomattr["lineStyle"],'hexcolor'=>(string)$bottomattr["lineColor"]];
+        }
+        if($leftattr["lineWidth"]>0)
+        {
+            $borderstyles['L']=['width'=>$leftattr["lineWidth"],'style'=>(string)$leftattr["lineStyle"],'hexcolor'=>(string)$leftattr["lineColor"]];
+        }
+        if($rightattr["lineWidth"]>0)
+        {
+            $borderstyles['R']=['width'=>$rightattr["lineWidth"],'style'=>(string)$rightattr["lineStyle"], 'hexcolor'=>(string)$rightattr["lineColor"]];
+        }
+        
                 //     print_r($borderstyles);
                 // echo "<br/><br/>";
                 foreach($borderstyles as $key=>$borderstylearr)
@@ -1324,12 +1339,27 @@ class PHPJasperXML {
           $rightattr=$data->box->rightPen->attributes();
           
           // echo "<br/><br/>";
-              $borderstyles=[
-                      'T'=>['width'=>$topattr["lineWidth"],'style'=>(string)$topattr["lineStyle"], 'hexcolor'=>(string)$topattr["lineColor"]],
-                      'B'=>['width'=>$bottomattr["lineWidth"],'style'=>(string)$bottomattr["lineStyle"],'hexcolor'=>(string)$bottomattr["lineColor"] ],
-                      'L'=>['width'=>$leftattr["lineWidth"],'style'=>(string)$leftattr["lineStyle"],'hexcolor'=>(string)$leftattr["lineColor"] ],
-                      'R'=>['width'=>$rightattr["lineWidth"],'style'=>(string)$rightattr["lineStyle"],'hexcolor'=>(string)$rightattr["lineColor"]]
-                    ];
+          
+          $borderstyles=[];
+
+
+        if($topattr["lineWidth"]>0)
+        {
+            $borderstyles['T']=['width'=>$topattr["lineWidth"],'style'=>(string)$topattr["lineStyle"], 'hexcolor'=>(string)$topattr["lineColor"]];
+        }
+        if($bottomattr["lineWidth"]>0)
+        {
+            $borderstyles['B']=['width'=>$bottomattr["lineWidth"],'style'=>(string)$bottomattr["lineStyle"],'hexcolor'=>(string)$bottomattr["lineColor"]];
+        }
+        if($leftattr["lineWidth"]>0)
+        {
+            $borderstyles['L']=['width'=>$leftattr["lineWidth"],'style'=>(string)$leftattr["lineStyle"],'hexcolor'=>(string)$leftattr["lineColor"]];
+        }
+        if($rightattr["lineWidth"]>0)
+        {
+            $borderstyles['R']=['width'=>$rightattr["lineWidth"],'style'=>(string)$rightattr["lineStyle"], 'hexcolor'=>(string)$rightattr["lineColor"]];
+        }
+        
                 // print_r($borderstyles);
                 // echo "<br/><br/>";
             foreach($borderstyles as $key=>$borderstylearr)
