@@ -1519,42 +1519,82 @@ protected function convertDigit($digit=0)
         }
         protected function formatText($txt='',$pattern='') 
         {
-            if($pattern=="###0")
-                return number_format($txt,0,"","");
-            elseif($pattern=="#,##0")
-                return number_format($txt,0,".",",");
-            elseif($pattern=="###0.0")
-                return number_format($txt,1,".","");
-            elseif($pattern=="#,##0.0")
-                return number_format($txt,1,".",",");
-            elseif($pattern=="###0.00")
-                return number_format($txt,2,".","");
-            elseif($pattern=="#,##0.00")
-                return number_format($txt,2,".",",");
-            elseif($pattern=="###0.000")
-                return number_format($txt,3,".","");
-            elseif($pattern=="#,##0.000")
-                return number_format($txt,3,".",",");
-            elseif($pattern=="#,##0.0000")
-                return number_format($txt,4,".",",");
-            elseif($pattern=="###0.0000")
-                return number_format($txt,4,".","");
-            elseif($pattern=="dd/MM/yyyy" && $txt !="")
-                return date("d/m/Y",strtotime($txt));
-            elseif($pattern=="MM/dd/yyyy" && $txt !="")
-                return date("m/d/Y",strtotime($txt));
-            elseif($pattern=="yyyy/MM/dd" && $txt !="")
-                return date("Y/m/d",strtotime($txt));
-            elseif($pattern=="dd-MMM-yy" && $txt !="")
-                return date("d-M-Y",strtotime($txt));
-            elseif($pattern=="dd-MMM-yy" && $txt !="")
-                return date("d-M-Y",strtotime($txt));
-            elseif($pattern=="dd/MM/yyyy h.mm a" && $txt !="")
-                return date("d/m/Y h:i a",strtotime($txt));
-            elseif($pattern=="dd/MM/yyyy HH.mm.ss" && $txt !="")
-                return date("d-m-Y H:i:s",strtotime($txt));
-            else
-                return $txt;
+             // echo "$txt $pattern</br>";
+        if($pattern=="###0")
+            return number_format($txt,0,"","");
+        elseif($pattern=="#,##0")
+            return number_format($txt,0,".",",");
+        elseif($pattern=="###0.0")
+            return number_format($txt,1,".","");
+        elseif($pattern=="#,##0.0" || $pattern=="#,##0.0;-#,##0.0")
+            return number_format($txt,1,".",",");
+        elseif($pattern=="###0.00" || $pattern=="###0.00;-###0.00")
+            return number_format($txt,2,".","");
+        elseif($pattern=="#,##0.00" || $pattern=="#,##0.00;-#,##0.00")
+            return number_format($txt,2,".",",");
+        elseif($pattern=="###0.00;(###0.00)")
+            return ($txt<0 ? "(".number_format(abs($txt),2,".","").")" : number_format($txt,2,".",""));
+        elseif($pattern=="#,##0.00;(#,##0.00)")
+            return ($txt<0 ? "(".number_format(abs($txt),2,".",",").")" : number_format($txt,2,".",","));
+        elseif($pattern=="#,##0.00;(-#,##0.00)")
+            return ($txt<0 ? "(".number_format($txt,2,".",",").")" : number_format($txt,2,".",","));
+        
+        elseif($pattern=="###0.000")
+            return number_format($txt,3,".","");
+        elseif($pattern=="#,##0.000")
+            return number_format($txt,3,".",",");
+        elseif($pattern=="#,##0.0000")
+            return number_format($txt,4,".",",");
+        elseif($pattern=="###0.0000")
+            return number_format($txt,4,".","");
+        elseif($pattern=="#,##0.00000")
+            return number_format($txt,5,".",",");
+        elseif($pattern=="#,##0.000000")
+            return number_format($txt,6,".",",");
+        elseif($pattern=="#,##0.0000000")
+            return number_format($txt,7,".",",");
+        elseif($pattern=="#,##0.00000000")
+            return number_format($txt,8,".",",");
+        elseif($pattern=="###0.00000")
+            return number_format($txt,5,".","");        
+        elseif($pattern=="dd/MM/yyyy" && $txt !="")
+            return date("d/m/Y",strtotime($txt));
+        elseif($pattern=="MM/dd/yyyy" && $txt !="")
+            return date("m/d/Y",strtotime($txt));
+        elseif($pattern=="yyyy/MM/dd" && $txt !="")
+            return date("Y/m/d",strtotime($txt));
+        elseif($pattern=="dd-MMM-yy" && $txt !="")
+            return date("d-M-Y",strtotime($txt));
+        elseif($pattern=="dd-MMM-yy" && $txt !="")
+            return date("d-M-Y",strtotime($txt));
+        elseif($pattern=="dd/MM/yyyy h.mm a" && $txt !="")
+            return date("d/m/Y h:i a",strtotime($txt));
+        elseif($pattern=="dd/MM/yyyy HH.mm.ss" && $txt !="")
+            return date("d-m-Y H:i:s",strtotime($txt));
+        elseif($pattern=="d/m/Y" && $txt !="")
+            return date("d/m/Y",strtotime($txt));
+        elseif($pattern=="m/d/Y" && $txt !="")
+            return date("m/d/Y",strtotime($txt));
+        elseif($pattern=="Y/m/d" && $txt !="")
+            return date("Y/m/d",strtotime($txt));
+        elseif($pattern=="d-M-Y" && $txt !="")
+            return date("d-M-Y",strtotime($txt));
+        elseif($pattern=="d-m-Y" && $txt !="")
+            return date("d-m-Y",strtotime($txt));
+        elseif($pattern=="d-M-Y" && $txt !="")
+            return date("d-M-Y",strtotime($txt));
+        elseif($pattern=="d/m/Y h:i a" && $txt !="")
+            return date("d/m/Y h:i a",strtotime($txt));
+        elseif($pattern=="d-m-Y H:i:s" && $txt !="")
+            return date("d-m-Y H:i:s",strtotime($txt));
+        elseif($pattern=="d.m.Y" && $txt !="")
+            return date("d.m.Y",strtotime($txt));
+        elseif($pattern=="#,##0.xx")
+            return $this->convertNumberWithDynamicDecimal($txt,".",",");
+        elseif($pattern=="AMTTOTEXT" && $txt !="")
+            return $this->convertNumber($txt);
+        else
+            return $txt;
 
 
         }
