@@ -624,23 +624,27 @@ class PHPJasperXML {
               // echo "<br/><br/>";
                
           $borderstyles=[];
-
+          $arrborder=[];
 
         if($topattr["lineWidth"]>0)
         {
             $borderstyles['T']=['width'=>$topattr["lineWidth"],'style'=>(string)$topattr["lineStyle"], 'hexcolor'=>(string)$topattr["lineColor"]];
+            array_push($arrborder, "T");
         }
         if($bottomattr["lineWidth"]>0)
         {
             $borderstyles['B']=['width'=>$bottomattr["lineWidth"],'style'=>(string)$bottomattr["lineStyle"],'hexcolor'=>(string)$bottomattr["lineColor"]];
+            array_push($arrborder, "B");
         }
         if($leftattr["lineWidth"]>0)
         {
             $borderstyles['L']=['width'=>$leftattr["lineWidth"],'style'=>(string)$leftattr["lineStyle"],'hexcolor'=>(string)$leftattr["lineColor"]];
+            array_push($arrborder, "L");
         }
         if($rightattr["lineWidth"]>0)
         {
             $borderstyles['R']=['width'=>$rightattr["lineWidth"],'style'=>(string)$rightattr["lineStyle"], 'hexcolor'=>(string)$rightattr["lineColor"]];
+            array_push($arrborder, "R");
         }
         
                 //     print_r($borderstyles);
@@ -668,8 +672,6 @@ class PHPJasperXML {
                     
                 }
            
-               
-                $arrborder=['T','R','B','L'];
                 $border=[];
                 foreach($arrborder as $borderno =>$bordername)
                 {
@@ -1341,23 +1343,27 @@ class PHPJasperXML {
           // echo "<br/><br/>";
           
           $borderstyles=[];
-
+          $arrborder=[];
 
         if($topattr["lineWidth"]>0)
         {
             $borderstyles['T']=['width'=>$topattr["lineWidth"],'style'=>(string)$topattr["lineStyle"], 'hexcolor'=>(string)$topattr["lineColor"]];
+            array_push($arrborder, 'T');
         }
         if($bottomattr["lineWidth"]>0)
         {
             $borderstyles['B']=['width'=>$bottomattr["lineWidth"],'style'=>(string)$bottomattr["lineStyle"],'hexcolor'=>(string)$bottomattr["lineColor"]];
+            array_push($arrborder, 'B');
         }
         if($leftattr["lineWidth"]>0)
         {
             $borderstyles['L']=['width'=>$leftattr["lineWidth"],'style'=>(string)$leftattr["lineStyle"],'hexcolor'=>(string)$leftattr["lineColor"]];
+            array_push($arrborder, 'L');
         }
         if($rightattr["lineWidth"]>0)
         {
             $borderstyles['R']=['width'=>$rightattr["lineWidth"],'style'=>(string)$rightattr["lineStyle"], 'hexcolor'=>(string)$rightattr["lineColor"]];
+            array_push($arrborder, 'R');
         }
         
                 // print_r($borderstyles);
@@ -1385,8 +1391,6 @@ class PHPJasperXML {
                 
             }
        
-           
-            $arrborder=['T','R','B','L'];
             $border=[];
             foreach($arrborder as $borderno =>$bordername)
             {
