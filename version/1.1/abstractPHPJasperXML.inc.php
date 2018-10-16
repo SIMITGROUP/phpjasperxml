@@ -1224,7 +1224,11 @@ protected function convertDigit($digit=0)
          To use a comma character ',' on text options, replace it with the character 255: "\xff".
 
         */ 
+         
         switch($type){
+          case 'QRCODE':
+            $this->pdf->write2DBarcode($code, 'QRCODE', $x, $y, $width, $height, $style, 'N');
+          break;
           case "PDF417":
                $this->pdf->write2DBarcode($code, 'PDF417', $x, $y, $width, $height, $style, 'N');
               break;

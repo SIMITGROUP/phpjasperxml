@@ -207,8 +207,10 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
 
 
 
-    public function element_componentElement($data) {
+    public function element_componentElement($data,$elementid) {
+        $mydata=[];
 
+        $this->elementid=$elementid;
         $x=$data->reportElement["x"];
         $y=$data->reportElement["y"];
         $width=$data->reportElement["width"];
@@ -247,10 +249,11 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
             }
 
 
-            return array("type"=>"Barcode","barcodetype"=>$barcodemethod,"x"=>$x,"y"=>$y,"width"=>$width,"height"=>$height,'textposition'=>$textposition,'code'=>$code,'modulewidth'=>$modulewidth,"elementid"=>$this->elementid,"uuid"=>$data->reportElement['uuid'],);
+             $mydata[]=array("type"=>"Barcode","barcodetype"=>$barcodemethod,"x"=>$x,"y"=>$y,"width"=>$width,"height"=>$height,'textposition'=>$textposition,'code'=>$code,'modulewidth'=>$modulewidth,"elementid"=>$this->elementid,"uuid"=>$data->reportElement['uuid'],);
 
            
        }
+       return  $mydata;
        
     }
 
