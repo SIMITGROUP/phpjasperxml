@@ -122,6 +122,343 @@ class abstractPHPJasperXML
         }
 
 
+
+    protected function display($arraydata=[],$y_axis=0,$fielddata=false,$maxheight=0) {
+
+        $this->currentuuid=$arraydata["uuid"];
+        $this->Rotate($arraydata["rotation"]);
+    
+        if($arraydata["rotation"]!=""){
+            if($arraydata["rotation"]=="Left"){
+                 $w=$arraydata["width"];
+                $arraydata["width"]=$arraydata["height"];
+                $arraydata["height"]=$w;
+                    $this->pdf->SetXY($this->pdf->GetX()-$arraydata["width"],$this->pdf->GetY());
+            }
+            elseif($arraydata["rotation"]=="Right"){
+                 $w=$arraydata["width"];
+                $arraydata["width"]=$arraydata["height"];
+                $arraydata["height"]=$w;
+                    $this->pdf->SetXY($this->pdf->GetX(),$this->pdf->GetY()-$arraydata["height"]);
+            }
+            elseif($arraydata["rotation"]=="UpsideDown"){
+                //soverflow"=>$stretchoverflow,"poverflow"
+                $arraydata["soverflow"]=true;
+                $arraydata["poverflow"]=true;
+               //   $w=$arraydata["width"];
+               // $arraydata["width"]=$arraydata["height"];
+                //$arraydata["height"]=$w;
+                $this->pdf->SetXY($this->pdf->GetX()- $arraydata["width"],$this->pdf->GetY()-$arraydata["height"]);
+            }
+        }
+        if($arraydata["type"]=="SetFont") {
+        //echo $arraydata["font"]."<br/>";
+                       $arraydata["font"]=  strtolower(str_replace(' ', '', $arraydata["font"]));
+
+                        if($arraydata["fontstyle"]=="BI")
+                            $fontfile=$this->fontdir.'/'.$arraydata["font"].'bi.php';
+                        elseif($arraydata["fontstyle"]=="I")
+                            $fontfile=$this->fontdir.'/'.$arraydata["font"].'i.php';
+                        elseif($arraydata["fontstyle"]=="B")
+                            $fontfile=$this->fontdir.'/'.$arraydata["font"].'b.php';
+                        else
+                             $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+            //echo $fontfile." : ";
+            if(!file_exists($fontfile))
+                $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+            //echo $fontfile."<br/>";
+          if(file_exists($fontfile) || $this->bypassnofont==false){
+
+                $this->pdf->SetFont($arraydata["font"],$arraydata["fontstyle"],$arraydata["fontsize"],$fontfile);
+           }
+           else{
+                $arraydata["font"]="freeserif";
+                                if($arraydata["fontstyle"]=="")
+                                    $this->pdf->SetFont('freeserif',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
+                                elseif($arraydata["fontstyle"]=="B")
+                                    $this->pdf->SetFont('freeserifb',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
+                                elseif($arraydata["fontstyle"]=="I")
+                                    $this->pdf->SetFont('freeserifi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifi.php');
+                                elseif($arraydata["fontstyle"]=="BI")
+                                    $this->pdf->SetFont('freeserifbi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+                                elseif($arraydata["fontstyle"]=="BIU")
+                                    $this->pdf->SetFont('freeserifbi',"BIU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+                                elseif($arraydata["fontstyle"]=="U")
+                                    $this->pdf->SetFont('freeserif',"U",$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
+                                elseif($arraydata["fontstyle"]=="BU")
+                                    $this->pdf->SetFont('freeserifb',"U",$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
+                                elseif($arraydata["fontstyle"]=="IU")
+                                    $this->pdf->SetFont('freeserifi',"IU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+                    
+                
+            }
+
+        }
+        elseif($arraydata["type"]=="subreport") {   
+        
+
+            return $this->runSubReport($arraydata,$y_axis);
+
+        }
+        elseif($arraydata["type"]=="MultiCell") {
+          
+         
+           // echo $arraydata["txt"].':'. $this->currenttextfield."<br>"; 
+//echo " $this->report_count $this->currenttextfield".print_r($arraydata,true)."<br/><br/>";
+            if($arraydata["hidden_type"]=='statictext' || $fielddata==false) {
+                $this->checkoverflow($arraydata,$this->updatePageNo($arraydata["txt"]),'',$maxheight);
+            }
+            elseif($fielddata==true) {
+            
+                 $res=$this->analyse_expression($arraydata["txt"],$arraydata["isPrintRepeatedValues"]);
+
+                $this->checkoverflow($arraydata,$this->updatePageNo($res),$maxheight);
+            }
+            
+
+        }
+        elseif($arraydata["type"]=="SetXY") {
+            $this->pdf->SetXY($arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis);
+        }
+        elseif($arraydata["type"]=="Cell") {
+//                print_r($arraydata);
+  //              echo "<br/>";
+
+            $this->pdf->Cell($arraydata["width"],$arraydata["height"],$this->updatePageNo($arraydata["txt"]),$arraydata["border"],$arraydata["ln"],
+                       $arraydata["align"],$arraydata["fill"],$arraydata["link"]."",0,true,"T",$arraydata["valign"]);
+
+
+        }
+        elseif($arraydata["type"]=="Rect"){
+        if($arraydata['mode']=='Transparent')
+        $style='';
+        else
+        $style='FD';
+          //      $this->pdf->SetLineStyle($arraydata['border']);
+            $this->pdf->Rect($arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,$arraydata["width"],$arraydata["height"],
+            $style,$arraydata['border'],$arraydata['fillcolor']);
+                }
+        elseif($arraydata["type"]=="RoundedRect"){
+            if($arraydata['mode']=='Transparent')
+                $style='';
+            else
+            $style='FD';
+            //
+                //        $this->pdf->SetLineStyle($arraydata['border']);
+                        
+                          if($arraydata['printWhenExpression']==""  ||  $this->print_expression($arraydata)){
+                              foreach($arraydata['border'] as $bs=>$ba){
+                                foreach($ba as $bbc)
+                                     $this->pdf->SetLineStyle($bbc) ;
+                                  
+                              }
+
+             $this->pdf->RoundedRect($arraydata["x"]+$this->arrayPageSetting["leftMargin"], $arraydata["y"]+$y_axis, 
+                                 $arraydata["width"], $arraydata["height"], $arraydata["radius"], '1111', 
+            $style, array(),$arraydata['fillcolor']);
+                          }
+            }
+        elseif($arraydata["type"]=="Ellipse"){
+            //$this->pdf->SetLineStyle($arraydata['border']);
+             $this->pdf->Ellipse($arraydata["x"]+$arraydata["width"]/2+$this->arrayPageSetting["leftMargin"], $arraydata["y"]+$y_axis+$arraydata["height"]/2, $arraydata["width"]/2,$arraydata["height"]/2,
+                0,0,360,'FD',$arraydata['border'],$arraydata['fillcolor']);
+        }
+        else if($arraydata["type"]=="Image")
+        {
+            $path = $this->analyse_expression($arraydata["path"], "true", $arraydata["type"]);
+            $imgtype=substr($path,-3);
+            $arraydata["link"]=$arraydata["link"]."";
+            
+            $arraydata["link"]=$this->analyse_expression($arraydata["link"]);
+            
+            
+            if($imgtype=='jpg' || right($path,3)=='jpg' || right($path,4)=='jpeg')
+            {
+                 $imgtype="JPEG";
+            }
+            elseif($imgtype=='png'|| $imgtype=='PNG')
+            {
+                  $imgtype="PNG";
+            }
+            else
+            {
+                
+                 if(file_exists($path) || $this->left($path,4)=='http' )
+                {  
+                            $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+                                  $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"]);                        
+                }
+                elseif($this->left($path,22)==  "data:image/jpeg;base64")
+                {
+                    $imgtype="JPEG";
+                    $img_base64_encoded = $path;
+                    // $imageContent = file_get_contents($img_base64_encoded);
+                    // $newpath = tempnam(sys_get_temp_dir(), 'prefix');
+                   
+                    // $this->pdf->Image($newpath,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+                    //     $sizedata["width"],$sizedata["height"],'',$arraydata["link"]); 
+
+                    $img=  str_replace('data:image/jpeg;base64,', '', $path);
+
+                    $imgdata = base64_decode($img);
+
+                    $sizedata = $this->setDisplayImageSize($arraydata, $imgdata);
+                    if(array_key_exists("scale_type", $arraydata))
+                    {
+                        if($arraydata["scale_type"] == "Clip")
+                        {
+                            $realImage = imagecreatefromstring($imgdata);
+                            $cropImage = imagecrop($realImage, ['x' => 0, 'y' => 0, 'width' => $sizedata["width"], 'height' => $sizedata['height']]);
+                            ob_start();
+                            imagepng($cropImage);
+                            $imgdata = ob_get_contents();
+
+                            ob_end_clean();
+                        }
+                    }
+                    $this->pdf->Image('@'.$imgdata,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+                        $sizedata["width"],$sizedata["height"],'',$arraydata["link"]); 
+                    
+                }
+                elseif($this->left($path,22)==  "data:image/png;base64,")
+                {
+                    $imgtype="PNG";
+                     $img_base64_encoded = $path;
+                       $img=  str_replace('data:image/png;base64,', '', $path);
+
+                    $imgdata = base64_decode($img);
+
+                    $sizedata = $this->setDisplayImageSize($arraydata, $imgdata);
+                    if(array_key_exists("scale_type", $arraydata))
+                    {
+                        if($arraydata["scale_type"] == "Clip")
+                        {
+                            $realImage = imagecreatefromstring($imgdata);
+                            $cropImage = imagecrop($realImage, ['x' => 0, 'y' => 0, 'width' => $sizedata["width"], 'height' => $sizedata['height']]);
+                            ob_start();
+                            imagepng($cropImage);
+                            $imgdata = ob_get_contents();
+
+                            ob_end_clean();
+                        }
+                    }
+                    $this->pdf->Image('@'.$imgdata,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+                        $sizedata["width"],$sizedata["height"],'',$arraydata["link"]); 
+                    // echo $path;
+                    // echo '<img src="'.$path.'"/>';die;
+                     // $imageContent = file_get_contents($img_base64_encoded);
+                  
+                  //  $newpath = tempnam(sys_get_temp_dir(), 'prefix');
+                  // die;
+                    // $this->pdf->Image($newpath,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+                    //     $sizedata["width"],$sizedata["height"],'',$arraydata["link"]); 
+                    //       $imgtype="PNG";
+                    //      // $this->pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+                    //      $img= str_replace('data:image/png;base64,', '', $path);
+                    //      $imgdata = base64_decode($img);
+         
+                    //      $sizedata = $this->setDisplayImageSize($arraydata, $imgdata);
+                    //     if(array_key_exists("scale_type", $arraydata))
+                    //     {
+                    //         if($arraydata["scale_type"] == "Clip")
+                    //         {
+                    //             $realImage = imagecreatefromstring($imgdata);
+                    //             $cropImage = imagecrop($realImage, ['x' => 0, 'y' => 0, 'width' => $sizedata["width"], 'height' => $sizedata['height']]);
+         
+                    //             ob_start();
+                    //             imagepng($cropImage);
+                    //             $imgdata = ob_get_contents();
+
+                    //             ob_end_clean();
+                    //         }
+                    //     }
+                    
+                                    
+                    // $this->pdf->Image('@'.$imgdata,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis, 
+                    //     $sizedata["width"],$sizedata["height"],'',$arraydata["link"]); 
+            
+                    
+                } 
+            }
+            // echo $arraydata['path'];
+            
+           
+
+        }
+
+        elseif($arraydata["type"]=="SetTextColor") {
+            $this->textcolor_r=$arraydata['r'];
+            $this->textcolor_g=$arraydata['g'];
+            $this->textcolor_b=$arraydata['b'];
+            
+            if($this->hideheader==true && $this->currentband=='pageHeader')
+                $this->pdf->SetTextColor(100,33,30);
+            else
+                $this->pdf->SetTextColor($arraydata["r"],$arraydata["g"],$arraydata["b"]);
+        }
+        elseif($arraydata["type"]=="SetDrawColor") {
+            $this->drawcolor_r=$arraydata['r'];
+            $this->drawcolor_g=$arraydata['g'];
+            $this->drawcolor_b=$arraydata['b'];
+            $this->pdf->SetDrawColor($arraydata["r"],$arraydata["g"],$arraydata["b"]);
+        }
+        elseif($arraydata["type"]=="SetLineWidth") {
+            $this->pdf->SetLineWidth($arraydata["width"]);
+        }
+        elseif($arraydata["type"]=="break"){
+      
+          
+        }
+        elseif($arraydata["type"]=="Line") {
+            $printline=false;
+            if($arraydata['printWhenExpression']=="")
+                $printline=true;
+            else
+                $printline=$this->analyse_expression($arraydata['printWhenExpression']);
+            if($printline)
+            $this->pdf->Line($arraydata["x1"]+$this->arrayPageSetting["leftMargin"],$arraydata["y1"]+$y_axis,$arraydata["x2"]+$this->arrayPageSetting["leftMargin"],$arraydata["y2"]+$y_axis,$arraydata["style"]);
+        }
+        elseif($arraydata["type"]=="SetFillColor") {
+            $this->fillcolor_r=$arraydata['r'];
+            $this->fillcolor_g=$arraydata['g'];
+            $this->fillcolor_b=$arraydata['b'];
+            $this->pdf->SetFillColor($arraydata["r"],$arraydata["g"],$arraydata["b"]);
+        }
+      elseif($arraydata["type"]=="lineChart") {
+        // echo 'lineChart';
+          $this->chartobj->showChart($arraydata, $y_axis,'lineChart',$this->pdf);
+        }
+      elseif($arraydata["type"]=="barChart") 
+      {
+        // echo 'barChart';
+            $this->chartobj->showChart($arraydata, $y_axis,'barChart',$this->pdf);
+        }
+      elseif($arraydata["type"]=="pieChart") {
+
+            $this->chartobj->showChart($arraydata, $y_axis,'pieChart',$this->pdf);
+        }
+      elseif($arraydata["type"]=="stackedBarChart") 
+      {
+          // echo 'stackbarChart';
+            $this->chartobj->showChart($arraydata, $y_axis,'stackedBarChart',$this->pdf);
+        }
+      elseif($arraydata["type"]=="stackedAreaChart") 
+      {
+        // echo 'stackareaChart';
+            $this->chartobj->showAreaChart($arraydata, $y_axis,$arraydata["type"],$this->pdf);
+        }
+        elseif($arraydata["type"]=="Barcode"){
+            
+            $this->showBarcode($arraydata, $y_axis);
+        }
+         elseif($arraydata["type"]=="CrossTab"){
+            
+            $this->showCrossTab($arraydata, $y_axis);
+        }
+
+             $this->currentuuid="";
+    }
     protected function drawHTMLTable($sql='')
     {
         $q=$this->dbQuery($sql);
@@ -1326,6 +1663,8 @@ protected function convertDigit($digit=0)
             // echo $data."<br/>";
 
             //process using general text expression
+            $jpgkey = "data:image/jpeg;base64";
+            $pngkey = "data:image/png;base64,";        
             $pointerposition=$this->global_pointer+$this->offsetposition;
             $fields=$this->arraysqltable[$pointerposition];        
             
@@ -1339,7 +1678,15 @@ protected function convertDigit($digit=0)
             }
             
             //use '+' to split all segment of text, so that we can analyse either wish to concat or + operation
-            $arrsplitedstr=explode('+',$replacedquotedstr);
+            if( ($this->left($data, 22) == $jpgkey || $this->left($data, 22) == $pngkey))
+            {
+                // echo '<br/>'.$replacedquotedstr.'<br/>';
+            }
+            else
+            {
+                $arrsplitedstr=explode('+',$replacedquotedstr);    
+            }
+            
             foreach($arrsplitedstr as $splitno => $splitedstr)
             {
                 //draw value of Field, parameter and variable 
@@ -1468,8 +1815,7 @@ protected function convertDigit($digit=0)
 
 
             //base 64 image can proceed easily
-            $jpgkey = "data:image/jpeg;base64";
-            $pngkey = "data:image/png;base64,";        
+            
             if($datatype == "Image" && ($this->left($data, 22) == $jpgkey || $this->left($data, 22) == $pngkey))
             {
                 

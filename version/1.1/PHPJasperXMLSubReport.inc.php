@@ -2296,197 +2296,197 @@ if(isset($this->arraygroup)&&($this->global_pointer>0)&&($this->arraysqltable[$t
     }
 
 
-    public function display($arraydata,$y_axis=0,$fielddata=false) {
-  //print_r($arraydata);echo "<br/>";
-    //    $this->pdf->Cell(10,10,"SSSS");
+//     public function display($arraydata,$y_axis=0,$fielddata=false) {
+//   //print_r($arraydata);echo "<br/>";
+//     //    $this->pdf->Cell(10,10,"SSSS");
     
             
             
-    $this->Rotate($arraydata["rotation"]);
+//     $this->Rotate($arraydata["rotation"]);
 
-    if($arraydata["rotation"]!=""){
+//     if($arraydata["rotation"]!=""){
                         
-    if($arraydata["rotation"]=="Left"){
-         $w=$arraydata["width"];
-        $arraydata["width"]=$arraydata["height"];
-        $arraydata["height"]=$w;
-            $this->pdf->SetXY($this->pdf->GetX()-$arraydata["width"],$this->pdf->GetY());
-    }
-    elseif($arraydata["rotation"]=="Right"){
-         $w=$arraydata["width"];
-        $arraydata["width"]=$arraydata["height"];
-        $arraydata["height"]=$w;
-            $this->pdf->SetXY($this->pdf->GetX(),$this->pdf->GetY()-$arraydata["height"]);
-    }
-    elseif($arraydata["rotation"]=="UpsideDown"){
-        //soverflow"=>$stretchoverflow,"poverflow"
-        $arraydata["soverflow"]=true;
-        $arraydata["poverflow"]=true;
-       //   $w=$arraydata["width"];
-       // $arraydata["width"]=$arraydata["height"];
-        //$arraydata["height"]=$w;
-        $this->pdf->SetXY($this->pdf->GetX()- $arraydata["width"],$this->pdf->GetY()-$arraydata["height"]);
-    }
+//     if($arraydata["rotation"]=="Left"){
+//          $w=$arraydata["width"];
+//         $arraydata["width"]=$arraydata["height"];
+//         $arraydata["height"]=$w;
+//             $this->pdf->SetXY($this->pdf->GetX()-$arraydata["width"],$this->pdf->GetY());
+//     }
+//     elseif($arraydata["rotation"]=="Right"){
+//          $w=$arraydata["width"];
+//         $arraydata["width"]=$arraydata["height"];
+//         $arraydata["height"]=$w;
+//             $this->pdf->SetXY($this->pdf->GetX(),$this->pdf->GetY()-$arraydata["height"]);
+//     }
+//     elseif($arraydata["rotation"]=="UpsideDown"){
+//         //soverflow"=>$stretchoverflow,"poverflow"
+//         $arraydata["soverflow"]=true;
+//         $arraydata["poverflow"]=true;
+//        //   $w=$arraydata["width"];
+//        // $arraydata["width"]=$arraydata["height"];
+//         //$arraydata["height"]=$w;
+//         $this->pdf->SetXY($this->pdf->GetX()- $arraydata["width"],$this->pdf->GetY()-$arraydata["height"]);
+//     }
 
-    }
+//     }
 
-        if($arraydata["type"]=="SetFont") {
+//         if($arraydata["type"]=="SetFont") {
 
 
-/*            if($arraydata["font"]=='uGB')
-                $this->pdf->isUnicode=true;
-            else
-                $this->pdf->isUnicode=false;
+// /*            if($arraydata["font"]=='uGB')
+//                 $this->pdf->isUnicode=true;
+//             else
+//                 $this->pdf->isUnicode=false;
 
-            $this->pdf->SetFont($arraydata["font"],$arraydata["fontstyle"],$arraydata["fontsize"]);*/
-                  $arraydata["font"]=  strtolower($arraydata["font"]);
+//             $this->pdf->SetFont($arraydata["font"],$arraydata["fontstyle"],$arraydata["fontsize"]);*/
+//                   $arraydata["font"]=  strtolower($arraydata["font"]);
 
-                    $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
-          if(file_exists($fontfile) ){
+//                     $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+//           if(file_exists($fontfile) ){
           
-             $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
-                //echo $arraydata["font"].",".$arraydata["fontstyle"].','.$arraydata["fontsize"].','.$fontfile;
-                $this->pdf->SetFont($arraydata["font"],$arraydata["fontstyle"],$arraydata["fontsize"],$fontfile);
-           }
-           else{
-                $arraydata["font"]="freeserif";
-                                if($arraydata["fontstyle"]=="")
-                                    $this->pdf->SetFont('freeserif',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
-                                elseif($arraydata["fontstyle"]=="B")
-                                    $this->pdf->SetFont('freeserifb',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
-                                elseif($arraydata["fontstyle"]=="I")
-                                    $this->pdf->SetFont('freeserifi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifi.php');
-                                elseif($arraydata["fontstyle"]=="BI")
-                                    $this->pdf->SetFont('freeserifbi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
-                                elseif($arraydata["fontstyle"]=="BIU")
-                                    $this->pdf->SetFont('freeserifbi',"BIU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
-                                elseif($arraydata["fontstyle"]=="U")
-                                    $this->pdf->SetFont('freeserif',"U",$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
-                                elseif($arraydata["fontstyle"]=="BU")
-                                    $this->pdf->SetFont('freeserifb',"U",$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
-                                elseif($arraydata["fontstyle"]=="IU")
-                                    $this->pdf->SetFont('freeserifi',"IU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+//              $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+//                 //echo $arraydata["font"].",".$arraydata["fontstyle"].','.$arraydata["fontsize"].','.$fontfile;
+//                 $this->pdf->SetFont($arraydata["font"],$arraydata["fontstyle"],$arraydata["fontsize"],$fontfile);
+//            }
+//            else{
+//                 $arraydata["font"]="freeserif";
+//                                 if($arraydata["fontstyle"]=="")
+//                                     $this->pdf->SetFont('freeserif',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
+//                                 elseif($arraydata["fontstyle"]=="B")
+//                                     $this->pdf->SetFont('freeserifb',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
+//                                 elseif($arraydata["fontstyle"]=="I")
+//                                     $this->pdf->SetFont('freeserifi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifi.php');
+//                                 elseif($arraydata["fontstyle"]=="BI")
+//                                     $this->pdf->SetFont('freeserifbi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+//                                 elseif($arraydata["fontstyle"]=="BIU")
+//                                     $this->pdf->SetFont('freeserifbi',"BIU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+//                                 elseif($arraydata["fontstyle"]=="U")
+//                                     $this->pdf->SetFont('freeserif',"U",$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
+//                                 elseif($arraydata["fontstyle"]=="BU")
+//                                     $this->pdf->SetFont('freeserifb',"U",$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
+//                                 elseif($arraydata["fontstyle"]=="IU")
+//                                     $this->pdf->SetFont('freeserifi',"IU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
                     
                 
-            }
+//             }
 
-        }
-        elseif($arraydata["type"]=="subreport") {
+//         }
+//         elseif($arraydata["type"]=="subreport") {
 
-            $this->runSubReport($arraydata);
-        }
-        elseif($arraydata["type"]=="MultiCell") { 
-            $currenty=$this->pdf->GetY();
-            if($fielddata==false) {
-        if(($this->allowprintuntill>=$currenty))            
-                $this->checkoverflow($arraydata,$this->updatePageNo($arraydata["txt"]));
-            }
-            elseif($fielddata==true) {
+//             $this->runSubReport($arraydata);
+//         }
+//         elseif($arraydata["type"]=="MultiCell") { 
+//             $currenty=$this->pdf->GetY();
+//             if($fielddata==false) {
+//         if(($this->allowprintuntill>=$currenty))            
+//                 $this->checkoverflow($arraydata,$this->updatePageNo($arraydata["txt"]));
+//             }
+//             elseif($fielddata==true) {
                   
                     
-                  if(($this->allowprintuntill>=$currenty) )
-                      $this->checkoverflow($arraydata,$this->updatePageNo($this->analyse_expression($arraydata["txt"],$arraydata["isPrintRepeatedValues"] )));
-                  elseif($this->parentcurrentband=="detail")
-                      $this->pdf->Cell(40,10,"SADSD");
-//                  echo $arraydata["txt"]."+\"|(".$y_axis.",".print_r($arraydata,true)."),$this->allowprintuntill,$newy\"<br/><br/>";
+//                   if(($this->allowprintuntill>=$currenty) )
+//                       $this->checkoverflow($arraydata,$this->updatePageNo($this->analyse_expression($arraydata["txt"],$arraydata["isPrintRepeatedValues"] )));
+//                   elseif($this->parentcurrentband=="detail")
+//                       $this->pdf->Cell(40,10,"SADSD");
+// //                  echo $arraydata["txt"]."+\"|(".$y_axis.",".print_r($arraydata,true)."),$this->allowprintuntill,$newy\"<br/><br/>";
                   
                   
-            }
-        }
-        elseif($arraydata["type"]=="SetXY") {
+//             }
+//         }
+//         elseif($arraydata["type"]=="SetXY") {
 
-            $this->pdf->SetXY($arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis);
-        }
-        elseif($arraydata["type"]=="Cell") {
+//             $this->pdf->SetXY($arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis);
+//         }
+//         elseif($arraydata["type"]=="Cell") {
 
-           $currenty=$this->pdf->GetY();
-           if(($this->allowprintuntill>=$currenty))                
-            $this->pdf->Cell($arraydata["width"],$arraydata["height"],$this->updatePageNo($arraydata["txt"]),$arraydata["border"],$arraydata["ln"],$arraydata["align"],$arraydata["fill"],$arraydata["link"]);
-           elseif($this->parentcurrentband=="detail")
-            $this->pdf->Cell(40,10,"SADSD");
+//            $currenty=$this->pdf->GetY();
+//            if(($this->allowprintuntill>=$currenty))                
+//             $this->pdf->Cell($arraydata["width"],$arraydata["height"],$this->updatePageNo($arraydata["txt"]),$arraydata["border"],$arraydata["ln"],$arraydata["align"],$arraydata["fill"],$arraydata["link"]);
+//            elseif($this->parentcurrentband=="detail")
+//             $this->pdf->Cell(40,10,"SADSD");
            
-        }
-        elseif($arraydata["type"]=="Rect") {
-            $this->pdf->Rect($arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,$arraydata["width"],$arraydata["height"]);
-        }
-        elseif($arraydata["type"]=="Image") {
+//         }
+//         elseif($arraydata["type"]=="Rect") {
+//             $this->pdf->Rect($arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,$arraydata["width"],$arraydata["height"]);
+//         }
+//         elseif($arraydata["type"]=="Image") {
             
            
-            $path = $this->analyse_expression($arraydata["path"], "true", $arraydata["type"]);
-            $imgtype=substr($path,-3);
-            // var_export( $arraydata);
-            $arraydata["link"]=$arraydata["link"]."";
-            $arraydata["link"]=$this->analyse_expression($arraydata["link"]);
-            // $path=$this->analyse_expression($arraydata["path"]);
-            // $imgtype=substr($path,-3);
+//             $path = $this->analyse_expression($arraydata["path"], "true", $arraydata["type"]);
+//             $imgtype=substr($path,-3);
+//             // var_export( $arraydata);
+//             $arraydata["link"]=$arraydata["link"]."";
+//             $arraydata["link"]=$this->analyse_expression($arraydata["link"]);
+//             // $path=$this->analyse_expression($arraydata["path"]);
+//             // $imgtype=substr($path,-3);
                             
 
-            if($imgtype=='jpg' || right($path,3)=='jpg' || right($path,4)=='jpeg')
-                 $imgtype="JPEG";
-            elseif($imgtype=='png'|| $imgtype=='PNG')
-                  $imgtype="PNG";
+//             if($imgtype=='jpg' || right($path,3)=='jpg' || right($path,4)=='jpeg')
+//                  $imgtype="JPEG";
+//             elseif($imgtype=='png'|| $imgtype=='PNG')
+//                   $imgtype="PNG";
           
-            if(file_exists($path) || left($path,4)=='http' ){ 
-                        $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
-                              $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"]);                                    
-            }
-            elseif($this->left($path,22)== "data:image/jpeg;base64"){
-                $imgtype="JPEG";
-                $img=  str_replace('data:image/jpeg;base64,', '', $path);
-                $imgdata = base64_decode($img);
-                // echo $path;
-                $this->pdf->Image('@'.$imgdata,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,$arraydata["width"],
-                        $arraydata["height"],'',$arraydata["link"]); 
+//             if(file_exists($path) || left($path,4)=='http' ){ 
+//                         $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+//                               $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"]);                                    
+//             }
+//             elseif($this->left($path,22)== "data:image/jpeg;base64"){
+//                 $imgtype="JPEG";
+//                 $img=  str_replace('data:image/jpeg;base64,', '', $path);
+//                 $imgdata = base64_decode($img);
+//                 // echo $path;
+//                 $this->pdf->Image('@'.$imgdata,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,$arraydata["width"],
+//                         $arraydata["height"],'',$arraydata["link"]); 
                 
-            }
-            elseif($this->left($path,22)==  "data:image/png;base64,"){
-                      $imgtype="PNG";
-                     // $this->pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-                     $img= str_replace('data:image/png;base64,', '', $path);
-                                 $imgdata = base64_decode($img);
-                    $this->pdf->Image('@'.$imgdata,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
-                        $arraydata["width"],$arraydata["height"],'',$arraydata["link"]);             
-            }
+//             }
+//             elseif($this->left($path,22)==  "data:image/png;base64,"){
+//                       $imgtype="PNG";
+//                      // $this->pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+//                      $img= str_replace('data:image/png;base64,', '', $path);
+//                                  $imgdata = base64_decode($img);
+//                     $this->pdf->Image('@'.$imgdata,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+//                         $arraydata["width"],$arraydata["height"],'',$arraydata["link"]);             
+//             }
         
-        }
+//         }
 
-        elseif($arraydata["type"]=="SetTextColor") {
-            $this->pdf->SetTextColor($arraydata["r"],$arraydata["g"],$arraydata["b"]);
-        }
-        elseif($arraydata["type"]=="SetDrawColor") {
-            $this->pdf->SetDrawColor($arraydata["r"],$arraydata["g"],$arraydata["b"]);
-        }
-        elseif($arraydata["type"]=="SetLineWidth") {
-            $this->pdf->SetLineWidth($arraydata["width"]);
-        }
-        elseif($arraydata["type"]=="Line") {
-            $this->pdf->Line($arraydata["x1"]+$this->arrayPageSetting["leftMargin"],$arraydata["y1"]+$y_axis,$arraydata["x2"]+$this->arrayPageSetting["leftMargin"],$arraydata["y2"]+$y_axis);
-        }
-        elseif($arraydata["type"]=="SetFillColor") {
-            $this->pdf->SetFillColor($arraydata["r"],$arraydata["g"],$arraydata["b"]);
-        }
-      elseif($arraydata["type"]=="lineChart") {
+//         elseif($arraydata["type"]=="SetTextColor") {
+//             $this->pdf->SetTextColor($arraydata["r"],$arraydata["g"],$arraydata["b"]);
+//         }
+//         elseif($arraydata["type"]=="SetDrawColor") {
+//             $this->pdf->SetDrawColor($arraydata["r"],$arraydata["g"],$arraydata["b"]);
+//         }
+//         elseif($arraydata["type"]=="SetLineWidth") {
+//             $this->pdf->SetLineWidth($arraydata["width"]);
+//         }
+//         elseif($arraydata["type"]=="Line") {
+//             $this->pdf->Line($arraydata["x1"]+$this->arrayPageSetting["leftMargin"],$arraydata["y1"]+$y_axis,$arraydata["x2"]+$this->arrayPageSetting["leftMargin"],$arraydata["y2"]+$y_axis);
+//         }
+//         elseif($arraydata["type"]=="SetFillColor") {
+//             $this->pdf->SetFillColor($arraydata["r"],$arraydata["g"],$arraydata["b"]);
+//         }
+//       elseif($arraydata["type"]=="lineChart") {
 
-            $this->showLineChart($arraydata, $y_axis);
-        }
-      elseif($arraydata["type"]=="barChart") {
+//             $this->showLineChart($arraydata, $y_axis);
+//         }
+//       elseif($arraydata["type"]=="barChart") {
 
-            $this->showBarChart($arraydata, $y_axis,'barChart');
-        }
-      elseif($arraydata["type"]=="stackedBarChart") {
+//             $this->showBarChart($arraydata, $y_axis,'barChart');
+//         }
+//       elseif($arraydata["type"]=="stackedBarChart") {
 
-            $this->showBarChart($arraydata, $y_axis,'stackedBarChart');
-        }
-      elseif($arraydata["type"]=="stackedAreaChart") {
+//             $this->showBarChart($arraydata, $y_axis,'stackedBarChart');
+//         }
+//       elseif($arraydata["type"]=="stackedAreaChart") {
 
-            $this->showAreaChart($arraydata, $y_axis,$arraydata["type"]);
-        }
-          elseif($arraydata["type"]=="Barcode"){
+//             $this->showAreaChart($arraydata, $y_axis,$arraydata["type"]);
+//         }
+//           elseif($arraydata["type"]=="Barcode"){
             
-            $this->showBarcode($arraydata, $y_axis);
-        }
+//             $this->showBarcode($arraydata, $y_axis);
+//         }
 
-    }
+//     }
     
     public function printParentHeaderFooter(){
         
