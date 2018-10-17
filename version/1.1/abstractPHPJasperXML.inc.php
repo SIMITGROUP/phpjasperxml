@@ -8,8 +8,7 @@ class abstractPHPJasperXML
         protected $pdflib;
         protected $lang;
         public $debugsql=false;
-        protected $myconn;
-        protected $fontdir;
+        protected $myconn;        
         protected $global_pointer;
         protected $arraysubdataset;
         protected $offsetposition;
@@ -24,8 +23,9 @@ class abstractPHPJasperXML
         protected $currentuuid;
         protected $elementid=0;
         public $arrayfield=[];
-        protected $pchartfolder=__DIR__.'/../../pchart2';
-        protected $chartobj ;
+        protected $pchartfolder= __DIR__ . '/../../pchart2';
+        protected $chartobj;
+        protected $fontdir = __DIR__ . "/../../tcpdf/fonts";
 
         public function setErrorReport($error_report=0)
         {
@@ -152,7 +152,7 @@ class abstractPHPJasperXML
             }
         }
         if($arraydata["type"]=="SetFont") {
-        //echo $arraydata["font"]."<br/>";
+        
                        $arraydata["font"]=  strtolower(str_replace(' ', '', $arraydata["font"]));
 
                         if($arraydata["fontstyle"]=="BI")
@@ -163,15 +163,19 @@ class abstractPHPJasperXML
                             $fontfile=$this->fontdir.'/'.$arraydata["font"].'b.php';
                         else
                              $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
-            //echo $fontfile." : ";
+            
             if(!file_exists($fontfile))
+            {
                 $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+            }
+            
             //echo $fontfile."<br/>";
-          if(file_exists($fontfile) || $this->bypassnofont==false){
-
+          if(file_exists($fontfile) ){
+            
                 $this->pdf->SetFont($arraydata["font"],$arraydata["fontstyle"],$arraydata["fontsize"],$fontfile);
            }
            else{
+
                 $arraydata["font"]="freeserif";
                                 if($arraydata["fontstyle"]=="")
                                     $this->pdf->SetFont('freeserif',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
@@ -1835,7 +1839,7 @@ protected function convertDigit($digit=0)
                    $fm=str_replace('convertNumber', '', $fm);
                    $firstword=$this->left( ltrim($fm) ,1);
                    // echo ',first word:'.$firstword.'<br/>';
-                   if( in_array($firstword, ['!','=','>','<']))
+                   if( in_array($firstword, ['.','!','=','>','<']))
                    {
                      $fm='""'.$fm;
                    }

@@ -34,8 +34,8 @@ class PHPJasperXMLSubReport extends abstractPHPJasperXML{
         //error_reporting(1);
         $this->pdflib=$pdflib;
         $this->xoffset=$xoffset;
-        if($this->fontdir=="")
-        $this->fontdir=dirname(__FILE__)."/tcpdf/fonts";
+        // if($this->fontdir=="")
+        // $this->fontdir=dirname(__FILE__)."/tcpdf/fonts";
 
     }
 

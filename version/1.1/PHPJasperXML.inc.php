@@ -26,6 +26,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
     // private $fontdir="";
     public $bypassnofont=true;
     public $titlewithpagebreak=false;
+
     // private $detailallowtill=0;
     // private $offsetposition=0;
     // protected $detailbandqty=0;
@@ -41,6 +42,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
 
     public function __construct($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
+
         ini_set('display_errors', 'Off');
        // $this->setErrorReport(2);
        // echo 'sdsdd';die;
@@ -49,8 +51,8 @@ class PHPJasperXML extends abstractPHPJasperXML{
 
         $this->chartobj = new PHPJasperXMLChart();
         $this->pdflib=$pdflib;
-        if($this->fontdir=="")
-        $this->fontdir=__DIR__."/../../tcpdf/fonts";
+        // if($this->fontdir=="")
+        
 
     }
     
@@ -1430,18 +1432,19 @@ if($type=='stackedBarChart')
     
 
     public function printlongtext($fontfamily='freeserif',$fontstyle='',$fontsize=12){
+
                     //$this->gotTextOverPage=false;
                         $this->columnFooter();
                         $this->pageFooter();
                         $this->pageHeader();
-                                                $this->columnHeader();
-                    $this->hideheader==true;
-                    
-                    $this->currentband='detail';  
-                      $fontfile=$this->fontdir.'/'.$fontfamily.'.php';
-                                        
-             if(file_exists($fontfile) || $this->bypassnofont==false){
-               $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+                        $this->columnHeader();
+                        $this->hideheader==true;                    
+                        $this->currentband='detail';  
+                        $fontfile=$this->fontdir.'/'.$fontfamily.'.php';
+                                       //|| $this->bypassnofont==false 
+             if(file_exists($fontfile) )
+             {
+                $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
                 $this->pdf->SetFont($fontfamily,$fontstyle,$fontsize,$fontfile);
            }
            else{
@@ -2330,7 +2333,10 @@ $this->pdf->writeHTML($table);
 
     public function checkoverflow($arraydata=[],$txt="",$maxheight=0) {
     $newfont=    $this->recommendFont($txt, $arraydata["font"],$arraydata["pdfFontName"]);
+    
+    
     $this->pdf->SetFont($newfont,$this->pdf->getFontStyle(),$this->pdf->getFontSize());
+    
         $this->print_expression($arraydata);
         
         if($this->print_expression_result==true) {
@@ -2569,6 +2575,7 @@ $this->pdf->writeHTML($table);
                
                $PHPJasperXMLSubReport->transferDBtoArray($this->db_host,$this->db_user,$this->db_pass,$this->dbname,$this->cndriver);
                $PHPJasperXMLSubReport->pdf=$this->pdf;
+
                $PHPJasperXMLSubReport->outpage();    //page output method I:standard output  D:Download file
   
                $this->SubReportCheckPoint=$PHPJasperXMLSubReport->SubReportCheckPoint;
