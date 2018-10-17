@@ -26,7 +26,7 @@ class abstractPHPJasperXML
         protected $pchartfolder= __DIR__ . '/../../pchart2';
         protected $chartobj;
         protected $fontdir = __DIR__ . "/../../tcpdf/fonts";
-
+        protected $groupnochange=0; //use for detect record change till which level of grouping (grouping support multilevel)
         public function setErrorReport($error_report=0)
         {
             
@@ -1706,7 +1706,7 @@ protected function convertDigit($digit=0)
                     {
                         $paravalue='"'.$paravalue.'"';
                     }
-                    $splitedstr=str_replace($matchesparameter[0][$parano],$paravalue,$splitedstr);
+                    $splitedstr=str_replace('$P{'.$paraname.'}',$paravalue,$splitedstr);
                 }
                 //draw field
                 foreach($matchesfield[1] as $fieldno => $fieldname)
@@ -1726,12 +1726,13 @@ protected function convertDigit($digit=0)
                 //draw variable
                  foreach($matchesvariable[1] as $variableno => $variablename)
                 {                          
-
+                    
                     $variablevalue='';
-                   
+                   // echo '<b style="color:red">'.$variablename.':'.$this->arrayVariable[$variablename]['ans'].'</b><br/>';
                         // for all kind of report count, group count
                     if(strpos($fm,'_COUNT')!==false)
                     {
+                        // echo 'count:';
                         switch($variablename)
                         {
                             case 'REPORT_COUNT':
@@ -1759,10 +1760,11 @@ protected function convertDigit($digit=0)
                     }
                     else //others kind of variable
                     {
-
+                        // echo 'others:';
                          if(isset($this->arrayVariable[$variablename]))
                         {
                             $variablevalue=$this->arrayVariable[$variablename]['ans'];
+                            // echo '='.$$variablevalue.'<br/>';
                         }
                         else
                         {
@@ -1771,13 +1773,21 @@ protected function convertDigit($digit=0)
                                  
                     
                     }
+
+
+
                     $variablevalue=$this->tweakValue($variablevalue,'tweek');
+
+                    
                     if(!$this->isNumber($variablevalue))
                     {
                         $variablevalue='"'.$variablevalue.'"';
                     }
-                  
-                    $splitedstr=str_replace($matchesfield[0][$fieldno],$variablevalue, $splitedstr);
+
+                    // echo 'final variable value='.$variablevalue.'<hr/>';
+
+                  $splitedstr=str_replace('$V{'.$variablename.'}',$variablevalue, $splitedstr);
+                 
                 }
              
                 $arrsplitedstr[$splitno]=$splitedstr;
@@ -1871,6 +1881,167 @@ protected function convertDigit($digit=0)
 
             }
         }
+
+
+     protected function variable_calculation($rowno='') {
+
+
+        foreach($this->arrayVariable as $k=>$out) 
+        {
+            
+
+            if($out["calculation"]!=""){
+                      $out['target']=str_replace(array('$F{','}'),'',$out['target']);//,  (strlen($out['target'])-1) );                 
+            }
+            // echo $k.':'.$out['calculation'].','.$out['target'].',value'.$this->arraysqltable[$rowno][$out['target']].'<BR/>';    
+         //   echo $out['resetType']. "<br/><br/>";
+            switch($out["calculation"]) 
+            {
+                case "Sum":
+                     $value=$this->arrayVariable[$k]["ans"];                                        
+                    if($out['resetType']=='' || $out['resetType']=='None' ){
+                            if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") 
+                            {
+                            //    foreach($this->arraysqltable as $table) {
+                                    $value=$this->time_to_sec($value);
+
+                                    $value+=$this->time_to_sec($this->arraysqltable[$rowno][$out['target']]);
+                                    //$sum=$sum+substr($table["$out[target]"],0,2)*3600+substr($table["$out[target]"],3,2)*60+substr($table["$out[target]"],6,2);
+                               // }
+                                //$sum= floor($sum / 3600).":".floor($sum%3600 / 60);
+                                //if($sum=="0:0"){$sum="00:00";}
+                                $value=$this->sec_to_time($value);
+                            }
+                            else {
+                                //resetGroup
+                               // foreach($this->arraysqltable as $table) {
+                              
+                                         $value=round($value,10)+$this->arraysqltable[$rowno][$out['target']];
+                                        // echo "k=$k, $value<br/>";
+                              //      $table[$out["target"]];
+                             //   }
+                            }
+                         
+                    }// finisish resettype=''
+                    elseif($out['resetType']=='Group') //reset type='group'
+                    {
+                  
+                        
+//                       print_r($this->grouplist);
+//                       echo "<br/>";
+//                       echo $out['resetGroup'] ."<br/>";
+//                       //                        if( $this->arraysqltable[$this->global_pointer][$this->group_pointer]!=$this->arraysqltable[$this->global_pointer-1][$this->group_pointer])
+//                        if( $this->arraysqltable[$this->global_pointer][$this->group_pointer]!=$this->arraysqltable[$this->global_pointer-1][$this->group_pointer])
+  //                           $value=0;
+  //            
+                       if($this->groupnochange>=0){
+                            
+                            
+                       //     for($g=$this->groupnochange;$g<4;$g++){
+                         //        $value=0;    
+//                                  $this->arrayVariable[$k]["ans"]=0;
+  //                                echo $this->grouplist[$g]["name"].":".$this->groupnochange."<br/>";
+                           // }
+                       }
+                      //    echo $this->global_pointer.",".$this->group_pointer.",".$this->arraysqltable[$this->global_pointer][$this->group_pointer].",".$this->arraysqltable[$this->global_pointer-1][$this->group_pointer].",".$this->arraysqltable[$rowno]["$out[target]"];
+                                 if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
+                                      $value+=$this->time_to_sec($this->arraysqltable[$rowno]["$out[target]"]);
+                                //$sum= floor($sum / 3600).":".floor($sum%3600 / 60);
+                                //if($sum=="0:0"){$sum="00:00";}
+                                $value=$this->sec_to_time($value);
+                                 }
+                                else {
+                                    
+                                      $value+=$this->arraysqltable[$rowno]["$out[target]"];
+                                                           
+ 
+                                }
+                                  
+                    }
+
+                        
+                    $this->arrayVariable[$k]["ans"]=$value;
+                    
+                   // echo ",ans:$value<br/>";
+                    break;
+                case "Average":
+                    $value=$this->arrayVariable[$k]["ans"];
+                    
+                    
+                    if($out['resetType']==''|| $out['resetType']=='None' ){
+                            if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
+                                    $value=$this->time_to_sec($value);
+                                    $value+=$this->time_to_sec($this->arraysqltable[$rowno]["$out[target]"]);
+                                $value=$this->sec_to_time($value);
+                            }
+                            else {
+                                         $value=($value*($this->report_count-1)+$this->arraysqltable[$rowno]["$out[target]"])/$this->report_count;
+                            }                         
+                    }// finisish resettype=''
+                    elseif($out['resetType']=='Group') //reset type='group'
+                    {
+                       if($this->groupnochange>=0){
+                       }
+                                 if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
+                                      $value+=$this->time_to_sec($this->arraysqltable[$rowno]["$out[target]"]);
+                                $value=$this->sec_to_time($value);
+                                 }
+                                else {
+                                    $previousgroupcount=$this->group_count[$out['resetGroup']]-2;
+                                    $newgroupcount=$this->group_count[$out['resetGroup']]-1;
+                                    $previoustotal=$value*$previousgroupcount;
+                                    $newtotal=$previoustotal+$this->arraysqltable[$rowno]["$out[target]"];
+                                    $value=($newtotal)/$newgroupcount;
+                                }
+                                  
+                    }
+                        
+                    $this->arrayVariable[$k]["ans"]=$value;
+
+                    break;
+                case "DistinctCount":
+                    break;
+                case "Lowest":
+
+                    foreach($this->arraysqltable as $table) {
+                        $lowest=$table[$out["target"]];
+                        if($table[$out["target"]]<$lowest) {
+                            $lowest=$table[$out["target"]];
+                        }
+                        $this->arrayVariable[$k]["ans"]=$lowest;
+                    }
+                    break;
+                case "Highest":
+                    $out["ans"]=0;
+                    foreach($this->arraysqltable as $table) {
+                        if($table[$out["target"]]>$out["ans"]) {
+                            $this->arrayVariable[$k]["ans"]=$table[$out["target"]];
+                        }
+                    }
+                    break;
+//### A Count for groups, as a variable. Not tested yet, but seemed to work in print_r()                    
+                case "Count":
+                    $value=$this->arrayVariable[$k]["ans"];
+                    if( $this->arraysqltable[$this->global_pointer][$this->group_pointer]!=$this->arraysqltable[$this->global_pointer-1][$this->group_pointer])
+                       $value=0;
+                    $value++;
+                    $this->arrayVariable[$k]["ans"]=$value;
+                break;
+//### End of modification
+                case "":
+                   // $out["target"]=0;
+                    if(strpos( $out["target"], "_COUNT")==-1)
+                     $this->arrayVariable[$k]["ans"]=$this->analyse_expression( $out['target'], true);
+                    
+//                     $out["target"]= $this->analyse_expression( $out['target'], true);
+                    
+                    //other cases needed, temporary leave 0 if not suitable case
+                    break;
+
+            }
+              
+        }
+    }
         protected function formatText($txt='',$pattern='') 
         {
              // echo "$txt $pattern</br>";

@@ -20,7 +20,7 @@ class PHPJasperXMLSubReport extends abstractPHPJasperXML{
     private $groupno=0;
     public $totalgroup=0;
     private $footershowed=true;
-    private $groupnochange=0; //use for detect record change till which level of grouping (grouping support multilevel)
+    // private $groupnochange=0; //use for detect record change till which level of grouping (grouping support multilevel)
     private $titleheight=0;
     public $allowprintuntill=0;
     public $maxy=0;
@@ -233,227 +233,227 @@ class PHPJasperXMLSubReport extends abstractPHPJasperXML{
         return sprintf("%d:%02d:%02d", $hours, $minutes, $seconds);
     }
 
-    public function orivariable_calculation() {
+//     public function orivariable_calculation() {
 
-        foreach($this->arrayVariable as $k=>$out) {
-         //   echo $out['resetType']. "<br/><br/>";
-            switch($out["calculation"]) {
-                case "Sum":
-                    $sum=0;
-                    if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
-                        foreach($this->arraysqltable as $table) {
-                            $sum=$sum+$this->time_to_sec($table["$out[target]"]);
-                            //$sum=$sum+substr($table["$out[target]"],0,2)*3600+substr($table["$out[target]"],3,2)*60+substr($table["$out[target]"],6,2);
-                        }
-                        //$sum= floor($sum / 3600).":".floor($sum%3600 / 60);
-                        //if($sum=="0:0"){$sum="00:00";}
-                        $sum=$this->sec_to_time($sum);
-                    }
-                    else {
-                        foreach($this->arraysqltable as $table) {
-                            $sum=$sum+$table[$out["target"]];
-                            $table[$out["target"]];
-                        }
-                    }
+//         foreach($this->arrayVariable as $k=>$out) {
+//          //   echo $out['resetType']. "<br/><br/>";
+//             switch($out["calculation"]) {
+//                 case "Sum":
+//                     $sum=0;
+//                     if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
+//                         foreach($this->arraysqltable as $table) {
+//                             $sum=$sum+$this->time_to_sec($table["$out[target]"]);
+//                             //$sum=$sum+substr($table["$out[target]"],0,2)*3600+substr($table["$out[target]"],3,2)*60+substr($table["$out[target]"],6,2);
+//                         }
+//                         //$sum= floor($sum / 3600).":".floor($sum%3600 / 60);
+//                         //if($sum=="0:0"){$sum="00:00";}
+//                         $sum=$this->sec_to_time($sum);
+//                     }
+//                     else {
+//                         foreach($this->arraysqltable as $table) {
+//                             $sum=$sum+$table[$out["target"]];
+//                             $table[$out["target"]];
+//                         }
+//                     }
 
-                    $this->arrayVariable[$k]["ans"]=$sum;
-                    break;
-                case "Average":
+//                     $this->arrayVariable[$k]["ans"]=$sum;
+//                     break;
+//                 case "Average":
 
-                    $sum=0;
+//                     $sum=0;
 
-                    if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
-                        $m=0;
-                        foreach($this->arraysqltable as $table) {
-                            $m++;
+//                     if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
+//                         $m=0;
+//                         foreach($this->arraysqltable as $table) {
+//                             $m++;
 
-                            $sum=$sum+$this->time_to_sec($table["$out[target]"]);
-
-
-                        }
-
-                        $sum=$this->sec_to_time($sum/$m);
-                        $this->arrayVariable[$k]["ans"]=$sum;
-
-                    }
-                    else {
-                        $this->arrayVariable[$k]["ans"]=$sum;
-                        $m=0;
-                        foreach($this->arraysqltable as $table) {
-                            $m++;
-                            $sum=$sum+$table["$out[target]"];
-                        }
-                        $this->arrayVariable[$k]["ans"]=$sum/$m;
+//                             $sum=$sum+$this->time_to_sec($table["$out[target]"]);
 
 
-                    }
+//                         }
+
+//                         $sum=$this->sec_to_time($sum/$m);
+//                         $this->arrayVariable[$k]["ans"]=$sum;
+
+//                     }
+//                     else {
+//                         $this->arrayVariable[$k]["ans"]=$sum;
+//                         $m=0;
+//                         foreach($this->arraysqltable as $table) {
+//                             $m++;
+//                             $sum=$sum+$table["$out[target]"];
+//                         }
+//                         $this->arrayVariable[$k]["ans"]=$sum/$m;
 
 
-                    break;
-                case "DistinctCount":
-                    break;
-                case "Lowest":
-
-                    foreach($this->arraysqltable as $table) {
-                        $lowest=$table[$out["target"]];
-                        if($table[$out["target"]]<$lowest) {
-                            $lowest=$table[$out["target"]];
-                        }
-                        $this->arrayVariable[$k]["ans"]=$lowest;
-                    }
-                    break;
-                case "Highest":
-                    $out["ans"]=0;
-                    foreach($this->arraysqltable as $table) {
-                        if($table[$out["target"]]>$out["ans"]) {
-                            $this->arrayVariable[$k]["ans"]=$table[$out["target"]];
-                        }
-                    }
-                    break;
-//### A Count for groups, as a variable. Not tested yet, but seemed to work in print_r()
-                case "Count":
-                    $value=$this->arrayVariable[$k]["ans"];
-                    if( $this->arraysqltable[$this->global_pointer][$this->group_pointer]!=$this->arraysqltable[$this->global_pointer-1][$this->group_pointer])
-                       $value=0;
-                    $value++;
-                    $this->arrayVariable[$k]["ans"]=$value;
-                break;  
-//### End of modification               
-                default:
-                    $out["target"]=0;       //other cases needed, temporary leave 0 if not suitable case
-                    break;
-
-            }
-        }
-    }
+//                     }
 
 
-      public function variable_calculation($rowno) 
-      {
-        //   $this->variable_calculation($rownum, $this->arraysqltable[$this->global_pointer][$this->group_pointer]);
-        //   print_r($this->arraysqltable);
+//                     break;
+//                 case "DistinctCount":
+//                     break;
+//                 case "Lowest":
+
+//                     foreach($this->arraysqltable as $table) {
+//                         $lowest=$table[$out["target"]];
+//                         if($table[$out["target"]]<$lowest) {
+//                             $lowest=$table[$out["target"]];
+//                         }
+//                         $this->arrayVariable[$k]["ans"]=$lowest;
+//                     }
+//                     break;
+//                 case "Highest":
+//                     $out["ans"]=0;
+//                     foreach($this->arraysqltable as $table) {
+//                         if($table[$out["target"]]>$out["ans"]) {
+//                             $this->arrayVariable[$k]["ans"]=$table[$out["target"]];
+//                         }
+//                     }
+//                     break;
+// //### A Count for groups, as a variable. Not tested yet, but seemed to work in print_r()
+//                 case "Count":
+//                     $value=$this->arrayVariable[$k]["ans"];
+//                     if( $this->arraysqltable[$this->global_pointer][$this->group_pointer]!=$this->arraysqltable[$this->global_pointer-1][$this->group_pointer])
+//                        $value=0;
+//                     $value++;
+//                     $this->arrayVariable[$k]["ans"]=$value;
+//                 break;  
+// //### End of modification               
+//                 default:
+//                     $out["target"]=0;       //other cases needed, temporary leave 0 if not suitable case
+//                     break;
+
+//             }
+//         }
+//     }
 
 
-        foreach($this->arrayVariable as $k=>$out) {
-         //   echo $out['resetType']. "<br/><br/>";
-            switch($out["calculation"]) {
-                case "Sum":
-
-                         $value=$this->arrayVariable[$k]["ans"];
-                    if($out['resetType']==''){
-                            if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
-                            //    foreach($this->arraysqltable as $table) {
-                                    $value=$this->time_to_sec($value);
-
-                                    $value+=$this->time_to_sec($this->arraysqltable[$rowno]["$out[target]"]);
-                                    //$sum=$sum+substr($table["$out[target]"],0,2)*3600+substr($table["$out[target]"],3,2)*60+substr($table["$out[target]"],6,2);
-                               // }
-                                //$sum= floor($sum / 3600).":".floor($sum%3600 / 60);
-                                //if($sum=="0:0"){$sum="00:00";}
-                                $value=$this->sec_to_time($value);
-                            }
-                            else {
-                               // foreach($this->arraysqltable as $table) {
-                                         $value+=$this->arraysqltable[$rowno]["$out[target]"];
-
-                              //      $table[$out["target"]];
-                             //   }
-                            }
-                    }// finisish resettype=''
-                    else //reset type='group'
-                    {if( $this->arraysqltable[$this->global_pointer][$this->group_pointer]!=$this->arraysqltable[$this->global_pointer-1][$this->group_pointer])
-                             $value=0;
-                      //    echo $this->global_pointer.",".$this->group_pointer.",".$this->arraysqltable[$this->global_pointer][$this->group_pointer].",".$this->arraysqltable[$this->global_pointer-1][$this->group_pointer].",".$this->arraysqltable[$rowno]["$out[target]"];
-                                 if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
-                                      $value+=$this->time_to_sec($this->arraysqltable[$rowno]["$out[target]"]);
-                                //$sum= floor($sum / 3600).":".floor($sum%3600 / 60);
-                                //if($sum=="0:0"){$sum="00:00";}
-                                $value=$this->sec_to_time($value);
-                            }
-                            else {
-                                      $value+=$this->arraysqltable[$rowno]["$out[target]"];
-                            }
-                    }
+//       public function variable_calculation($rowno) 
+//       {
+//         //   $this->variable_calculation($rownum, $this->arraysqltable[$this->global_pointer][$this->group_pointer]);
+//         //   print_r($this->arraysqltable);
 
 
-                    $this->arrayVariable[$k]["ans"]=$value;
-              //      echo ",$value<br/>";
-                    break;
-                case "Average":
+//         foreach($this->arrayVariable as $k=>$out) {
+//          //   echo $out['resetType']. "<br/><br/>";
+//             switch($out["calculation"]) {
+//                 case "Sum":
 
-                    $sum=0;
+//                          $value=$this->arrayVariable[$k]["ans"];
+//                     if($out['resetType']==''){
+//                             if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
+//                             //    foreach($this->arraysqltable as $table) {
+//                                     $value=$this->time_to_sec($value);
 
-                    if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
-                        $m=0;
-                        //$value=$this->arrayVariable[$k]["ans"];
-                        //$value=$this->time_to_sec($value);
-                        //$value+=$this->time_to_sec($this->arraysqltable[$rowno]["$out[target]"]);
+//                                     $value+=$this->time_to_sec($this->arraysqltable[$rowno]["$out[target]"]);
+//                                     //$sum=$sum+substr($table["$out[target]"],0,2)*3600+substr($table["$out[target]"],3,2)*60+substr($table["$out[target]"],6,2);
+//                                // }
+//                                 //$sum= floor($sum / 3600).":".floor($sum%3600 / 60);
+//                                 //if($sum=="0:0"){$sum="00:00";}
+//                                 $value=$this->sec_to_time($value);
+//                             }
+//                             else {
+//                                // foreach($this->arraysqltable as $table) {
+//                                          $value+=$this->arraysqltable[$rowno]["$out[target]"];
 
-                        foreach($this->arraysqltable as $table) {
-                            $m++;
-
-                             $sum=$sum+$this->time_to_sec($table["$out[target]"]);
-                           // echo ",".$table["$out[target]"]."<br/>";
-
-                        }
-
-
-                        $sum=$this->sec_to_time($sum/$m);
-                     // echo "Total:".$sum."<br/>";
-                         $this->arrayVariable[$k]["ans"]=$sum;
-
-
-                    }
-                    else {
-                        $this->arrayVariable[$k]["ans"]=$sum;
-                        $m=0;
-                        foreach($this->arraysqltable as $table) {
-                            $m++;
-                            $sum=$sum+$table["$out[target]"];
-                        }
-                        $this->arrayVariable[$k]["ans"]=$sum/$m;
-
-
-                    }
+//                               //      $table[$out["target"]];
+//                              //   }
+//                             }
+//                     }// finisish resettype=''
+//                     else //reset type='group'
+//                     {if( $this->arraysqltable[$this->global_pointer][$this->group_pointer]!=$this->arraysqltable[$this->global_pointer-1][$this->group_pointer])
+//                              $value=0;
+//                       //    echo $this->global_pointer.",".$this->group_pointer.",".$this->arraysqltable[$this->global_pointer][$this->group_pointer].",".$this->arraysqltable[$this->global_pointer-1][$this->group_pointer].",".$this->arraysqltable[$rowno]["$out[target]"];
+//                                  if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
+//                                       $value+=$this->time_to_sec($this->arraysqltable[$rowno]["$out[target]"]);
+//                                 //$sum= floor($sum / 3600).":".floor($sum%3600 / 60);
+//                                 //if($sum=="0:0"){$sum="00:00";}
+//                                 $value=$this->sec_to_time($value);
+//                             }
+//                             else {
+//                                       $value+=$this->arraysqltable[$rowno]["$out[target]"];
+//                             }
+//                     }
 
 
-                    break;
-                case "DistinctCount":
-                    break;
-                case "Lowest":
+//                     $this->arrayVariable[$k]["ans"]=$value;
+//               //      echo ",$value<br/>";
+//                     break;
+//                 case "Average":
 
-                    foreach($this->arraysqltable as $table) {
-                        $lowest=$table[$out["target"]];
-                        if($table[$out["target"]]<$lowest) {
-                            $lowest=$table[$out["target"]];
-                        }
-                        $this->arrayVariable[$k]["ans"]=$lowest;
-                    }
-                    break;
-                case "Highest":
-                    $out["ans"]=0;
-                    foreach($this->arraysqltable as $table) {
-                        if($table[$out["target"]]>$out["ans"]) {
-                            $this->arrayVariable[$k]["ans"]=$table[$out["target"]];
-                        }
-                    }
-                    break;
-//### A Count for groups, as a variable. Not tested yet, but seemed to work in print_r()                    
-                case "Count":
-                    $value=$this->arrayVariable[$k]["ans"];
-                    if( $this->arraysqltable[$this->global_pointer][$this->group_pointer]!=$this->arraysqltable[$this->global_pointer-1][$this->group_pointer])
-                       $value=0;
-                    $value++;
-                    $this->arrayVariable[$k]["ans"]=$value;
-                break;
-//### End of modification
-                default:
-                    $out["target"]=0;       //other cases needed, temporary leave 0 if not suitable case
-                    break;
+//                     $sum=0;
 
-            }
-        }
-    }
+//                     if(isset($this->arrayVariable[$k]['class'])&&$this->arrayVariable[$k]['class']=="java.sql.Time") {
+//                         $m=0;
+//                         //$value=$this->arrayVariable[$k]["ans"];
+//                         //$value=$this->time_to_sec($value);
+//                         //$value+=$this->time_to_sec($this->arraysqltable[$rowno]["$out[target]"]);
+
+//                         foreach($this->arraysqltable as $table) {
+//                             $m++;
+
+//                              $sum=$sum+$this->time_to_sec($table["$out[target]"]);
+//                            // echo ",".$table["$out[target]"]."<br/>";
+
+//                         }
+
+
+//                         $sum=$this->sec_to_time($sum/$m);
+//                      // echo "Total:".$sum."<br/>";
+//                          $this->arrayVariable[$k]["ans"]=$sum;
+
+
+//                     }
+//                     else {
+//                         $this->arrayVariable[$k]["ans"]=$sum;
+//                         $m=0;
+//                         foreach($this->arraysqltable as $table) {
+//                             $m++;
+//                             $sum=$sum+$table["$out[target]"];
+//                         }
+//                         $this->arrayVariable[$k]["ans"]=$sum/$m;
+
+
+//                     }
+
+
+//                     break;
+//                 case "DistinctCount":
+//                     break;
+//                 case "Lowest":
+
+//                     foreach($this->arraysqltable as $table) {
+//                         $lowest=$table[$out["target"]];
+//                         if($table[$out["target"]]<$lowest) {
+//                             $lowest=$table[$out["target"]];
+//                         }
+//                         $this->arrayVariable[$k]["ans"]=$lowest;
+//                     }
+//                     break;
+//                 case "Highest":
+//                     $out["ans"]=0;
+//                     foreach($this->arraysqltable as $table) {
+//                         if($table[$out["target"]]>$out["ans"]) {
+//                             $this->arrayVariable[$k]["ans"]=$table[$out["target"]];
+//                         }
+//                     }
+//                     break;
+// //### A Count for groups, as a variable. Not tested yet, but seemed to work in print_r()                    
+//                 case "Count":
+//                     $value=$this->arrayVariable[$k]["ans"];
+//                     if( $this->arraysqltable[$this->global_pointer][$this->group_pointer]!=$this->arraysqltable[$this->global_pointer-1][$this->group_pointer])
+//                        $value=0;
+//                     $value++;
+//                     $this->arrayVariable[$k]["ans"]=$value;
+//                 break;
+// //### End of modification
+//                 default:
+//                     $out["target"]=0;       //other cases needed, temporary leave 0 if not suitable case
+//                     break;
+
+//             }
+//         }
+//     }
 
 
     public function outpage($out_method="I",$filename="") {
