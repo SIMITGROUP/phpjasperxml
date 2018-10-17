@@ -1793,6 +1793,7 @@ protected function convertDigit($digit=0)
                 $arrsplitedstr[$splitno]=$splitedstr;
             }
 
+
             //merge back separated string (by symbol '+')
             $fm='';
             foreach($arrsplitedstr as $pcsno => $pcstring)
@@ -1819,7 +1820,13 @@ protected function convertDigit($digit=0)
                     $fm= $pcstring;
                 }                        
             }    
-            
+
+            if( ($this->left($data, 22) == $jpgkey || $this->left($data, 22) == $pngkey))
+            {
+               $fm=$replacedquotedstr;
+            }
+            // echo $arrsplitedstr[0].'<br/>';
+            // echo $fm.'<hr/>';
             //restore back quoted string
             foreach($matchquote[0] as $quoteno=>$quotestr)
             {
