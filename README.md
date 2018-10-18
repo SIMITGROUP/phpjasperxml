@@ -1,5 +1,6 @@
 PHPJasperXML
 ============
+![downloadspermonth](https://img.shields.io/npm/dm/free-jqgrid.svg?style=flat-square)&nbsp;
 
 >>> PHPJasperXML is actively in use in our product, however we have very tight project plan and a lot of development is running now, we dont have much time to improve it (but we change slightly from time to time). Since version 1.1 the structure has been changed, it use move effective algoritm, and it more organize, but it may need sometimes to stabilize.
 
