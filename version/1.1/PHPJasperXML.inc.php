@@ -34,7 +34,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
     
     // public $elementid=0;
     protected $autofetchpara=true;
-    private $report_count=0;        //### New declaration (variable exists in original too)
+    
     // private $group_count = array(); //### New declaration
     public $generatestatus=false;       
     // public $lastrowresult=array();

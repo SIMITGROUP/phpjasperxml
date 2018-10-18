@@ -21,6 +21,7 @@ class abstractPHPJasperXML
         public $arrayVariable;
         protected $lastrowresult=[];
         protected $currentuuid;
+        protected $report_count=0;        //### New declaration (variable exists in original too)
         protected $elementid=0;
         public $arrayfield=[];
         protected $pchartfolder= __DIR__ . '/../../pchart2';
@@ -1730,8 +1731,9 @@ protected function convertDigit($digit=0)
                     $variablevalue='';
                    // echo '<b style="color:red">'.$variablename.':'.$this->arrayVariable[$variablename]['ans'].'</b><br/>';
                         // for all kind of report count, group count
-                    if(strpos($fm,'_COUNT')!==false)
+                    if(strpos($variablename,'_COUNT')!==false)
                     {
+                        // echo 'with count:'.$variablename.'<br/>';
                         // echo 'count:';
                         switch($variablename)
                         {
@@ -1757,6 +1759,8 @@ protected function convertDigit($digit=0)
                                $variablevalue = $this->group_count[$this->grouplist[5]["name"]]-1;
                             break;
                         }
+
+                          
                     }
                     else //others kind of variable
                     {

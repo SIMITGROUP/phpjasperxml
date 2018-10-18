@@ -26,7 +26,7 @@ class PHPJasperXMLSubReport extends abstractPHPJasperXML{
     public $maxy=0;
     public $maxpage=0;
     public $parentcurrentband="";
-    private $report_count=0;        //### New declaration (variable exists in original too)
+    // private $report_count=0;        //### New declaration (variable exists in original too)
     // private $group_count = array(); //### New declaration
     private $xoffset=0;
     public function __construct($lang="en",$pdflib="TCPDF",$xoffset=0){
