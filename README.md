@@ -52,6 +52,13 @@ $PHPJasperXML->transferDBtoArray(DBSERVER,DBUSER,DBPASS,DBNAME,$dbdriver);
 $PHPJasperXML->outpage('I');  //$PHPJasperXML->outpage('I=render in browser/D=Download/F=save as server side filename according 2nd parameter','filename.pdf or filename.xls or filename.xls depends on constructor');
 ```
 
+License
+------------------
+1. PHPJasperXML is using MIT license, mean you can do whatever you want. However it use few library from different license.
+2. TCPDF (use to draw pdf): GPL V3 https://github.com/tecnickcom/TCPDF
+3. PHPEXCEL (when you need to export data into excel without libxl): LGPL https://github.com/PHPOffice/PHPExcel
+4. Lib_Excel (when you wish to use commercial libxl library, performance 6x): https://github.com/iliaal/php_excel
+5. Chart (when you wish to draw chart): GPL V3 http://www.pchart.net/license
 
 Supported Database
 ------------------
