@@ -2331,198 +2331,213 @@ $this->pdf->writeHTML($table);
     
    
 
-    public function checkoverflow($arraydata=[],$txt="",$maxheight=0) {
-    $newfont=    $this->recommendFont($txt, $arraydata["font"],$arraydata["pdfFontName"]);
+//     public function checkoverflow($arraydata=[],$txt="",$maxheight=0) {
+//     $newfont=    $this->recommendFont($txt, $arraydata["font"],$arraydata["pdfFontName"]);
     
     
-    $this->pdf->SetFont($newfont,$this->pdf->getFontStyle(),$this->pdf->getFontSize());
+//     $this->pdf->SetFont($newfont,$this->pdf->getFontStyle(),$this->pdf->getFontSize());
     
-        $this->print_expression($arraydata);
+//        $this->print_expression_result = $this->analyse_expression($arraydata['printWhenExpression']);
+
+//         if($this->print_expression_result ==false)
+//         {
+//             echo 'print_expression_result:false <br/>';
+//         }
+//         else if($this->print_expression_result =='')
+//         {
+//             echo 'print_expression_result:empty <br/>';
+//         }
+//         else
+//         {
+
         
-        if($this->print_expression_result==true) {
-           // echo $arraydata["link"];
-            if($arraydata["link"]) {
-                //print_r($arraydata);
+//             echo 'print_expression_result:"'.$this->print_expression_result.'"<br/>';
+        
+//         }
+//         if($this->print_expression_result!=false   ) {
+//            // echo $arraydata["link"];
+//             if($arraydata["link"]) {
+//                 //print_r($arraydata);
                 
-                //$this->debughyperlink=true;
-              //  echo $arraydata["link"].",print:".$this->print_expression_result;
-                $arraydata["link"]=$this->analyse_expression($arraydata["link"],"");
-                //$this->debughyperlink=false;
-            }
-            //print_r($arraydata);
+//                 //$this->debughyperlink=true;
+//               //  echo $arraydata["link"].",print:".$this->print_expression_result;
+//                 $arraydata["link"]=$this->analyse_expression($arraydata["link"],"");
+//                 //$this->debughyperlink=false;
+//             }
+//             //print_r($arraydata);
             
             
-            if($arraydata["writeHTML"]==1 && $this->pdflib=="TCPDF") {
-             // $this->pdf->writeHTML($txt);
-                $this->pdf->writeHTML($txt, true, false, false, true);
-                // $html, $ln=true, $fill=false, $reseth=false, $cell=false, $align=''
-            $this->pdf->Ln();
-                    if($this->currentband=='detail'){
-                    if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
-                        $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    else{
-                        if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
-                            $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    }
-                }
+//             if($arraydata["writeHTML"]==1 && $this->pdflib=="TCPDF") {
+//              // $this->pdf->writeHTML($txt);
+//                 $this->pdf->writeHTML($txt, true, false, false, true);
+//                 // $html, $ln=true, $fill=false, $reseth=false, $cell=false, $align=''
+//             $this->pdf->Ln();
+//                     if($this->currentband=='detail'){
+//                     if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
+//                         $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+//                     else{
+//                         if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
+//                             $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+//                     }
+//                 }
             
-            }
+//             }
             
-            elseif($arraydata["poverflow"]=="false"&&$arraydata["soverflow"]=="false") {
-                            if($arraydata["valign"]=="M")
-                                    $arraydata["valign"]="C";
-                                if($arraydata["valign"]=="")
-                                    $arraydata["valign"]="T";                
+//             elseif($arraydata["poverflow"]=="false"&&$arraydata["soverflow"]=="false") {
+//                             if($arraydata["valign"]=="M")
+//                                     $arraydata["valign"]="C";
+//                                 if($arraydata["valign"]=="")
+//                                     $arraydata["valign"]="T";                
                                 
-                while($this->pdf->GetStringWidth($txt) > $arraydata["width"]) {
-                    if($txt!=$this->pdf->getAliasNbPages() && $txt!=' '.$this->pdf->getAliasNbPages())
-                    $txt=substr_replace($txt,"",-1);
-                }
+//                 while($this->pdf->GetStringWidth($txt) > $arraydata["width"]) {
+//                     if($txt!=$this->pdf->getAliasNbPages() && $txt!=' '.$this->pdf->getAliasNbPages())
+//                     $txt=substr_replace($txt,"",-1);
+//                 }
                             
 
-                $x=$this->pdf->GetX();
-                $y=$this->pdf->GetY();
-                foreach($this->arrayParameter as  $pv => $ap)
-                {
+//                 $x=$this->pdf->GetX();
+//                 $y=$this->pdf->GetY();
+//                 foreach($this->arrayParameter as  $pv => $ap)
+//                 {
 
-                    if($arraydata["pattern"]=='$P{'.$pv.'}')
-                        $arraydata["pattern"]=$ap;    
-                }
+//                     if($arraydata["pattern"]=='$P{'.$pv.'}')
+//                         $arraydata["pattern"]=$ap;    
+//                 }
 
-                $text=$this->formatText($txt, $arraydata["pattern"]);
-                $this->pdf->Cell($arraydata["width"], $arraydata["height"],$text,
-                        $arraydata["border"],"",$arraydata["align"],$arraydata["fill"],
-                        $arraydata["link"],
-                        0,true,"T",$arraydata["valign"]);
+//                 $text=$this->formatText($txt, $arraydata["pattern"]);
+//                 $this->pdf->Cell($arraydata["width"], $arraydata["height"],$text,
+//                         $arraydata["border"],"",$arraydata["align"],$arraydata["fill"],
+//                         $arraydata["link"],
+//                         0,true,"T",$arraydata["valign"]);
                       
-//                if($arraydata["link"]) { //
-//                    $tmpalign="Left";
-//                    if($arraydata["valign"]=="R")
-//                        $tmpalign="Right";
-//                    elseif($arraydata["valign"]=="C")
-//                        $tmpalign="Center";
-//                    $textlen=strlen($text);
-//                    $hidetxt="";
-//                    for($l=0;$l<$textlen*2;$l++)
-//                    $hidetxt.="&nbsp;";
-//                              $imagehtml='<a style="text-decoration: none;" href="'.$arraydata["link"].'">'.
-//                                      '<div style="text-decoration: none;text-align:$tmpalign;float:left;width:'.$arraydata["width"].';margin:0px">'.$hidetxt.'</div></a>';
-//                         //     $this->pdf->writeHTMLCell($arraydata["width"],$arraydata["height"], $x,$y-$arraydata["height"],$imagehtml);//,1,0,true);
-//                }
-//                
+// //                if($arraydata["link"]) { //
+// //                    $tmpalign="Left";
+// //                    if($arraydata["valign"]=="R")
+// //                        $tmpalign="Right";
+// //                    elseif($arraydata["valign"]=="C")
+// //                        $tmpalign="Center";
+// //                    $textlen=strlen($text);
+// //                    $hidetxt="";
+// //                    for($l=0;$l<$textlen*2;$l++)
+// //                    $hidetxt.="&nbsp;";
+// //                              $imagehtml='<a style="text-decoration: none;" href="'.$arraydata["link"].'">'.
+// //                                      '<div style="text-decoration: none;text-align:$tmpalign;float:left;width:'.$arraydata["width"].';margin:0px">'.$hidetxt.'</div></a>';
+// //                         //     $this->pdf->writeHTMLCell($arraydata["width"],$arraydata["height"], $x,$y-$arraydata["height"],$imagehtml);//,1,0,true);
+// //                }
+// //                
                 
-                $this->pdf->Ln();
-                    if($this->currentband=='detail'){
-                    if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
-                        $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    else{
-                        if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
-                            $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    }
-                }
+//                 $this->pdf->Ln();
+//                     if($this->currentband=='detail'){
+//                     if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
+//                         $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+//                     else{
+//                         if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
+//                             $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+//                     }
+//                 }
         
-            }
-             elseif($arraydata["soverflow"]=="true") {
-                if($arraydata["valign"]=="C")
-                                    $arraydata["valign"]="M";
-                                if($arraydata["valign"]=="")
-                                    $arraydata["valign"]="T";
+//             }
+//              elseif($arraydata["soverflow"]=="true") {
+//                 if($arraydata["valign"]=="C")
+//                                     $arraydata["valign"]="M";
+//                                 if($arraydata["valign"]=="")
+//                                     $arraydata["valign"]="T";
                                 
-                $x=$this->pdf->GetX();
-                $y=$this->pdf->GetY();
-                             //if($arraydata["link"])   echo $arraydata["linktarget"].",".$arraydata["link"]."<br/><br/>";
-                $this->pdf->MultiCell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]),$arraydata["border"] 
-                                ,$arraydata["align"], $arraydata["fill"],1,'','',true,0,false,true,$maxheight);//,$arraydata["valign"]);
+//                 $x=$this->pdf->GetX();
+//                 $y=$this->pdf->GetY();
+//                              //if($arraydata["link"])   echo $arraydata["linktarget"].",".$arraydata["link"]."<br/><br/>";
+//                 $this->pdf->MultiCell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]),$arraydata["border"] 
+//                                 ,$arraydata["align"], $arraydata["fill"],1,'','',true,0,false,true,$maxheight);//,$arraydata["valign"]);
         
-                if( $this->pdf->balancetext=='' && $this->currentband=='detail'){
-                    if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
-                        $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    else{
-                        if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
-                            $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    }
-                }
+//                 if( $this->pdf->balancetext=='' && $this->currentband=='detail'){
+//                     if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
+//                         $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+//                     else{
+//                         if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
+//                             $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+//                     }
+//                 }
                 
-            //$this->pageFooter();
-            if($this->pdf->balancetext!='' ){
-                $this->continuenextpageText=array('width'=>$arraydata["width"], 'height'=>$arraydata["height"], 'txt'=>$this->pdf->balancetext,
-                        'border'=>$arraydata["border"] ,'align'=>$arraydata["align"], 'fill'=>$arraydata["fill"],'ln'=>1,
-                            'x'=>$x,'y'=>'','reset'=>true,'streth'=>0,'ishtml'=>false,'autopadding'=>true);
-                    $this->pdf->balancetext='';
-                    $this->forcetextcolor_b=$this->textcolor_b;
-                    $this->forcetextcolor_g=$this->textcolor_g;
-                    $this->forcetextcolor_r=$this->textcolor_r;
-                    $this->forcefillcolor_b=$this->fillcolor_b;
-                    $this->forcefillcolor_g=$this->fillcolor_g;
-                    $this->forcefillcolor_r=$this->fillcolor_r;
-                    if($this->continuenextpageText)
-                        $this->printlongtext($this->pdf->getFontFamily(),$this->pdf->getFontStyle(),$this->pdf->getFontSize());
+//             //$this->pageFooter();
+//             if($this->pdf->balancetext!='' ){
+//                 $this->continuenextpageText=array('width'=>$arraydata["width"], 'height'=>$arraydata["height"], 'txt'=>$this->pdf->balancetext,
+//                         'border'=>$arraydata["border"] ,'align'=>$arraydata["align"], 'fill'=>$arraydata["fill"],'ln'=>1,
+//                             'x'=>$x,'y'=>'','reset'=>true,'streth'=>0,'ishtml'=>false,'autopadding'=>true);
+//                     $this->pdf->balancetext='';
+//                     $this->forcetextcolor_b=$this->textcolor_b;
+//                     $this->forcetextcolor_g=$this->textcolor_g;
+//                     $this->forcetextcolor_r=$this->textcolor_r;
+//                     $this->forcefillcolor_b=$this->fillcolor_b;
+//                     $this->forcefillcolor_g=$this->fillcolor_g;
+//                     $this->forcefillcolor_r=$this->fillcolor_r;
+//                     if($this->continuenextpageText)
+//                         $this->printlongtext($this->pdf->getFontFamily(),$this->pdf->getFontStyle(),$this->pdf->getFontSize());
                     
-                    }          
+//                     }          
                 
                     
          
 
-            }
-            elseif($arraydata["poverflow"]=="true") {
+//             }
+//             elseif($arraydata["poverflow"]=="true") {
            
-                            if($arraydata["valign"]=="M")
-                                    $arraydata["valign"]="C";
-                                if($arraydata["valign"]=="")
-                                    $arraydata["valign"]="T"; 
+//                             if($arraydata["valign"]=="M")
+//                                     $arraydata["valign"]="C";
+//                                 if($arraydata["valign"]=="")
+//                                     $arraydata["valign"]="T"; 
                                 
-                $this->pdf->Cell($arraydata["width"], $arraydata["height"],  $this->formatText($txt, $arraydata["pattern"]),$arraydata["border"],"",$arraydata["align"],$arraydata["fill"],$arraydata["link"]."",0,true,"T",
-                                $arraydata["valign"]);
-                $this->pdf->Ln();
-                    if($this->currentband=='detail'){
-                    if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
-                        $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    else{
-                        if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
-                            $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    }
-                }
+//                 $this->pdf->Cell($arraydata["width"], $arraydata["height"],  $this->formatText($txt, $arraydata["pattern"]),$arraydata["border"],"",$arraydata["align"],$arraydata["fill"],$arraydata["link"]."",0,true,"T",
+//                                 $arraydata["valign"]);
+//                 $this->pdf->Ln();
+//                     if($this->currentband=='detail'){
+//                     if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
+//                         $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+//                     else{
+//                         if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
+//                             $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+//                     }
+//                 }
             
-            }
+//             }
            
-            else {
-                //MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0) {   
-                $this->pdf->MultiCell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]), $arraydata["border"], 
-                            $arraydata["align"], $arraydata["fill"],1,'','',true,0,true,true,$maxheight);
-                if( $this->pdf->balancetext=='' && $this->currentband=='detail'){
-                    if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
-                        $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    else{
-                        if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
-                            $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    }
-                }
-            if($this->pdf->balancetext!=''){
-                $this->continuenextpageText=array('width'=>$arraydata["width"], 'height'=>$arraydata["height"], 'txt'=>$this->pdf->balancetext,
-                        'border'=>$arraydata["border"] ,'align'=>$arraydata["align"], 'fill'=>$arraydata["fill"],'ln'=>1,
-                            'x'=>$x,'y'=>'','reset'=>true,'streth'=>0,'ishtml'=>false,'autopadding'=>true);
-                    $this->pdf->balancetext='';
-                    $this->forcetextcolor_b=$this->textcolor_b;
-                    $this->forcetextcolor_g=$this->textcolor_g;
-                    $this->forcetextcolor_r=$this->textcolor_r;
-                    $this->forcefillcolor_b=$this->fillcolor_b;
-                    $this->forcefillcolor_g=$this->fillcolor_g;
-                    $this->forcefillcolor_r=$this->fillcolor_r;
-                    $this->gotTextOverPage=true;
-                    if($this->continuenextpageText)
-                        $this->printlongtext($this->pdf->getFontFamily(),$this->pdf->getFontStyle(),$this->pdf->getFontSize());
+//             else {
+//                 //MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0) {   
+//                 $this->pdf->MultiCell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]), $arraydata["border"], 
+//                             $arraydata["align"], $arraydata["fill"],1,'','',true,0,true,true,$maxheight);
+//                 if( $this->pdf->balancetext=='' && $this->currentband=='detail'){
+//                     if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
+//                         $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+//                     else{
+//                         if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
+//                             $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+//                     }
+//                 }
+//             if($this->pdf->balancetext!=''){
+//                 $this->continuenextpageText=array('width'=>$arraydata["width"], 'height'=>$arraydata["height"], 'txt'=>$this->pdf->balancetext,
+//                         'border'=>$arraydata["border"] ,'align'=>$arraydata["align"], 'fill'=>$arraydata["fill"],'ln'=>1,
+//                             'x'=>$x,'y'=>'','reset'=>true,'streth'=>0,'ishtml'=>false,'autopadding'=>true);
+//                     $this->pdf->balancetext='';
+//                     $this->forcetextcolor_b=$this->textcolor_b;
+//                     $this->forcetextcolor_g=$this->textcolor_g;
+//                     $this->forcetextcolor_r=$this->textcolor_r;
+//                     $this->forcefillcolor_b=$this->fillcolor_b;
+//                     $this->forcefillcolor_g=$this->fillcolor_g;
+//                     $this->forcefillcolor_r=$this->fillcolor_r;
+//                     $this->gotTextOverPage=true;
+//                     if($this->continuenextpageText)
+//                         $this->printlongtext($this->pdf->getFontFamily(),$this->pdf->getFontStyle(),$this->pdf->getFontSize());
                     
-                    }          
+//                     }          
 
 
 
-            }
-        }
-        $this->print_expression_result=false;
+//             }
+//         }
+//         $this->print_expression_result=false;
         
 
 
-    }
+//     }
 
    
 

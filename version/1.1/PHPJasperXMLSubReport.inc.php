@@ -2567,53 +2567,53 @@ if(isset($this->arraygroup)&&($this->global_pointer>0)&&($this->arraysqltable[$t
     // public function staticText($xml_path) {//$this->pointer[]=array("type"=>"SetXY","x"=>$xml_path->reportElement["x"],"y"=>$xml_path->reportElement["y"]);
     // }
 
-    public function checkoverflow($arraydata,$txt="") {
-         $newfont=    $this->recommendFont($txt, $arraydata["font"],$arraydata["pdfFontName"]);
-    $this->pdf->SetFont($newfont,$this->pdf->getFontStyle(),$this->pdf->getFontSize());
+    // public function checkoverflow($arraydata,$txt="") {
+    //      $newfont=    $this->recommendFont($txt, $arraydata["font"],$arraydata["pdfFontName"]);
+    // $this->pdf->SetFont($newfont,$this->pdf->getFontStyle(),$this->pdf->getFontSize());
 
-        $this->print_expression($arraydata);
+    //     $this->print_expression($arraydata);
 
       
-        if($this->print_expression_result==true) {
+    //     if($this->print_expression_result==true) {
 
-            if($arraydata["link"]) {
-                $arraydata["link"]=$this->analyse_expression($arraydata["link"],"");
+    //         if($arraydata["link"]) {
+    //             $arraydata["link"]=$this->analyse_expression($arraydata["link"],"");
 
-            }
+    //         }
 
-            if($arraydata["writeHTML"]==1 && $this->pdflib=="TCPDF") {
-                $this->pdf->writeHTML($txt,true, false, true, false, '');
-            }
-            elseif($arraydata["poverflow"]=="true"&&$arraydata["soverflow"]=="false") {
+    //         if($arraydata["writeHTML"]==1 && $this->pdflib=="TCPDF") {
+    //             $this->pdf->writeHTML($txt,true, false, true, false, '');
+    //         }
+    //         elseif($arraydata["poverflow"]=="true"&&$arraydata["soverflow"]=="false") {
                 
-                $this->pdf->Cell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]),$arraydata["border"],"",$arraydata["align"],$arraydata["fill"],$arraydata["link"]);
+    //             $this->pdf->Cell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]),$arraydata["border"],"",$arraydata["align"],$arraydata["fill"],$arraydata["link"]);
                 
 
-            }
-            elseif($arraydata["poverflow"]=="false"&&$arraydata["soverflow"]=="false") {
-                while($this->pdf->GetStringWidth($txt) > $arraydata["width"]) {
-                    $txt=substr_replace($txt,"",-1);
-                }
-                $this->pdf->Cell($arraydata["width"], $arraydata["height"],$this->formatText($txt, $arraydata["pattern"]),$arraydata["border"],"",$arraydata["align"],$arraydata["fill"],$arraydata["link"]);
+    //         }
+    //         elseif($arraydata["poverflow"]=="false"&&$arraydata["soverflow"]=="false") {
+    //             while($this->pdf->GetStringWidth($txt) > $arraydata["width"]) {
+    //                 $txt=substr_replace($txt,"",-1);
+    //             }
+    //             $this->pdf->Cell($arraydata["width"], $arraydata["height"],$this->formatText($txt, $arraydata["pattern"]),$arraydata["border"],"",$arraydata["align"],$arraydata["fill"],$arraydata["link"]);
     
 
-            }
-            elseif($arraydata["poverflow"]=="false"&&$arraydata["soverflow"]=="true") {
-                $this->pdf->MultiCell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]), $arraydata["border"], $arraydata["align"], $arraydata["fill"]);
+    //         }
+    //         elseif($arraydata["poverflow"]=="false"&&$arraydata["soverflow"]=="true") {
+    //             $this->pdf->MultiCell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]), $arraydata["border"], $arraydata["align"], $arraydata["fill"]);
          
 
-            }
-            else {
-                $this->pdf->MultiCell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]), $arraydata["border"], $arraydata["align"], $arraydata["fill"]);
+    //         }
+    //         else {
+    //             $this->pdf->MultiCell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]), $arraydata["border"], $arraydata["align"], $arraydata["fill"]);
 
 
-            }
-        }
-        $this->print_expression_result=false;
+    //         }
+    //     }
+    //     $this->print_expression_result=false;
         
 
 
-    }
+    // }
 
     // public function hex_code_color($value) {
     //     $r=hexdec(substr($value,1,2));
