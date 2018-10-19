@@ -258,22 +258,18 @@ class abstractPHPJasperXML
             //
                 //        $this->pdf->SetLineStyle($arraydata['border']);
                         // $this->print_expression($arraydata)
-                          if(isset($arraydata['printWhenExpression']) && (
-                            $arraydata['printWhenExpression'] !=''  || 
-                            $this->analyse_expression($arraydata['printWhenExpression'])
-                            )
-                        ){
-                              foreach($arraydata['border'] as $bs=>$ba){
-                                foreach($ba as $bbc)
-                                     $this->pdf->SetLineStyle($bbc) ;
-                                  
-                              }
+            if(isset($arraydata['printWhenExpression']) && ($arraydata['printWhenExpression']=='' || $this->analyse_expression($arraydata['printWhenExpression'])))
+            {
+                foreach($arraydata['border'] as $bs=>$ba){
+                    foreach($ba as $bbc){
+                        $this->pdf->SetLineStyle($bbc) ;
+                    }
+                }
 
-             $this->pdf->RoundedRect($arraydata["x"]+$this->arrayPageSetting["leftMargin"], $arraydata["y"]+$y_axis, 
-                                 $arraydata["width"], $arraydata["height"], $arraydata["radius"], '1111', 
-            $style, array(),$arraydata['fillcolor']);
-                          }
+                $this->pdf->RoundedRect($arraydata["x"]+$this->arrayPageSetting["leftMargin"], $arraydata["y"]+$y_axis, $arraydata["width"], $arraydata["height"], $arraydata["radius"], '1111', $style, array(),$arraydata['fillcolor']);
             }
+
+        }
         elseif($arraydata["type"]=="Ellipse"){
             //$this->pdf->SetLineStyle($arraydata['border']);
              $this->pdf->Ellipse($arraydata["x"]+$arraydata["width"]/2+$this->arrayPageSetting["leftMargin"], $arraydata["y"]+$y_axis+$arraydata["height"]/2, $arraydata["width"]/2,$arraydata["height"]/2,
