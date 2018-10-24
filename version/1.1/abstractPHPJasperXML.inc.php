@@ -278,19 +278,24 @@ class abstractPHPJasperXML
         else if($arraydata["type"]=="Image")
         {
             $path = $this->analyse_expression($arraydata["path"], "true", $arraydata["type"]);
+
             $imgtype=substr($path,-3);
             $arraydata["link"]=$arraydata["link"]."";
             
             $arraydata["link"]=$this->analyse_expression($arraydata["link"]);
-            
+            // echo $imgtype.': '. $path ."<hr/>";
             
             if($imgtype=='jpg' || right($path,3)=='jpg' || right($path,4)=='jpeg')
             {
                  $imgtype="JPEG";
+                 $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+                                  $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"]);                        
             }
             elseif($imgtype=='png'|| $imgtype=='PNG')
             {
                   $imgtype="PNG";
+                  $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+                                  $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"]);                        
             }
             else
             {
