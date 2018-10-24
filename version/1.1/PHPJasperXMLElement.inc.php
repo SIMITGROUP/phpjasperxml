@@ -68,11 +68,11 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
 
         }
         if(isset($data->textElement["rotation"])) {
-            $rotation=$data->textElement["rotation"];
+            $rotation=(string)$data->textElement["rotation"];
         }
         if(isset($data->textElement->font["fontName"])) {
           
-            $font=$this->recommendFont($data->text,$data->textElement->font["fontName"],$data->textElement->font["pdfFontName"]);
+            $font=$this->recommendFont($data->text,(string)$data->textElement->font["fontName"],(string)$data->textElement->font["pdfFontName"]);
                 
         }
         if(isset($data->textElement->font["size"])) {
@@ -557,14 +557,14 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
             
         }
         if(isset($data->textElement["rotation"])) {
-            $rotation=$data->textElement["rotation"];
+            $rotation=(string)$data->textElement["rotation"];
         }
         if(isset($data->textElement->font["fontName"])) 
         {         
-            $font=$data->textElement->font["fontName"];
+            $font=(string)$data->textElement->font["fontName"];
         }
         if(isset($data->textElement->font["size"])) {
-            $fontsize=$data->textElement->font["size"];
+            $fontsize=(string)$data->textElement->font["size"];
         }
         if(isset($data->textElement->font["isBold"])&&$data->textElement->font["isBold"]=="true") {
             $fontstyle=$fontstyle."B";
