@@ -6,7 +6,7 @@ PHPJasperXML
 
 About PHPJasperXML
 ------------------
-We initialize this project to ease the develop web/printer friendly report in php. After many year development this project is stable and created a lot of web report. You can design your report via jasper report studio (http://community.jaspersoft.com/project/jaspersoft-studio) and then use phpjasperxml to render it in php. Now javabridge is required at server side. We borrow tcpdf and phpexcel to export our report in pdf/excel. So far it support up to php7.2 (only tested in 7.0, and 7.2)
+We initialize this project to ease the develop web/printer friendly report in php. After many year development this project is stable and created a lot of web report. You can design your report via jasper report studio (http://community.jaspersoft.com/project/jaspersoft-studio) and then use phpjasperxml to render it in php. No javabridge is required at server side. We borrow tcpdf and phpexcel to export our report in pdf/excel. So far it support up to php7.2 (only tested in 7.0, and 7.2)
 
 If export excel is crucial and you required fast export excel engine (phpexcel is painfully slow), you can get commercial driver from:
 1. Cross platform Excel Library (written in c/c++) http://www.libxl.com/
@@ -19,7 +19,7 @@ PHPJasperXML is not complete replacement of jaspersoft, it have some limitation.
 2. Some barcode is not supported yet (QR code is supported)
 3. Some situation text might not ablet to vertical align properly due to limitation of tcpdf
 4. There is some others limitation, so far we change our way to accomodate the limitation
-5. PHPJasperXML allow you do once and generate pdf/excel, however it is not suitable to run report with 100 pages long.
+5. PHPJasperXML allow you do once and generate pdf/excel, however it is not suitable to run report with 100 pages long cause the limitation of algorithm.
 6. Best use case of PHPJasperXML is use for design / print document, example Invoice, Purchase Order, Service Order, and etc printable document. Short report run well and allow export excel nicely. Long report you shall use alternative report tool
 
 Installation
@@ -58,7 +58,7 @@ License
 2. TCPDF (use to draw pdf): GPL V3 https://github.com/tecnickcom/TCPDF
 3. PHPEXCEL (when you need to export data into excel without libxl): LGPL https://github.com/PHPOffice/PHPExcel
 4. Lib_Excel (when you wish to use commercial libxl library, performance 6x): https://github.com/iliaal/php_excel
-5. Chart (when you wish to draw chart): GPL V3 http://www.pchart.net/license
+5. PChart2 (when you wish to draw chart): GPL V3 http://www.pchart.net/license
 
 Supported Database
 ------------------
