@@ -76,8 +76,9 @@ class abstractPHPJasperXML
                 global $pgport;
                 if($pgport=="" || $pgport==0)
                     $pgport=5432;
-                $conn_string = "host=$db_host port=$pgport dbname=$db_or_dsn_name user=$db_user password=$db_pass";
+                 $conn_string = "host=$db_host port=$pgport dbname=$dbname user=$db_user password=$db_pass";
                 $this->myconn = pg_connect($conn_string);
+
                 if($this->myconn) {
                     $this->con = true;
                     return true;
@@ -87,7 +88,7 @@ class abstractPHPJasperXML
             elseif($cndriver=="sqlsrv") {
      
                  if(!$this->con) {
-                   $connectionInfo = array( "Database"=>$db_or_dsn_name, "UID"=>$db_user, "PWD"=>"$db_pass");
+                   $connectionInfo = array( "Database"=>$dbname, "UID"=>$db_user, "PWD"=>"$db_pass");
                      $this->myconn = @sqlsrv_connect($db_host,$connectionInfo);
                      if($this->myconn) {
                        $this->con = true;
@@ -285,7 +286,7 @@ class abstractPHPJasperXML
             $arraydata["link"]=$this->analyse_expression($arraydata["link"]);
             // echo $imgtype.': '. $path ."<hr/>";
             
-            if($imgtype=='jpg' || right($path,3)=='jpg' || right($path,4)=='jpeg')
+            if($imgtype=='jpg' || $this->right($path,3)=='jpg' || $this->right($path,4)=='jpeg')
             {
                  $imgtype="JPEG";
                  $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,

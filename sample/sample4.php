@@ -15,7 +15,7 @@ $PHPJasperXML->arrayParameter=array("parameter1"=>0);
 $PHPJasperXML->load_xml_file("sample4.jrxml");
 
 $PHPJasperXML->transferDBtoArray($server,$user,$pass,$db);
-$PHPJasperXML->outpage("I","sample9.xls");    //page output method I:standard output  D:Download file
+$PHPJasperXML->outpage("I","sample4.xls");    //page output method I:standard output  D:Download file
 
 /*
 

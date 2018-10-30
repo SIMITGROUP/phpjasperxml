@@ -8,13 +8,13 @@
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT
-     sample1.`no` AS sample1_no,
-     sample1.`date` AS sample1_date,
-     sample1.`itemname` AS sample1_itemname,
-     sample1.`qty` AS sample1_qty,
-     sample1.`uom` AS sample1_uom
+     sample1.no AS sample1_no,
+     sample1.date AS sample1_date,
+     sample1.itemname AS sample1_itemname,
+     sample1.qty AS sample1_qty,
+     sample1.uom AS sample1_uom
 FROM
-     `sample1` sample1 where sample1.`no` > 0]]>
+     sample1 sample1 where sample1.no > 0]]>
 	</queryString>
 	<field name="sample1_no" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -93,7 +93,7 @@ FROM
 			</staticText>
 			<image>
 				<reportElement uuid="07eb9f30-8854-419a-adb4-fbe5322fb48e" x="7" y="4" width="76" height="67"/>
-				<imageExpression><![CDATA["./simitlogo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["./simitlogo.png"]]></imageExpression>
 			</image>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement uuid="b800fb54-f9e9-45d3-aa58-83be22f288da" x="447" y="51" width="100" height="20"/>

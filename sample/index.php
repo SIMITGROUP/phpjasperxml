@@ -26,6 +26,7 @@ echo <<< HTML
             <li><a href='sample5.php?id=1' target='_blank'>Sample 5</a> (Use TCPDF, with writeHTML output) (markup=html)</li>
             <li><a href='sample6.php' target='_blank'>Sample 6</a> Grouping, hide repeated value (UOM), with asian fonts</li>
             <li><a href='sample7.php' target='_blank'>Sample 7</a> Complex Layout</li>
+            <li><a href='sample8.php' target='_blank'>Sample 8</a> Postgresql (you required postgresql intead of mysql)</li>
             <li><a href='sample9.php' target='_blank'>Sample 9</a> Replace array with php array (with sample1.jrxml layout)</li>
         </ul>
     </div>
