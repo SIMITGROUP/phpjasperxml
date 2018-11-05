@@ -726,6 +726,23 @@ public function analyse_dsexpression($data=[],$txt=''){
        }
 }
 
+
+    protected function initChartLibrary()
+    {        
+        if($this->left(PHP_VERSION,1)=='5')
+        {
+            echo 'Chart in PHP 5.x is not supported.';
+            die;
+        }
+        else
+        {
+            if(!$this->chartobj)
+            {
+                include_once __DIR__.'/PHPJasperXMLChart.inc.php';
+                $this->chartobj = new PHPJasperXMLChart();
+            }
+        }
+    }
     protected function default_handler($xml_path=[]) {
   
         $elementpath=__DIR__.'/PHPJasperXMLElement.inc.php';
@@ -734,7 +751,7 @@ public function analyse_dsexpression($data=[],$txt=''){
         $element= new PHPJasperXMLElement();
         //ensure all chart element have connection
 
-        $element->chartobj=$this->chartobj;
+        
 
         foreach($xml_path as $k=>$out) {
 
@@ -771,32 +788,41 @@ public function analyse_dsexpression($data=[],$txt=''){
                     // $this->element_textField($out);
                     break;
                 case "stackedBarChart":
-
+                    
+                    $element->chartobj=$this->chartobj;
                     $elementres = $element->element_Chart($out,'stackedBarChart',$this->elementid);                    
                     // $this->element_Chart($out,'stackedBarChart');
                     break;
                 case "barChart":
-                    
-                    $elementres = $element->element_Chart($out,'barChart',$this->elementid);
-                    
+                    $this->initChartLibrary();
+                    $element->chartobj=$this->chartobj;
+                    $elementres = $element->element_Chart($out,'barChart',$this->elementid);                    
                     // $this->element_Chart($out,'barChart');
                     break;
                 case "pieChart":
+                    $this->initChartLibrary();
+                    $element->chartobj=$this->chartobj;
                     $elementres = $element->element_Chart($out,'pieChart',$this->elementid);
                     
                     // $this->element_Chart($out,'pieChart');
                     break;
                 case "pie3DChart":
+                    $this->initChartLibrary();
+                    $element->chartobj=$this->chartobj;
                     $elementres = $element->element_Chart($out,'pie3DChart',$this->elementid);
                     
                     // $this->element_Chart($out,'pie3DChart');
                     break;
                 case "lineChart":
+                    $this->initChartLibrary();
+                    $element->chartobj=$this->chartobj;
                     $elementres = $element->element_Chart($out,'lineChart',$this->elementid);
                     
                     // $this->element_Chart($out,'lineChart');
                     break;
                 case "stackedAreaChart":
+                   $this->initChartLibrary();
+                    $element->chartobj=$this->chartobj;
                     $elementres = $element->element_Chart($out,'stackedAreaChart',$this->elementid);
                     
                     // $this->element_Chart($out,'stackedAreaChart');

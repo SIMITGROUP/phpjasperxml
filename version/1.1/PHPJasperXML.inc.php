@@ -1,7 +1,7 @@
 <?php
 
 include_once __DIR__.'/abstractPHPJasperXML.inc.php';
-include_once __DIR__.'/PHPJasperXMLChart.inc.php';
+
 
 //version 1.1
 class PHPJasperXML extends abstractPHPJasperXML{
@@ -46,10 +46,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
         ini_set('display_errors', 'Off');
        // $this->setErrorReport(2);
        // echo 'sdsdd';die;
-           
-           
-
-        $this->chartobj = new PHPJasperXMLChart();
+                           
         $this->pdflib=$pdflib;
         // if($this->fontdir=="")
         
@@ -222,7 +219,12 @@ class PHPJasperXML extends abstractPHPJasperXML{
             echo "Fail to connect database";
             exit(0);
         }
-        $this->chartobj->myconn=$this->myconn;
+
+        if($this->chartobj)
+        {
+            $this->chartobj->myconn=$this->myconn;    
+        }
+        
         if($this->debugsql==true) {
             
             echo "<textarea cols='100' rows='40'>$this->sql</textarea>";
