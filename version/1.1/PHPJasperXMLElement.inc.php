@@ -558,6 +558,8 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
         }
         if(isset($data->textElement["rotation"])) {
             $rotation=(string)$data->textElement["rotation"];
+            // echo $rotation;
+            // echo '<hr/>';
         }
         if(isset($data->textElement->font["fontName"])) 
         {         
@@ -626,13 +628,31 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
                     $isPrintRepeatedValues=$data->reportElement["isPrintRepeatedValues"];
                 }
                
-                $mydata[]=array("type"=>"MultiCell","width"=>$data->reportElement["width"]+0,"height"=>$height+0,"txt"=>$data->textFieldExpression."",
-                        "border"=>$border,"align"=>$align,"fill"=>$fill,
-                        "hidden_type"=>"field","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"uuid"=>$data->reportElement['uuid'],
-                        "printWhenExpression"=>$data->reportElement->printWhenExpression."",
-                        "link"=>$data->hyperlinkReferenceExpression."","pattern"=>$data["pattern"],"linktarget"=>$data["hyperlinkTarget"]."",
-                        "writeHTML"=>$writeHTML,"isPrintRepeatedValues"=>$isPrintRepeatedValues,"rotation"=>$rotation,"valign"=>$valign,
-                    "x"=>$data->reportElement["x"]+0,"y"=>$data->reportElement["y"]+0,"elementid"=>$this->elementid);
+                $mydata[]=array(
+                    "type"=>"MultiCell",
+                    "width"=>$data->reportElement["width"]+0,
+                    "height"=>$height+0,
+                    "txt"=>$data->textFieldExpression."",
+                    "border"=>$border,
+                    "align"=>$align,
+                    "fill"=>$fill,
+                    "x"=>$data->reportElement["x"]+0,
+                    "y"=>$data->reportElement["y"]+0,
+                    "hidden_type"=>"field",
+                    "soverflow"=>$stretchoverflow,
+                    "poverflow"=>$printoverflow,
+                    "uuid"=>$data->reportElement['uuid'],
+                    "printWhenExpression"=>$data->reportElement->printWhenExpression."",
+                    "link"=>$data->hyperlinkReferenceExpression."",
+                    "pattern"=>$data["pattern"],
+                    "linktarget"=>$data["hyperlinkTarget"]."",
+                    "writeHTML"=>$writeHTML,
+                    "isPrintRepeatedValues"=>$isPrintRepeatedValues,
+                    "rotation"=>$rotation,
+                    "valign"=>$valign,
+                    "x"=>$data->reportElement["x"]+0,
+                    "y"=>$data->reportElement["y"]+0,
+                    "elementid"=>$this->elementid);
                 
                 
                 break;

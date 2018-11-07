@@ -128,29 +128,53 @@ class abstractPHPJasperXML
     protected function display($arraydata=[],$y_axis=0,$fielddata=false,$maxheight=0) {
 
         $this->currentuuid=$arraydata["uuid"];
-        $this->Rotate($arraydata["rotation"]);
+         $this->Rotate($arraydata["rotation"]);
     
         if($arraydata["rotation"]!=""){
+
             if($arraydata["rotation"]=="Left"){
+                
                  $w=$arraydata["width"];
                 $arraydata["width"]=$arraydata["height"];
                 $arraydata["height"]=$w;
-                    $this->pdf->SetXY($this->pdf->GetX()-$arraydata["width"],$this->pdf->GetY());
+                $this->pdf->SetXY($this->pdf->GetX()-$arraydata["width"],$this->pdf->GetY());
             }
             elseif($arraydata["rotation"]=="Right"){
+                
                  $w=$arraydata["width"];
                 $arraydata["width"]=$arraydata["height"];
                 $arraydata["height"]=$w;
-                    $this->pdf->SetXY($this->pdf->GetX(),$this->pdf->GetY()-$arraydata["height"]);
+                $this->pdf->SetXY($this->pdf->GetX(),$this->pdf->GetY()-$arraydata["height"]);
             }
             elseif($arraydata["rotation"]=="UpsideDown"){
+
+                $leftpos=$arraydata["width"]-$this->arrayPageSetting["leftMargin"]-$arraydata['x'];
+                $this->Rotate( $arraydata["rotation"],$leftpos);
                 //soverflow"=>$stretchoverflow,"poverflow"
                 $arraydata["soverflow"]=true;
                 $arraydata["poverflow"]=true;
+                
                //   $w=$arraydata["width"];
                // $arraydata["width"]=$arraydata["height"];
                 //$arraydata["height"]=$w;
-                $this->pdf->SetXY($this->pdf->GetX()- $arraydata["width"],$this->pdf->GetY()-$arraydata["height"]);
+                // echo $this->pdf->GetX().':';
+                // echo $arraydata["width"];die;
+                // print_r($arraydata);
+                // echo '<hr/>';
+                $this->pdf->SetY(                    
+                       // $this->pdf->GetX()+ $arraydata["width"],
+                        $this->pdf->GetY()-$arraydata["height"]
+                    );
+
+                // $this->pdf->SetX(
+                   // $leftpos+$arraydata["width"]
+                       // $this->pdf->GetX()+$arraydata["width"]
+                        // 0
+                    // );
+            }
+            else
+            {
+
             }
         }
         if($arraydata["type"]=="SetFont") {
@@ -1137,22 +1161,42 @@ public function analyse_dsexpression($data=[],$txt=''){
         protected function Rotate($type, $x=-1, $y=-1)
         {
             if($type=="")
-            $angle=0;
+            {
+                $angle=0;    
+            }            
             elseif($type=="Left")
-            $angle=90;
+            {
+                $angle=90;    
+            }            
             elseif($type=="Right")
-            $angle=270;
+            {
+                $angle=270;    
+            }            
             elseif($type=="UpsideDown")
-            $angle=180;
+            {
+                $angle=180;    
+            }
+            
 
             if($x==-1)
+            {
                 $x=$this->pdf->getX();
+            }
             if($y==-1)
+            {
                 $y=$this->pdf->getY();
+            }
             if($this->angle!=0)
+            {
                 $this->pdf->_out('Q');
+            }
             $this->angle=$angle;
-            if($angle!=0)
+            // if($angle==180 )
+            // {
+
+            // }
+            // else 
+            if( $angle!=0  )
             {
                 $angle*=M_PI/180;
                 $c=cos($angle);

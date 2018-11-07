@@ -1639,12 +1639,32 @@ if($type=='stackedBarChart')
                         case "field":
                      //        $txt=$this->analyse_expression($compare["txt"]);
                        //  $out["txt"].":".print_r($out,true)."<br/>";
-                 $maxheight=$this->detailallowtill-$checkpoint;//$this->arrayPageSetting["pageHeight"]-$this->arraypageFooter[0]["height"]-$this->pdf->GetY()+2-$this->columnheaderbandheight-$this->columnfooterbandheight;
-                            $this->prepare_print_array=array("type"=>"MultiCell","width"=>$out["width"],"height"=>$out["height"],"txt"=>$out["txt"],
-                                    "border"=>$out["border"],"align"=>$out["align"],"fill"=>$out["fill"],"hidden_type"=>$out["hidden_type"],
-                                    "printWhenExpression"=>$out["printWhenExpression"],"soverflow"=>$out["soverflow"],"poverflow"=>$out["poverflow"],"link"=>$out["link"],
-                                    "pattern"=>$out["pattern"],"writeHTML"=>$out["writeHTML"],"isPrintRepeatedValues"=>$out["isPrintRepeatedValues"],"valign"=>$out["valign"],
-                                                                  "uuid"=>$out["uuid"],  "linktarget"=>$out['linktarget']);
+                        $maxheight=$this->detailallowtill-$checkpoint;//$this->arrayPageSetting["pageHeight"]-$this->arraypageFooter[0]["height"]-$this->pdf->GetY()+2-$this->columnheaderbandheight-$this->columnfooterbandheight;
+                            
+                            $this->prepare_print_array=array(
+                                    "type"=>"MultiCell",
+                                    "width"=>$out["width"],
+                                    "height"=>$out["height"],
+                                    "txt"=>$out["txt"],
+                                    "border"=>$out["border"],
+                                    "align"=>$out["align"],
+                                    "fill"=>$out["fill"],
+                                    "hidden_type"=>$out["hidden_type"],
+                                    "printWhenExpression"=>$out["printWhenExpression"],
+                                    "soverflow"=>$out["soverflow"],
+                                    "poverflow"=>$out["poverflow"],
+                                    "link"=>$out["link"],
+                                    "pattern"=>$out["pattern"],
+                                    "writeHTML"=>$out["writeHTML"],
+                                    "isPrintRepeatedValues"=>$out["isPrintRepeatedValues"],
+                                    "valign"=>$out["valign"],
+                                    "x"=>$out["x"],
+                                    "y"=>$out["y"],
+                                    "rotation"=>$out["rotation"],
+                                    "uuid"=>$out["uuid"], 
+                                    "linktarget"=>$out['linktarget']);
+                            // print_r($this->prepare_print_array);
+                            // echo "<hr/>";
                             $this->display($this->prepare_print_array,0,true,$maxheight);
                             
               //                                  $checkpoint=$this->arraydetail[0]["y_axis"];

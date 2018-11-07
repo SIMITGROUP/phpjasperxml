@@ -2021,7 +2021,29 @@ foreach($this->arrayVariable as $name=>$value){
                     switch ($out["hidden_type"]) {
                         case "field":
 
-                            $this->prepare_print_array=array("type"=>"MultiCell","width"=>$out["width"],"height"=>$out["height"],"txt"=>$out["txt"],"border"=>$out["border"],"align"=>$out["align"],"fill"=>$out["fill"],"hidden_type"=>$out["hidden_type"],"printWhenExpression"=>$out["printWhenExpression"],"soverflow"=>$out["soverflow"],"poverflow"=>$out["poverflow"],"link"=>$out["link"],"pattern"=>$out["pattern"],"writeHTML"=>$out["writeHTML"],"isPrintRepeatedValues"=>$out["isPrintRepeatedValues"]);
+                            // $this->prepare_print_array=array("type"=>"MultiCell","width"=>$out["width"],"height"=>$out["height"],"txt"=>$out["txt"],"border"=>$out["border"],"align"=>$out["align"],"fill"=>$out["fill"],"hidden_type"=>$out["hidden_type"],"printWhenExpression"=>$out["printWhenExpression"],"soverflow"=>$out["soverflow"],"poverflow"=>$out["poverflow"],"link"=>$out["link"],"pattern"=>$out["pattern"],"writeHTML"=>$out["writeHTML"],"isPrintRepeatedValues"=>$out["isPrintRepeatedValues"]);
+                          $this->prepare_print_array=array(
+                                    "type"=>"MultiCell",
+                                    "width"=>$out["width"],
+                                    "height"=>$out["height"],
+                                    "txt"=>$out["txt"],
+                                    "border"=>$out["border"],
+                                    "align"=>$out["align"],
+                                    "fill"=>$out["fill"],
+                                    "hidden_type"=>$out["hidden_type"],
+                                    "printWhenExpression"=>$out["printWhenExpression"],
+                                    "soverflow"=>$out["soverflow"],
+                                    "poverflow"=>$out["poverflow"],
+                                    "link"=>$out["link"],
+                                    "pattern"=>$out["pattern"],
+                                    "writeHTML"=>$out["writeHTML"],
+                                    "isPrintRepeatedValues"=>$out["isPrintRepeatedValues"],
+                                    "valign"=>$out["valign"],
+                                    "x"=>$out["x"],
+                                    "y"=>$out["y"],
+                                    "rotation"=>$out["rotation"],
+                                    "uuid"=>$out["uuid"], 
+                                    "linktarget"=>$out['linktarget']);
                             $this->display($this->prepare_print_array,0,true);
 
                             if($this->pdf->GetY()>$biggestY) {
