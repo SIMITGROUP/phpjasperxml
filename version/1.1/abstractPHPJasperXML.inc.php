@@ -129,44 +129,44 @@ class abstractPHPJasperXML
 
     protected function setFont($arraydata)
     {
-        $arraydata["font"]=  strtolower(str_replace(' ', '', $arraydata["font"]));
+        $font=  strtolower(str_replace(' ', '', $arraydata["font"]));
 
         if($arraydata["fontstyle"]=="BI")
         {
-            $fontfile=$this->fontdir.'/'.$arraydata["font"].'bi.php';
+            $fontfile=$this->fontdir.'/'.$font.'bi.php';
         }
         elseif($arraydata["fontstyle"]=="I")
         {
-            $fontfile=$this->fontdir.'/'.$arraydata["font"].'i.php';
+            $fontfile=$this->fontdir.'/'.$font.'i.php';
         }
         elseif($arraydata["fontstyle"]=="B")
         {
-            $fontfile=$this->fontdir.'/'.$arraydata["font"].'b.php';
+            $fontfile=$this->fontdir.'/'.$font.'b.php';
         }
         else
         {
-             $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+             $fontfile=$this->fontdir.'/'.$font.'.php';
         }
             
-            if(!file_exists($fontfile))
-            {
-                $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
-            }
+            // if(!file_exists($fontfile))
+            // {
+            //     $fontfile=$this->fontdir.'/'.$font.'.php';
+            // }
             
             //can get font from php code
            if(file_exists($fontfile) )
            {
             
-                $this->pdf->SetFont($arraydata["font"],$arraydata["fontstyle"],$arraydata["fontsize"],$fontfile);
+                $this->pdf->SetFont($font,$arraydata["fontstyle"],$arraydata["fontsize"],$fontfile);
            }
            else
            {
             //check server side have font or not
-                $fontfile=$this->getTTFFontPath($arraydata["font"]);
+                // $fontfile=$this->getTTFFontPath($font);
                 if(file_exists($fontfile))
                 {
                     
-                    // if(!in_array($fontfile, $this->addedttffont))
+                    if(!in_array($fontfile, $this->addedttffont))
                     {
                         $fontname = TCPDF_FONTS::addTTFfont($fontfile, 'TrueTypeUnicode', '', 96);                        
                         // array_push($this->addedttffont,$fontfile);
@@ -1528,7 +1528,7 @@ public function analyse_dsexpression($data=[],$txt=''){
       
 
         $fontpatharr=array("$this->pchartfolder/pChart/fonts",__DIR__.'/../../tcpdf/fonts');
-        
+
         $defaultfont="MankSans";
         if(PHP_OS=='Linux'){
             array_push($fontpatharr,"/usr/share/fonts/truetype/freefont");
