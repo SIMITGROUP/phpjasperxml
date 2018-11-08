@@ -32,6 +32,7 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
         $printoverflow="false";
         $data->hyperlinkReferenceExpression=$this->analyse_expression($data->hyperlinkReferenceExpression);
         $data->hyperlinkReferenceExpression=trim(str_replace(array(" ",'"'),"",$data->hyperlinkReferenceExpression));
+
         if(isset($data->reportElement["forecolor"])) {
             
             $textcolor = array('forecolor'=>$data->reportElement["forecolor"],"r"=>hexdec(substr($data->reportElement["forecolor"],1,2)),"g"=>hexdec(substr($data->reportElement["forecolor"],3,2)),"b"=>hexdec(substr($data->reportElement["forecolor"],5,2)));
@@ -70,10 +71,15 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
         if(isset($data->textElement["rotation"])) {
             $rotation=(string)$data->textElement["rotation"];
         }
-        if(isset($data->textElement->font["fontName"])) {
+        if(isset($data->textElement->font["fontName"]))
+        {
           
-            $font=$this->recommendFont($data->text,(string)$data->textElement->font["fontName"],(string)$data->textElement->font["pdfFontName"]);
-                
+            $font=(string)$data->textElement->font["fontName"];
+        }
+        if(isset($data->textElement->font["pdfFontName"]))
+        {
+          
+            $pdffont=(string)$data->textElement->font["pdfFontName"];
         }
         if(isset($data->textElement->font["size"])) {
             $fontsize=$data->textElement->font["size"];
@@ -145,6 +151,8 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
             "txt"=>$txtEnc,"border"=>$border,
             "align"=>$align,
             "fill"=>$fill,
+            "font"=>$font."",
+            "pdfFontName"=>$pdffont,
             "hidden_type"=>"statictext",
             "soverflow"=>$stretchoverflow,
             "poverflow"=>$printoverflow,
@@ -561,9 +569,15 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
             // echo $rotation;
             // echo '<hr/>';
         }
-        if(isset($data->textElement->font["fontName"])) 
-        {         
+       if(isset($data->textElement->font["fontName"]))
+        {
+          
             $font=(string)$data->textElement->font["fontName"];
+        }
+        if(isset($data->textElement->font["pdfFontName"]))
+        {
+          
+            $pdffont=(string)$data->textElement->font["pdfFontName"];
         }
         if(isset($data->textElement->font["size"])) {
             $fontsize=(string)$data->textElement->font["size"];
@@ -591,28 +605,36 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
             case 'new java.util.Date()':
 
                 $mydata[]=array ("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>date("Y-m-d H:i:s"),"border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"date","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"link"=>$data->hyperlinkReferenceExpression,"valign"=>$valign,
+                    "font"=>$font,"pdfFontName"=>$pdffont,
                   "uuid"=>$data->reportElement['uuid'],  "x"=>$data->reportElement["x"]+0,"y"=>$data->reportElement["y"]+0,"elementid"=>$this->elementid);
 
                 break;
             case '"Page "+$V{PAGE_NUMBER}+" of"':
                 $mydata[]=array("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>'Page $this->PageNo() of',"border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"pageno","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"link"=>$data->hyperlinkReferenceExpression,"pattern"=>$data["pattern"],"valign"=>$valign,
+                    "font"=>$font,"pdfFontName"=>$pdffont,
                    "uuid"=>$data->reportElement['uuid'], "x"=>$data->reportElement["x"]+0,"y"=>$data->reportElement["y"]+0,"elementid"=>$this->elementid);
                 break;
             case '$V{PAGE_NUMBER}':
                 
                 // $this->pdf->getAliasNbPages();
                 if(isset($data["evaluationTime"])&&$data["evaluationTime"]=="Report") {
-                    $mydata[]=array("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>'{{:ptp:}}',"border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"pageno","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"link"=>$data->hyperlinkReferenceExpression,"pattern"=>$data["pattern"],"valign"=>$valign,
+                    $mydata[]=array("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>'{{:ptp:}}',"border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"pageno","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"link"=>$data->hyperlinkReferenceExpression,
+                        "pattern"=>$data["pattern"],"valign"=>$valign,
+                        "font"=>$font,"pdfFontName"=>$pdffont,
                       "uuid"=>$data->reportElement['uuid'],  "x"=>$data->reportElement["x"]+0,"y"=>$data->reportElement["y"]+0,"elementid"=>$this->elementid);
                 }
                 else {
-                    $mydata[]=array("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>'$this->PageNo()',"border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"pageno","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"link"=>$data->hyperlinkReferenceExpression,"pattern"=>$data["pattern"],"valign"=>$valign,
+                    $mydata[]=array("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>'$this->PageNo()',"border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"pageno","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,
+                        "font"=>$font,"pdfFontName"=>$pdffont,
+                        "link"=>$data->hyperlinkReferenceExpression,"pattern"=>$data["pattern"],"valign"=>$valign,
                         "uuid"=>$data->reportElement['uuid'],"x"=>$data->reportElement["x"]+0,"y"=>$data->reportElement["y"]+0,"elementid"=>$this->elementid);
                 }
                 break;
             case '" " + $V{PAGE_NUMBER}':
                 $mydata[]=array("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>' {{:ptp:}}',
-                    "border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"nb","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"link"=>$data->hyperlinkReferenceExpression,"pattern"=>$data["pattern"],"valign"=>$valign,
+                    "border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"nb","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"link"=>$data->hyperlinkReferenceExpression,
+                    "font"=>$font,"pdfFontName"=>$pdffont,
+                    "pattern"=>$data["pattern"],"valign"=>$valign,
                     "uuid"=>$data->reportElement['uuid'],"x"=>$data->reportElement["x"]+0,"y"=>$data->reportElement["y"]+0,"elementid"=>$this->elementid);
                 break;
 
@@ -638,6 +660,8 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
                     "fill"=>$fill,
                     "x"=>$data->reportElement["x"]+0,
                     "y"=>$data->reportElement["y"]+0,
+                    "font"=>$font,
+                    "pdfFontName"=>$pdffont,
                     "hidden_type"=>"field",
                     "soverflow"=>$stretchoverflow,
                     "poverflow"=>$printoverflow,

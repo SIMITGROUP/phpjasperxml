@@ -123,72 +123,26 @@ class abstractPHPJasperXML
             }
         }
 
+    protected function setFont($arraydata)
+    {
+        $arraydata["font"]=  strtolower(str_replace(' ', '', $arraydata["font"]));
 
-
-    protected function display($arraydata=[],$y_axis=0,$fielddata=false,$maxheight=0) {
-
-        $this->currentuuid=$arraydata["uuid"];
-         $this->Rotate($arraydata["rotation"]);
-    
-        if($arraydata["rotation"]!=""){
-
-            if($arraydata["rotation"]=="Left"){
-                
-                 $w=$arraydata["width"];
-                $arraydata["width"]=$arraydata["height"];
-                $arraydata["height"]=$w;
-                $this->pdf->SetXY($this->pdf->GetX()-$arraydata["width"],$this->pdf->GetY());
-            }
-            elseif($arraydata["rotation"]=="Right"){
-                
-                 $w=$arraydata["width"];
-                $arraydata["width"]=$arraydata["height"];
-                $arraydata["height"]=$w;
-                $this->pdf->SetXY($this->pdf->GetX(),$this->pdf->GetY()-$arraydata["height"]);
-            }
-            elseif($arraydata["rotation"]=="UpsideDown"){
-
-                $leftpos=$arraydata["width"]-$this->arrayPageSetting["leftMargin"]-$arraydata['x'];
-                $this->Rotate( $arraydata["rotation"],$leftpos);
-                //soverflow"=>$stretchoverflow,"poverflow"
-                $arraydata["soverflow"]=true;
-                $arraydata["poverflow"]=true;
-                
-               //   $w=$arraydata["width"];
-               // $arraydata["width"]=$arraydata["height"];
-                //$arraydata["height"]=$w;
-                // echo $this->pdf->GetX().':';
-                // echo $arraydata["width"];die;
-                // print_r($arraydata);
-                // echo '<hr/>';
-                $this->pdf->SetY(                    
-                       // $this->pdf->GetX()+ $arraydata["width"],
-                        $this->pdf->GetY()-$arraydata["height"]
-                    );
-
-                // $this->pdf->SetX(
-                   // $leftpos+$arraydata["width"]
-                       // $this->pdf->GetX()+$arraydata["width"]
-                        // 0
-                    // );
-            }
-            else
-            {
-
-            }
+        if($arraydata["fontstyle"]=="BI")
+        {
+            $fontfile=$this->fontdir.'/'.$arraydata["font"].'bi.php';
         }
-        if($arraydata["type"]=="SetFont") {
-        
-                       $arraydata["font"]=  strtolower(str_replace(' ', '', $arraydata["font"]));
-
-                        if($arraydata["fontstyle"]=="BI")
-                            $fontfile=$this->fontdir.'/'.$arraydata["font"].'bi.php';
-                        elseif($arraydata["fontstyle"]=="I")
-                            $fontfile=$this->fontdir.'/'.$arraydata["font"].'i.php';
-                        elseif($arraydata["fontstyle"]=="B")
-                            $fontfile=$this->fontdir.'/'.$arraydata["font"].'b.php';
-                        else
-                             $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+        elseif($arraydata["fontstyle"]=="I")
+        {
+            $fontfile=$this->fontdir.'/'.$arraydata["font"].'i.php';
+        }
+        elseif($arraydata["fontstyle"]=="B")
+        {
+            $fontfile=$this->fontdir.'/'.$arraydata["font"].'b.php';
+        }
+        else
+        {
+             $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+        }
             
             if(!file_exists($fontfile))
             {
@@ -223,6 +177,116 @@ class abstractPHPJasperXML
                 
             }
 
+    }
+
+    protected function display($arraydata=[],$y_axis=0,$fielddata=false,$maxheight=0) {
+
+        $this->currentuuid=$arraydata["uuid"];
+         $this->Rotate($arraydata["rotation"]);
+    
+        if($arraydata["rotation"]!=""){
+
+            if($arraydata["rotation"]=="Left"){
+                
+                 $w=$arraydata["width"];
+                $arraydata["width"]=$arraydata["height"];
+                $arraydata["height"]=$w;
+                $this->pdf->SetXY($this->pdf->GetX()-$arraydata["width"],$this->pdf->GetY());
+            }
+            elseif($arraydata["rotation"]=="Right"){
+                
+                 $w=$arraydata["width"];
+                $arraydata["width"]=$arraydata["height"];
+                $arraydata["height"]=$w;
+                $this->pdf->SetXY($this->pdf->GetX(),$this->pdf->GetY()-$arraydata["height"]);
+            }
+            elseif($arraydata["rotation"]=="UpsideDown"){
+                // echo $arraydata['x'];
+                $this->pdf->k=1;
+                $initrightpos=204;
+                $pagewidth=$this->arrayPageSetting['pageWidth'];
+                //$pageWidth=595;
+                $leftpos=$this->arrayPageSetting["leftMargin"]+$arraydata['width']/2+$arraydata['x']/2;
+                //$pagewidth-$this->arrayPageSetting["rightMargin"]+$arraydata['width'];
+                //$pagewidth;
+                //;-$initrightpos;
+                //-$this->arrayPageSetting["rightMargin"]-$arraydata["x"]+$arraydata['width'];
+
+                //$this->arrayPageSetting["leftMargin"]+$arraydata['x'];
+                $this->Rotate($arraydata["rotation"],$leftpos);
+                //soverflow"=>$stretchoverflow,"poverflow"
+                $arraydata["soverflow"]=true;
+                $arraydata["poverflow"]=true;
+                
+               //   $w=$arraydata["width"];
+               // $arraydata["width"]=$arraydata["height"];
+                //$arraydata["height"]=$w;
+                // echo $this->pdf->GetX().':';
+                // echo $arraydata["width"];die;
+                // print_r($arraydata);
+                // echo '<hr/>';
+                $this->pdf->SetY(                    
+                       // $leftpos,
+                        $this->pdf->GetY()-$arraydata["height"]
+                    );
+
+                // $this->pdf->SetX(
+                   // $leftpos+$arraydata["width"]
+                       // $this->pdf->GetX()+$arraydata["width"]
+                        // 0
+                    // );
+            }
+            else
+            {
+
+            }
+        }
+        if($arraydata["type"]=="SetFont") {
+            $this->setFont($arraydata);
+          //              $arraydata["font"]=  strtolower(str_replace(' ', '', $arraydata["font"]));
+
+          //               if($arraydata["fontstyle"]=="BI")
+          //                   $fontfile=$this->fontdir.'/'.$arraydata["font"].'bi.php';
+          //               elseif($arraydata["fontstyle"]=="I")
+          //                   $fontfile=$this->fontdir.'/'.$arraydata["font"].'i.php';
+          //               elseif($arraydata["fontstyle"]=="B")
+          //                   $fontfile=$this->fontdir.'/'.$arraydata["font"].'b.php';
+          //               else
+          //                    $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+            
+          //   if(!file_exists($fontfile))
+          //   {
+          //       $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+          //   }
+            
+          //   //echo $fontfile."<br/>";
+          // if(file_exists($fontfile) ){
+            
+          //       $this->pdf->SetFont($arraydata["font"],$arraydata["fontstyle"],$arraydata["fontsize"],$fontfile);
+          //  }
+          //  else{
+
+          //       $arraydata["font"]="freeserif";
+          //                       if($arraydata["fontstyle"]=="")
+          //                           $this->pdf->SetFont('freeserif',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
+          //                       elseif($arraydata["fontstyle"]=="B")
+          //                           $this->pdf->SetFont('freeserifb',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
+          //                       elseif($arraydata["fontstyle"]=="I")
+          //                           $this->pdf->SetFont('freeserifi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifi.php');
+          //                       elseif($arraydata["fontstyle"]=="BI")
+          //                           $this->pdf->SetFont('freeserifbi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+          //                       elseif($arraydata["fontstyle"]=="BIU")
+          //                           $this->pdf->SetFont('freeserifbi',"BIU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+          //                       elseif($arraydata["fontstyle"]=="U")
+          //                           $this->pdf->SetFont('freeserif',"U",$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
+          //                       elseif($arraydata["fontstyle"]=="BU")
+          //                           $this->pdf->SetFont('freeserifb',"U",$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
+          //                       elseif($arraydata["fontstyle"]=="IU")
+          //                           $this->pdf->SetFont('freeserifi',"IU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+                    
+                
+          //   }
+
         }
         elseif($arraydata["type"]=="subreport") {   
         
@@ -233,19 +297,17 @@ class abstractPHPJasperXML
         elseif($arraydata["type"]=="MultiCell") {
           
          
-           // echo $arraydata["txt"].':'. $this->currenttextfield."<br>"; 
-//echo " $this->report_count $this->currenttextfield".print_r($arraydata,true)."<br/><br/>";
-            if($arraydata["hidden_type"]=='statictext' || $fielddata==false) {
+            if($arraydata["hidden_type"]=='statictext' || $fielddata==false) 
+            {
                 $this->checkoverflow($arraydata,$this->updatePageNo($arraydata["txt"]),'',$maxheight);
             }
-            elseif($fielddata==true) {
+            elseif($fielddata==true) 
+            {
             
-                 $res=$this->analyse_expression($arraydata["txt"],$arraydata["isPrintRepeatedValues"]);
-
+                $res=$this->analyse_expression($arraydata["txt"],$arraydata["isPrintRepeatedValues"]);
                 $this->checkoverflow($arraydata,$this->updatePageNo($res),$maxheight);
             }
             
-
         }
         elseif($arraydata["type"]=="SetXY") {
             $this->pdf->SetXY($arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis);
@@ -911,10 +973,20 @@ public function analyse_dsexpression($data=[],$txt=''){
 
     protected function checkoverflow($arraydata=[],$txt="",$maxheight=0) 
     {
-        $newfont= $this->recommendFont($txt, $arraydata["font"],$arraydata["pdfFontName"]);    
-        $this->pdf->SetFont($newfont,$this->pdf->getFontStyle(),$this->pdf->getFontSize());    
-        $expressiontxt=(string)$arraydata['printWhenExpression'];
-
+        // echo  $arraydata["pdfFontName"];
+        // print_r($arraydata);
+        // echo "<hr/>";
+        
+        // $this->setFont($arraydata);
+        if(isset($arraydata["pdfFontName"]) && $arraydata["pdfFontName"]!='')
+        {
+            $newfont= $this->recommendFont($txt, $arraydata["font"],$arraydata["pdfFontName"]);    
+            // echo $txt.', font'.$arraydata["font"].',pdffont='.$arraydata["pdfFontName"].', final font='.$newfont.'<hr/>';
+            $this->pdf->SetFont($newfont,$this->pdf->getFontStyle(),$this->pdf->getFontSize());    
+            
+        }
+        
+        $expressiontxt=(string)$arraydata['printWhenExpression'];    
         $this->print_expression_result = $this->analyse_expression($expressiontxt);
 
         // if($this->print_expression_result ==false)
@@ -1022,10 +1094,14 @@ public function analyse_dsexpression($data=[],$txt=''){
                 $x=$this->pdf->GetX();
                 $y=$this->pdf->GetY();
                              //if($arraydata["link"])   echo $arraydata["linktarget"].",".$arraydata["link"]."<br/><br/>";
-                $this->pdf->MultiCell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]),$arraydata["border"] 
-                                ,$arraydata["align"], $arraydata["fill"],1,'','',true,0,false,true,$maxheight);//,$arraydata["valign"]);
+                $this->pdf->MultiCell($arraydata["width"], 
+                                    $arraydata["height"], 
+                                    $this->formatText($txt, $arraydata["pattern"]),$arraydata["border"] ,
+                                    $arraydata["align"], 
+                                    $arraydata["fill"],1,'','',true,0,false,true,$maxheight);//,$arraydata["valign"]);
         
-                if( $this->pdf->balancetext=='' && $this->currentband=='detail'){
+                if( $this->pdf->balancetext=='' && $this->currentband=='detail')
+                {
                     if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
                         $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
                     else{
@@ -1344,16 +1420,28 @@ public function analyse_dsexpression($data=[],$txt=''){
                 \p{Tibetan}
                 \p{Yi}*/
 
-        if($pdffont!="")
+        if(isset($pdffont) && $pdffont !="")
+        {            
+
             return $pdffont;
+        }
+
         if(preg_match("/\p{Han}+/u", $utfstring))
+        {
                 $font="cid0cs";
-          elseif(preg_match("/\p{Katakana}+/u", $utfstring) || preg_match("/\p{Hiragana}+/u", $utfstring))
+        }
+        elseif(preg_match("/\p{Katakana}+/u", $utfstring) || preg_match("/\p{Hiragana}+/u", $utfstring))
+        {
                   $font="cid0jp";
-          elseif(preg_match("/\p{Hangul}+/u", $utfstring))
+        }            
+        elseif(preg_match("/\p{Hangul}+/u", $utfstring))
+        {
               $font="cid0kr";
-          else
+        }
+        else
+        {
               $font=$defaultfont;
+        }
           //echo "$utfstring $font".mb_detect_encoding($utfstring)."<br/>";
           
               return $font;//mb_detect_encoding($utfstring);

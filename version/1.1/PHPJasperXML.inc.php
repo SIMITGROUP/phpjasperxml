@@ -1444,32 +1444,32 @@ if($type=='stackedBarChart')
                         $this->currentband='detail';  
                         $fontfile=$this->fontdir.'/'.$fontfamily.'.php';
                                        //|| $this->bypassnofont==false 
-             if(file_exists($fontfile) )
-             {
-                $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
-                $this->pdf->SetFont($fontfamily,$fontstyle,$fontsize,$fontfile);
-           }
-           else{
-             $fontfamily="freeserif";
-                                if($fontstyle=="")
-                                    $this->pdf->SetFont('freeserif',$fontstyle,$fontsize,$this->fontdir.'/freeserif.php');
-                                elseif($fontstyle=="B")
-                                    $this->pdf->SetFont('freeserifb',$fontstyle,$fontsize,$this->fontdir.'/freeserifb.php');
-                                elseif($fontstyle=="I")
-                                    $this->pdf->SetFont('freeserifi',$fontstyle,$fontsize,$this->fontdir.'/freeserifi.php');
-                                elseif($fontstyle=="BI")
-                                    $this->pdf->SetFont('freeserifbi',$fontstyle,$fontsize,$this->fontdir.'/freeserifbi.php');
-                                elseif($fontstyle=="BIU")
-                                    $this->pdf->SetFont('freeserifbi',"BIU",$fontsize,$this->fontdir.'/freeserifbi.php');
-                                elseif($fontstyle=="U")
-                                    $this->pdf->SetFont('freeserif',"U",$fontsize,$this->fontdir.'/freeserif.php');
-                                elseif($fontstyle=="BU")
-                                    $this->pdf->SetFont('freeserifb',"U",$fontsize,$this->fontdir.'/freeserifb.php');
-                                elseif($fontstyle=="IU")
-                                    $this->pdf->SetFont('freeserifi',"IU",$fontsize,$this->fontdir.'/freeserifbi.php');
+           //   if(file_exists($fontfile) )
+           //   {
+           //      $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
+           //      $this->pdf->SetFont($fontfamily,$fontstyle,$fontsize,$fontfile);
+           // }
+           // else{
+           //   $fontfamily="freeserif";
+           //                      if($fontstyle=="")
+           //                          $this->pdf->SetFont('freeserif',$fontstyle,$fontsize,$this->fontdir.'/freeserif.php');
+           //                      elseif($fontstyle=="B")
+           //                          $this->pdf->SetFont('freeserifb',$fontstyle,$fontsize,$this->fontdir.'/freeserifb.php');
+           //                      elseif($fontstyle=="I")
+           //                          $this->pdf->SetFont('freeserifi',$fontstyle,$fontsize,$this->fontdir.'/freeserifi.php');
+           //                      elseif($fontstyle=="BI")
+           //                          $this->pdf->SetFont('freeserifbi',$fontstyle,$fontsize,$this->fontdir.'/freeserifbi.php');
+           //                      elseif($fontstyle=="BIU")
+           //                          $this->pdf->SetFont('freeserifbi',"BIU",$fontsize,$this->fontdir.'/freeserifbi.php');
+           //                      elseif($fontstyle=="U")
+           //                          $this->pdf->SetFont('freeserif',"U",$fontsize,$this->fontdir.'/freeserif.php');
+           //                      elseif($fontstyle=="BU")
+           //                          $this->pdf->SetFont('freeserifb',"U",$fontsize,$this->fontdir.'/freeserifb.php');
+           //                      elseif($fontstyle=="IU")
+           //                          $this->pdf->SetFont('freeserifi',"IU",$fontsize,$this->fontdir.'/freeserifbi.php');
                     
                 
-            }
+           //  }
                                         
                     //$this->pdf->SetFont($fontfamily,$fontstyle,$fontsize,$this->fontdir.'/'.$fontfamily.'php');
                                         
@@ -1655,6 +1655,8 @@ if($type=='stackedBarChart')
                                     "poverflow"=>$out["poverflow"],
                                     "link"=>$out["link"],
                                     "pattern"=>$out["pattern"],
+                                    "font"=>$out['font'],
+                                    "pdfFontName"=>$out['pdfFontName'],
                                     "writeHTML"=>$out["writeHTML"],
                                     "isPrintRepeatedValues"=>$out["isPrintRepeatedValues"],
                                     "valign"=>$out["valign"],
