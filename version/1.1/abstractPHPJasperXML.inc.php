@@ -13,6 +13,7 @@ class abstractPHPJasperXML
         protected $arraysubdataset;
         protected $offsetposition;
         protected $detailbandqty=0;
+        protected $hideheader=false;
         public $arraysqltable;
         protected $detailallowtill=0;
         public $sql;
@@ -28,6 +29,7 @@ class abstractPHPJasperXML
         protected $chartobj;
         protected $fontdir = __DIR__ . "/../../tcpdf/fonts";
         protected $groupnochange=0; //use for detect record change till which level of grouping (grouping support multilevel)
+        protected $addedttffont=[];
         public function setErrorReport($error_report=0)
         {
             
@@ -123,6 +125,8 @@ class abstractPHPJasperXML
             }
         }
 
+
+
     protected function setFont($arraydata)
     {
         $arraydata["font"]=  strtolower(str_replace(' ', '', $arraydata["font"]));
@@ -149,30 +153,66 @@ class abstractPHPJasperXML
                 $fontfile=$this->fontdir.'/'.$arraydata["font"].'.php';
             }
             
-            //echo $fontfile."<br/>";
-          if(file_exists($fontfile) ){
+            //can get font from php code
+           if(file_exists($fontfile) )
+           {
             
                 $this->pdf->SetFont($arraydata["font"],$arraydata["fontstyle"],$arraydata["fontsize"],$fontfile);
            }
-           else{
+           else
+           {
+            //check server side have font or not
+                $fontfile=$this->getTTFFontPath($arraydata["font"]);
+                if(file_exists($fontfile))
+                {
+                    
+                    // if(!in_array($fontfile, $this->addedttffont))
+                    {
+                        $fontname = TCPDF_FONTS::addTTFfont($fontfile, 'TrueTypeUnicode', '', 96);                        
+                        // array_push($this->addedttffont,$fontfile);
+                    }
+                    
+                    $this->pdf->SetFont($fontname, $arraydata["fontstyle"], $arraydata["fontsize"], '', false);
 
-                $arraydata["font"]="freeserif";
-                                if($arraydata["fontstyle"]=="")
-                                    $this->pdf->SetFont('freeserif',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
-                                elseif($arraydata["fontstyle"]=="B")
-                                    $this->pdf->SetFont('freeserifb',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
-                                elseif($arraydata["fontstyle"]=="I")
-                                    $this->pdf->SetFont('freeserifi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifi.php');
-                                elseif($arraydata["fontstyle"]=="BI")
-                                    $this->pdf->SetFont('freeserifbi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
-                                elseif($arraydata["fontstyle"]=="BIU")
-                                    $this->pdf->SetFont('freeserifbi',"BIU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
-                                elseif($arraydata["fontstyle"]=="U")
-                                    $this->pdf->SetFont('freeserif',"U",$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
-                                elseif($arraydata["fontstyle"]=="BU")
-                                    $this->pdf->SetFont('freeserifb',"U",$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
-                                elseif($arraydata["fontstyle"]=="IU")
-                                    $this->pdf->SetFont('freeserifi',"IU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+                    
+                }
+                else
+                {
+                    $arraydata["font"]="freeserif";
+                    if($arraydata["fontstyle"]=="")
+                    {
+                        $this->pdf->SetFont('freeserif',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
+                    }
+                    elseif($arraydata["fontstyle"]=="B")
+                    {
+                        $this->pdf->SetFont('freeserifb',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
+                    }
+                    elseif($arraydata["fontstyle"]=="I")
+                    {
+                        $this->pdf->SetFont('freeserifi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifi.php');
+                    }
+                    elseif($arraydata["fontstyle"]=="BI")
+                    {
+                        $this->pdf->SetFont('freeserifbi',$arraydata["fontstyle"],$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+                    }
+                    elseif($arraydata["fontstyle"]=="BIU")
+                    {
+                        $this->pdf->SetFont('freeserifbi',"BIU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+                    }
+                    elseif($arraydata["fontstyle"]=="U")
+                    {
+                        $this->pdf->SetFont('freeserif',"U",$arraydata["fontsize"],$this->fontdir.'/freeserif.php');
+                    }
+                    elseif($arraydata["fontstyle"]=="BU")
+                    {
+                        $this->pdf->SetFont('freeserifb',"U",$arraydata["fontsize"],$this->fontdir.'/freeserifb.php');
+                    }
+                    elseif($arraydata["fontstyle"]=="IU")
+                    {
+                        $this->pdf->SetFont('freeserifi',"IU",$arraydata["fontsize"],$this->fontdir.'/freeserifbi.php');
+                    }
+                }
+                
                     
                 
             }
@@ -181,8 +221,17 @@ class abstractPHPJasperXML
 
     protected function display($arraydata=[],$y_axis=0,$fielddata=false,$maxheight=0) {
 
-        $this->currentuuid=$arraydata["uuid"];
-         $this->Rotate($arraydata["rotation"]);
+        if(!isset($arraydata["uuid"]))
+        {
+            $arraydata["uuid"]='';
+        }
+        $this->currentuuid=$arraydata["uuid"];            
+        if(!isset($arraydata["rotation"]))
+        {
+            $arraydata["rotation"]='';
+        }
+        $this->Rotate($arraydata["rotation"]);
+        
     
         if($arraydata["rotation"]!=""){
 
@@ -973,83 +1022,87 @@ public function analyse_dsexpression($data=[],$txt=''){
 
     protected function checkoverflow($arraydata=[],$txt="",$maxheight=0) 
     {
-        // echo  $arraydata["pdfFontName"];
-        // print_r($arraydata);
-        // echo "<hr/>";
-        
-        // $this->setFont($arraydata);
-        if(isset($arraydata["pdfFontName"]) && $arraydata["pdfFontName"]!='')
+
+        // if(isset($arraydata["pdfFontName"]) && $arraydata["pdfFontName"]!='')
+            $font=$arraydata["font"];
+            $pdffont=$arraydata["pdfFontName"];
+            $newfont= $this->recommendFont($txt, $font,$pdffont);
+            $arraydata['font']=$newfont;
+            $arraydata['pdfFontName']=$newfont;
+            // $arraydata['pdfFontName']='';
+            $this->setFont($arraydata);            
+            // echo $txt.':'.$arraydata['font'].',actual='.$this->pdf->getFontFamily().'<hr/>';
+        if(isset($arraydata['printWhenExpression']))
         {
-            $newfont= $this->recommendFont($txt, $arraydata["font"],$arraydata["pdfFontName"]);    
-            // echo $txt.', font'.$arraydata["font"].',pdffont='.$arraydata["pdfFontName"].', final font='.$newfont.'<hr/>';
-            $this->pdf->SetFont($newfont,$this->pdf->getFontStyle(),$this->pdf->getFontSize());    
-            
+            $expressiontxt=(string)$arraydata['printWhenExpression'];        
+        }
+        else
+        {
+            $expressiontxt='';
         }
         
-        $expressiontxt=(string)$arraydata['printWhenExpression'];    
         $this->print_expression_result = $this->analyse_expression($expressiontxt);
 
-        // if($this->print_expression_result ==false)
-        // {
-        //     echo 'print_expression_result:false <br/>';
-        // }
-        // else if($this->print_expression_result =='')
-        // {
-        //     echo 'print_expression_result:empty <br/>';
-        // }
-        // else
-        // {
-        //     echo 'print_expression_result:"'.$this->print_expression_result.'"<br/>';        
-        // }
-        // echo '<hr/>';
+        
         if(trim($expressiontxt) == '' || $this->print_expression_result!=false   ) {
-           // echo $arraydata["link"];
+        
             if($arraydata["link"]) {
-                //print_r($arraydata);
-                
-                //$this->debughyperlink=true;
-              //  echo $arraydata["link"].",print:".$this->print_expression_result;
                 $arraydata["link"]=$this->analyse_expression($arraydata["link"],"");
-                //$this->debughyperlink=false;
             }
-            //print_r($arraydata);
             
             
-            if($arraydata["writeHTML"]==1 && $this->pdflib=="TCPDF") {
-             // $this->pdf->writeHTML($txt);
+            if(isset($arraydata["writeHTML"]) && $arraydata["writeHTML"]==1 && $this->pdflib=="TCPDF") 
+            {
+                // $this->pdf->writeHTML($txt);
                 $this->pdf->writeHTML($txt, true, false, false, true);
                 // $html, $ln=true, $fill=false, $reseth=false, $cell=false, $align=''
-            $this->pdf->Ln();
-                    if($this->currentband=='detail'){
+                $this->pdf->Ln();
+                if($this->currentband=='detail')
+                {
                     if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
+                    {
                         $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    else{
+                    }
+                    else
+                    {
                         if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
+                        {
                             $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+                        }
                     }
                 }
             
             }
             
-            elseif($arraydata["poverflow"]=="false"&&$arraydata["soverflow"]=="false") {
-                            if($arraydata["valign"]=="M")
-                                    $arraydata["valign"]="C";
-                                if($arraydata["valign"]=="")
-                                    $arraydata["valign"]="T";                
-                                
-                while($this->pdf->GetStringWidth($txt) > $arraydata["width"]) {
+            elseif($arraydata["poverflow"]=="false"&&$arraydata["soverflow"]=="false") 
+            {
+                if($arraydata["valign"]=="M")
+                {
+                    $arraydata["valign"]="C";
+                }
+                if($arraydata["valign"]=="")
+                {
+                    $arraydata["valign"]="T";
+                }
+                                                                    
+                while($this->pdf->GetStringWidth($txt) > $arraydata["width"]) 
+                {
                     if($txt!=$this->pdf->getAliasNbPages() && $txt!=' '.$this->pdf->getAliasNbPages())
-                    $txt=substr_replace($txt,"",-1);
+                    {
+                        $txt=substr_replace($txt,"",-1);    
+                    }
+                    
                 }
                             
-
                 $x=$this->pdf->GetX();
                 $y=$this->pdf->GetY();
+
                 foreach($this->arrayParameter as  $pv => $ap)
                 {
-
                     if($arraydata["pattern"]=='$P{'.$pv.'}')
+                    {
                         $arraydata["pattern"]=$ap;    
+                    }
                 }
 
                 $text=$this->formatText($txt, $arraydata["pattern"]);
@@ -1111,51 +1164,61 @@ public function analyse_dsexpression($data=[],$txt=''){
                 }
                 
             //$this->pageFooter();
-            if($this->pdf->balancetext!='' ){
-                $this->continuenextpageText=array('width'=>$arraydata["width"], 'height'=>$arraydata["height"], 'txt'=>$this->pdf->balancetext,
-                        'border'=>$arraydata["border"] ,'align'=>$arraydata["align"], 'fill'=>$arraydata["fill"],'ln'=>1,
-                            'x'=>$x,'y'=>'','reset'=>true,'streth'=>0,'ishtml'=>false,'autopadding'=>true);
-                    $this->pdf->balancetext='';
-                    $this->forcetextcolor_b=$this->textcolor_b;
-                    $this->forcetextcolor_g=$this->textcolor_g;
-                    $this->forcetextcolor_r=$this->textcolor_r;
-                    $this->forcefillcolor_b=$this->fillcolor_b;
-                    $this->forcefillcolor_g=$this->fillcolor_g;
-                    $this->forcefillcolor_r=$this->fillcolor_r;
-                    if($this->continuenextpageText)
-                        $this->printlongtext($this->pdf->getFontFamily(),$this->pdf->getFontStyle(),$this->pdf->getFontSize());
-                    
-                    }          
+            if($this->pdf->balancetext!='' )
+            {
+                $this->continuenextpageText=array('width'=>$arraydata["width"], 'height'=>$arraydata["height"], 
+                        'txt'=>$this->pdf->balancetext, 'border'=>$arraydata["border"] ,'align'=>$arraydata["align"], 
+                        'fill'=>$arraydata["fill"],'ln'=>1,'x'=>$x,'y'=>'','reset'=>true,'streth'=>0,'ishtml'=>false,
+                        'autopadding'=>true);
+                $this->pdf->balancetext='';
+                $this->forcetextcolor_b=$this->textcolor_b;
+                $this->forcetextcolor_g=$this->textcolor_g;
+                $this->forcetextcolor_r=$this->textcolor_r;
+                $this->forcefillcolor_b=$this->fillcolor_b;
+                $this->forcefillcolor_g=$this->fillcolor_g;
+                $this->forcefillcolor_r=$this->fillcolor_r;
+                if($this->continuenextpageText)
+                    $this->printlongtext($this->pdf->getFontFamily(),$this->pdf->getFontStyle(),$this->pdf->getFontSize());
                 
-                    
-         
-
+                }                   
             }
-            elseif($arraydata["poverflow"]=="true") {
+            elseif($arraydata["poverflow"]=="true") 
+            {
            
-                            if($arraydata["valign"]=="M")
-                                    $arraydata["valign"]="C";
-                                if($arraydata["valign"]=="")
-                                    $arraydata["valign"]="T"; 
+                if($arraydata["valign"]=="M")
+                {
+                    $arraydata["valign"]="C";
+                }
+                if($arraydata["valign"]=="")
+                {
+                        $arraydata["valign"]="T"; 
+                }
                                 
-                $this->pdf->Cell($arraydata["width"], $arraydata["height"],  $this->formatText($txt, $arraydata["pattern"]),$arraydata["border"],"",$arraydata["align"],$arraydata["fill"],$arraydata["link"]."",0,true,"T",
-                                $arraydata["valign"]);
+                $this->pdf->Cell($arraydata["width"], $arraydata["height"],  $this->formatText($txt, $arraydata["pattern"]),
+                        $arraydata["border"],"",$arraydata["align"],$arraydata["fill"],$arraydata["link"]."",0,true,"T",
+                        $arraydata["valign"]);
                 $this->pdf->Ln();
-                    if($this->currentband=='detail'){
+                if($this->currentband=='detail')
+                {
                     if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
+                    {
                         $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
-                    else{
+                    }
+                    else
+                    {
                         if($this->maxpagey['page_'.($this->pdf->getPage()-1)]<$this->pdf->GetY())
+                        {
                             $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
+                        }
                     }
                 }
             
-            }
-           
-            else {
-                //MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0) {   
-                $this->pdf->MultiCell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]), $arraydata["border"], 
-                            $arraydata["align"], $arraydata["fill"],1,'','',true,0,true,true,$maxheight);
+            }           
+            else 
+            {
+            
+                $this->pdf->MultiCell($arraydata["width"], $arraydata["height"], $this->formatText($txt, $arraydata["pattern"]), 
+                        $arraydata["border"], $arraydata["align"], $arraydata["fill"],1,'','',true,0,true,true,$maxheight);
                 if( $this->pdf->balancetext=='' && $this->currentband=='detail'){
                     if($this->maxpagey['page_'.($this->pdf->getPage()-1)]=='')
                         $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
@@ -1164,22 +1227,27 @@ public function analyse_dsexpression($data=[],$txt=''){
                             $this->maxpagey['page_'.($this->pdf->getPage()-1)]=$this->pdf->GetY();
                     }
                 }
-            if($this->pdf->balancetext!=''){
-                $this->continuenextpageText=array('width'=>$arraydata["width"], 'height'=>$arraydata["height"], 'txt'=>$this->pdf->balancetext,
-                        'border'=>$arraydata["border"] ,'align'=>$arraydata["align"], 'fill'=>$arraydata["fill"],'ln'=>1,
-                            'x'=>$x,'y'=>'','reset'=>true,'streth'=>0,'ishtml'=>false,'autopadding'=>true);
-                    $this->pdf->balancetext='';
-                    $this->forcetextcolor_b=$this->textcolor_b;
-                    $this->forcetextcolor_g=$this->textcolor_g;
-                    $this->forcetextcolor_r=$this->textcolor_r;
-                    $this->forcefillcolor_b=$this->fillcolor_b;
-                    $this->forcefillcolor_g=$this->fillcolor_g;
-                    $this->forcefillcolor_r=$this->fillcolor_r;
-                    $this->gotTextOverPage=true;
-                    if($this->continuenextpageText)
-                        $this->printlongtext($this->pdf->getFontFamily(),$this->pdf->getFontStyle(),$this->pdf->getFontSize());
-                    
-                    }          
+            if($this->pdf->balancetext!='')
+            {
+                $this->continuenextpageText=array('width'=>$arraydata["width"], 'height'=>$arraydata["height"], 
+                    'txt'=>$this->pdf->balancetext, 'border'=>$arraydata["border"] ,'align'=>$arraydata["align"], 
+                    'fill'=>$arraydata["fill"],'ln'=>1, 'x'=>$x,'y'=>'','reset'=>true,'streth'=>0,'ishtml'=>false,
+                    'autopadding'=>true);
+                $this->pdf->balancetext='';
+                $this->forcetextcolor_b=$this->textcolor_b;
+                $this->forcetextcolor_g=$this->textcolor_g;
+                $this->forcetextcolor_r=$this->textcolor_r;
+                $this->forcefillcolor_b=$this->fillcolor_b;
+                $this->forcefillcolor_g=$this->fillcolor_g;
+                $this->forcefillcolor_r=$this->fillcolor_r;
+                $this->gotTextOverPage=true;
+
+                if($this->continuenextpageText)
+                {
+                    $this->printlongtext($this->pdf->getFontFamily(),$this->pdf->getFontStyle(),$this->pdf->getFontSize());
+                }
+                
+            }          
 
 
 
@@ -1422,8 +1490,12 @@ public function analyse_dsexpression($data=[],$txt=''){
 
         if(isset($pdffont) && $pdffont !="")
         {            
+             // if(file_exists($pdffont))
+             // {
+            return $font=$pdffont;
+             // }
 
-            return $pdffont;
+            
         }
 
         if(preg_match("/\p{Han}+/u", $utfstring))
@@ -1442,6 +1514,9 @@ public function analyse_dsexpression($data=[],$txt=''){
         {
               $font=$defaultfont;
         }
+
+
+
           //echo "$utfstring $font".mb_detect_encoding($utfstring)."<br/>";
           
               return $font;//mb_detect_encoding($utfstring);
@@ -1452,7 +1527,8 @@ public function analyse_dsexpression($data=[],$txt=''){
     {
       
 
-        $fontpatharr=array("$this->pchartfolder/pChart/fonts");
+        $fontpatharr=array("$this->pchartfolder/pChart/fonts",__DIR__.'/../../tcpdf/fonts');
+        
         $defaultfont="MankSans";
         if(PHP_OS=='Linux'){
             array_push($fontpatharr,"/usr/share/fonts/truetype/freefont");

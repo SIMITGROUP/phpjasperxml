@@ -4,6 +4,7 @@
 $pchartfolder=__DIR__.'/pchart2';
 
 include_once( __DIR__.'/tcpdf/tcpdf.php');
+// include_once( __DIR__.'/tcpdf/tcpdf.php');
 // echo $phpjasperversion;die;
 if(!isset($phpjasperversion) || $phpjasperversion=="")
 {

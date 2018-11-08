@@ -153,6 +153,8 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
             "fill"=>$fill,
             "font"=>$font."",
             "pdfFontName"=>$pdffont,
+            "fontstyle"=>$fontstyle,
+            "fontsize"=>$fontsize,
             "hidden_type"=>"statictext",
             "soverflow"=>$stretchoverflow,
             "poverflow"=>$printoverflow,
@@ -564,10 +566,9 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
             
             
         }
-        if(isset($data->textElement["rotation"])) {
+        if(isset($data->textElement["rotation"])) 
+        {
             $rotation=(string)$data->textElement["rotation"];
-            // echo $rotation;
-            // echo '<hr/>';
         }
        if(isset($data->textElement->font["fontName"]))
         {
@@ -605,13 +606,13 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
             case 'new java.util.Date()':
 
                 $mydata[]=array ("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>date("Y-m-d H:i:s"),"border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"date","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"link"=>$data->hyperlinkReferenceExpression,"valign"=>$valign,
-                    "font"=>$font,"pdfFontName"=>$pdffont,
+                    "font"=>$font,"pdfFontName"=>$pdffont,"fontstyle"=>$fontstyle."","fontsize"=>$fontsize+0,
                   "uuid"=>$data->reportElement['uuid'],  "x"=>$data->reportElement["x"]+0,"y"=>$data->reportElement["y"]+0,"elementid"=>$this->elementid);
 
                 break;
             case '"Page "+$V{PAGE_NUMBER}+" of"':
                 $mydata[]=array("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>'Page $this->PageNo() of',"border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"pageno","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"link"=>$data->hyperlinkReferenceExpression,"pattern"=>$data["pattern"],"valign"=>$valign,
-                    "font"=>$font,"pdfFontName"=>$pdffont,
+                    "font"=>$font,"pdfFontName"=>$pdffont,"fontstyle"=>$fontstyle."","fontsize"=>$fontsize+0,
                    "uuid"=>$data->reportElement['uuid'], "x"=>$data->reportElement["x"]+0,"y"=>$data->reportElement["y"]+0,"elementid"=>$this->elementid);
                 break;
             case '$V{PAGE_NUMBER}':
@@ -620,12 +621,12 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
                 if(isset($data["evaluationTime"])&&$data["evaluationTime"]=="Report") {
                     $mydata[]=array("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>'{{:ptp:}}',"border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"pageno","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"link"=>$data->hyperlinkReferenceExpression,
                         "pattern"=>$data["pattern"],"valign"=>$valign,
-                        "font"=>$font,"pdfFontName"=>$pdffont,
+                        "font"=>$font,"pdfFontName"=>$pdffont,"fontstyle"=>$fontstyle."","fontsize"=>$fontsize+0,
                       "uuid"=>$data->reportElement['uuid'],  "x"=>$data->reportElement["x"]+0,"y"=>$data->reportElement["y"]+0,"elementid"=>$this->elementid);
                 }
                 else {
                     $mydata[]=array("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>'$this->PageNo()',"border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"pageno","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,
-                        "font"=>$font,"pdfFontName"=>$pdffont,
+                        "font"=>$font,"pdfFontName"=>$pdffont,"fontstyle"=>$fontstyle."","fontsize"=>$fontsize+0,
                         "link"=>$data->hyperlinkReferenceExpression,"pattern"=>$data["pattern"],"valign"=>$valign,
                         "uuid"=>$data->reportElement['uuid'],"x"=>$data->reportElement["x"]+0,"y"=>$data->reportElement["y"]+0,"elementid"=>$this->elementid);
                 }
@@ -633,7 +634,7 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
             case '" " + $V{PAGE_NUMBER}':
                 $mydata[]=array("type"=>"MultiCell","width"=>$data->reportElement["width"],"height"=>$height,"txt"=>' {{:ptp:}}',
                     "border"=>$border,"align"=>$align,"fill"=>$fill,"hidden_type"=>"nb","soverflow"=>$stretchoverflow,"poverflow"=>$printoverflow,"link"=>$data->hyperlinkReferenceExpression,
-                    "font"=>$font,"pdfFontName"=>$pdffont,
+                    "font"=>$font,"pdfFontName"=>$pdffont,"fontstyle"=>$fontstyle."","fontsize"=>$fontsize+0,
                     "pattern"=>$data["pattern"],"valign"=>$valign,
                     "uuid"=>$data->reportElement['uuid'],"x"=>$data->reportElement["x"]+0,"y"=>$data->reportElement["y"]+0,"elementid"=>$this->elementid);
                 break;
@@ -662,6 +663,8 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
                     "y"=>$data->reportElement["y"]+0,
                     "font"=>$font,
                     "pdfFontName"=>$pdffont,
+                    "fontstyle"=>$fontstyle."",
+                    "fontsize"=>$fontsize+0,
                     "hidden_type"=>"field",
                     "soverflow"=>$stretchoverflow,
                     "poverflow"=>$printoverflow,
