@@ -1,3 +1,6 @@
+[![License](https://github.com/SIMITGROUP/phpjasperxml/blob/master/LICENSE)](https://github.com/SIMITGROUP/phpjasperxml/blob/master/LICENSE)
+
+
 PHPJasperXML
 ============
 
