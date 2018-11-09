@@ -1,0 +1,21 @@
+{
+    "name": "SIMITGROUP/phpjasperxml",
+    "description": "PHP WYSIWYG Web/PDF Report Library",
+    "license": "MIT",
+    "type": "cakephp-plugin",
+    "authors": [
+        {
+            "name": "Ludo D",
+            "role": "Developper"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "simplexml": "*",
+    },
+	"autoload": {
+        "psr-4": {
+            "PHPJasperXML": "./"
+        }
+    },
+}
