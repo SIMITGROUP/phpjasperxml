@@ -1,8 +1,7 @@
 {
     "name": "SIMITGROUP/phpjasperxml",
     "description": "PHP WYSIWYG Web/PDF Report Library",
-    "license": "MIT",
-    "type": "cakephp-plugin",
+    "license": "MIT",    
     "authors": [
         {
             "name": "KS Tan",
@@ -10,8 +9,7 @@
         }
     ],
     "require": {
-        "php": ">=5.5",
-        "simplexml": "*"
+        "php": ">=5.5"
     },
     "autoload": {
         "psr-4": {
