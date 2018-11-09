@@ -3,6 +3,11 @@
 _PHP WYSIWYG Web/PDF Report Library_
 
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/SIMITGROUP/phpjasperxml)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.5-yellow.svg?style=flat-square)](https://php.net/)
+[![GitHub forks](https://img.shields.io/github/forks/SIMITGROUP/phpjasperxml.svg)](https://github.com/SIMITGROUP/phpjasperxml/network)
+[![GitHub stars](https://img.shields.io/github/stars/SIMITGROUP/phpjasperxml.svg)](https://github.com/SIMITGROUP/phpjasperxml/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/SIMITGROUP/phpjasperxml.svg)](https://github.com/SIMITGROUP/phpjasperxml/issues)
+
 
 
 This project to ease the develop web/printer friendly report in php. After many year development this project is stable and created a lot of web report. You can design your report via jasper report studio (http://community.jaspersoft.com/project/jaspersoft-studio) and then use phpjasperxml to render it in php. No javabridge is required at server side. We borrow tcpdf and phpexcel to export our report in pdf/excel. So far it support up to php7.2 (only tested in 7.0, and 7.2)
