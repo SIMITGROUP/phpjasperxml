@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=5.5",
-        "simplexml": "*",
+        "simplexml": "*"
     },
     "autoload": {
         "psr-4": {
