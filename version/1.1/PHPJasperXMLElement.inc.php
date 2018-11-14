@@ -207,6 +207,7 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
             "uuid"=>$data->reportElement['uuid'], 
             "hidden_type"=>"image",
             "linktarget"=>(string)$data["hyperlinkTarget"],
+	    "printWhenExpression"=>$data->reportElement->printWhenExpression, //Added to supports printWithExpression
             "elementid"=>$this->elementid, 
             "scale_type" => $scaleType
         ];
