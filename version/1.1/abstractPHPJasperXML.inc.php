@@ -420,19 +420,39 @@ class abstractPHPJasperXML
             
             $arraydata["link"]=$this->analyse_expression($arraydata["link"]);
             // echo $imgtype.': '. $path ."<hr/>";
-            
+    
+           //### Print with expression for image ####			
+            //Function Reference: Image($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', 
+	    //$ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array())     
+                
             if($imgtype=='jpg' || $this->right($path,3)=='jpg' || $this->right($path,4)=='jpeg')
             {
                  $imgtype="JPEG";
+                    $printimage=false;
+				$this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+                                  $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"],'',false,300,'',false,false,0,false,true); 
+				if($arraydata['printWhenExpression']=="")
+					$printimage=true;
+				else
+					$printimage=$this->analyse_expression($arraydata['printWhenExpression']);
+				if($printimage)
                  $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
-                                  $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"]);                        
+                                  $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"],'',false,300,'',false,false,0,false,false);                                    
             }
             elseif($imgtype=='png'|| $imgtype=='PNG')
             {
-                  $imgtype="PNG";
+                  $imgtype="PNG";$printimage=false;
+				$this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+								  $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"],'',false,300,'',false,false,0,false,true); 
+				if($arraydata['printWhenExpression']=="")
+					$printimage=true;
+				else
+					$printimage=$this->analyse_expression($arraydata['printWhenExpression']);
+				if($printimage)
                   $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
-                                  $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"]);                        
+                                  $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"],'',false,300,'',false,false,0,false,false);            
             }
+                //### Print with expression for image Ends ####	
             else
             {
                 
@@ -469,8 +489,8 @@ class abstractPHPJasperXML
                             ob_end_clean();
                         }
                     }
-                    $this->pdf->Image('@'.$imgdata,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
-                        $sizedata["width"],$sizedata["height"],'',$arraydata["link"]); 
+                $this->pdf->Image('@'.$imgdata,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+                        $sizedata["width"],$sizedata["height"],'',$arraydata["link"],'',false,300,'',false,false,0,false,false);
                     
                 }
                 elseif($this->left($path,22)==  "data:image/png;base64,")
@@ -496,7 +516,7 @@ class abstractPHPJasperXML
                         }
                     }
                     $this->pdf->Image('@'.$imgdata,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
-                        $sizedata["width"],$sizedata["height"],'',$arraydata["link"]); 
+                        $sizedata["width"],$sizedata["height"],'',$arraydata["link"],'',false,300,'',false,false,0,false,false);  
                     // echo $path;
                     // echo '<img src="'.$path.'"/>';die;
                      // $imageContent = file_get_contents($img_base64_encoded);
