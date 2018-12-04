@@ -63,6 +63,7 @@ License
 3. PHPEXCEL (when you need to export data into excel without libxl): LGPL https://github.com/PHPOffice/PHPExcel
 4. Lib_Excel (when you wish to use commercial libxl library, performance 6x): https://github.com/iliaal/php_excel
 5. PChart2 (when you wish to draw chart): GPL V3 http://www.pchart.net/license
+6. Fonts (There is lot of fonts in tcpdf/fonts): We have no ideal what is license of each fonts, you take your own risk when you use the fonts.
 
 Supported Database
 ------------------
