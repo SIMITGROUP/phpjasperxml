@@ -591,9 +591,9 @@ class PHPJasperXMLSubReport{
         $width=$data->reportElement["width"];
         $height=$data->reportElement["height"];
         
-               simplexml_tree( $data);
+          //     simplexml_tree( $data);
        // echo "<br/><br/>";
-       simplexml_tree( $data->children('jr',true));
+//       simplexml_tree( $data->children('jr',true));
         //echo "<br/><br/>";
 //SimpleXML object (1 item) [0] // ->codeExpression[0] ->attributes('xsi', true) ->schemaLocation ->attributes('', true) ->type ->drawText ->checksumRequired barbecue: 
        foreach($data->children('jr',true) as $barcodetype =>$content){
