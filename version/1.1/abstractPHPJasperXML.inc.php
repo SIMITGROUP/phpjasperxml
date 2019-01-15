@@ -2349,6 +2349,15 @@ protected function convertDigit($digit=0)
                   }
                   else
                   {
+                    // RE-MATCH $fm
+                    $fm_r = explode('__gluestring__', $fm);
+                    foreach ($fm_r AS $key => $value) {
+                      if($this->isNumber($value)){
+                        $fm_r[$key] = "'".$value."'";
+                      }
+                    }
+                    $fm = implode('__gluestring__', $fm_r);
+
                     $fm=str_replace('__gluestring__', '.', $fm);
                   }
                    $fm=str_replace('convertNumber', '', $fm);
