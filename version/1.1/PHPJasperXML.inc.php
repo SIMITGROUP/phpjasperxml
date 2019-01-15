@@ -43,7 +43,8 @@ class PHPJasperXML extends abstractPHPJasperXML{
     public function __construct($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
 
-        ini_set('display_errors', 'Off');
+        // ini_set('display_errors', 'Off');
+         error_reporting(E_ERROR | E_PARSE );
        // $this->setErrorReport(2);
        // echo 'sdsdd';die;
                            
@@ -1472,7 +1473,7 @@ if($type=='stackedBarChart')
             
        //  }
                                     
-                //$this->pdf->SetFont($fontfamily,$fontstyle,$fontsize,$this->fontdir.'/'.$fontfamily.'php');
+                $this->pdf->SetFont($fontfamily,$fontstyle,$fontsize);//,$this->fontdir.'/'.$fontfamily.'php');
                                         
         $this->pdf->SetTextColor($this->forcetextcolor_r,$this->forcetextcolor_g,$this->forcetextcolor_b);
         //$this->pdf->SetTextColor(44,123,4);
