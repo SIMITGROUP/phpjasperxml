@@ -2278,6 +2278,7 @@ protected function convertDigit($digit=0)
 
             //merge back separated string (by symbol '+')
             $fm='';
+            $isnnumber=true;
             foreach($arrsplitedstr as $pcsno => $pcstring)
             {            
                 if(trim($pcstring)=='')
@@ -2288,9 +2289,14 @@ protected function convertDigit($digit=0)
                 $pcstring=$this->tweakValue($pcstring,'restore');
                 if(count($arrsplitedstr)>1)
                 {
+
+                    if(!$this->isNumber($pcstring))
+                    {
+                      $isnnumber=false;
+                    }
                     if($pcsno>0)
                     {
-                        $fm= $fm . '.'.$pcstring;    
+                        $fm= $fm . '__gluestring__'.$pcstring;
                     }
                     else
                     {
@@ -2302,6 +2308,7 @@ protected function convertDigit($digit=0)
                     $fm= $pcstring;
                 }                        
             }    
+
 
             if( ($this->left($data, 22) == $jpgkey || $this->left($data, 22) == $pngkey))
             {
@@ -2335,6 +2342,15 @@ protected function convertDigit($digit=0)
            else 
            {       
 
+
+                  if($isnnumber==true)
+                  {
+                    $fm=str_replace('__gluestring__', '+', $fm);
+                  }
+                  else
+                  {
+                    $fm=str_replace('__gluestring__', '.', $fm);
+                  }
                    $fm=str_replace('convertNumber', '', $fm);
                    $firstword=$this->left( ltrim($fm) ,1);
                    // echo ',first word:'.$firstword.'<br/>';
@@ -2669,23 +2685,38 @@ protected function convertDigit($digit=0)
 
        protected function isNumber($value)
        {
-            if(in_array($this->left($value,1),['1','2','3','4','5','6','7','8','9','0']))
-            {
-                if($value  === ((double)$value+0)  )
-                {
-                    return true;
-                }
-                else
-                {
+          if(is_numeric($value))
+          {
+              // echo "isNumber $value = true<br/>";
+              return true;
+          }
+          else
+          {
+              // echo "isNumber $value = false<br/>"; 
+              return false;
+          }
+            
+            
+            // if(in_array($this->left($value,1),['1','2','3','4','5','6','7','8','9','0']))
+            // {
+            //     $newvalue =(double)$value+0;
+            //     if($value  === ($newvalue)  )
+            //     {
+            //         echo "isNumber $value compare $newvalue = true<br/>";
+            //         return true;
+            //     }
+            //     else
+            //     {
+            //         echo "isNumber $value compare $newvalue = false<br/>";
+            //         return false;
+            //     }
 
-                    return false;
-                }
-
-            }
-            else
-            {
-                return false;
-            }
+            // }
+            // else
+            // {
+            //     echo "isNumber $value compare $newvalue = false<br/>";
+            //     return false;
+            // }
        }
        protected function pregMatch($startspliter,$endspliter,$string)
        {
