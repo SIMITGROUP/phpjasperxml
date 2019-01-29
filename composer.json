@@ -2,13 +2,18 @@
     "name": "simitgroup/phpjasperxml",
     "description": "PHP WYSIWYG Web/PDF Report Library",
     "license": "MIT",    
+    "type": "library",
+    "homepage": "https://github.com/SIMITGROUP/phpjasperxml",
     "authors": [
         {
             "name": "KS Tan",
             "role": "Developper"
         }
     ],
+     "autoload": {
+        "classmap": [""]
+    },
     "require": {
-        "php": ">=5.5"
+
     }
 }
