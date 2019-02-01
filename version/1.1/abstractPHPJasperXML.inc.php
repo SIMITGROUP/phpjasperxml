@@ -2696,8 +2696,16 @@ protected function convertDigit($digit=0)
        {
           if(is_numeric($value))
           {
-              // echo "isNumber $value = true<br/>";
+            // ^(^\d\.\d+|^([0-9]|[1-9][0-9]*)$|^\d$|[1-9].*?|^0+$)$
+            if(preg_match("/^(^\d\.\d+|^([0-9]|[1-9][0-9]*)$|^\d$|[1-9].*?|^0+$)$/", $value))
+            {
               return true;
+            }
+            else
+            {
+              return false;
+            }
+              // echo "isNumber $value = true<br/>";
           }
           else
           {
