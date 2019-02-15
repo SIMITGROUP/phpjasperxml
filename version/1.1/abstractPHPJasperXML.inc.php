@@ -899,6 +899,11 @@ public function analyse_dsexpression($data=[],$txt=''){
 }
 
 
+  public function showPlusSymbol()
+    {
+        return '+';
+    }
+
     protected function initChartLibrary()
     {        
         if($this->left(PHP_VERSION,1)=='5')

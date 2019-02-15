@@ -434,6 +434,11 @@ class PHPJasperXML {
         $this->totalgroup++;
     }
 
+    public function showPlusSymbol()
+    {
+        return '+';
+    }
+
     public function element_frame($data){
         $x=$data->reportElement["x"]+0;
         $y=$data->reportElement["y"]+0;
