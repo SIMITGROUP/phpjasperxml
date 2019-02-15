@@ -560,13 +560,13 @@ class TCPDF {
 	 * String alias for total number of pages.
 	 * @protected
 	 */
-	protected $alias_tot_pages = '{:ptp:}';
+	protected $alias_tot_pages = '|!t';
 
 	/**
 	 * String alias for page number.
 	 * @protected
 	 */
-	protected $alias_num_page = '{:pnp:}';
+	protected $alias_num_page = '|!n';
 
 	/**
 	 * String alias for total number of pages in a single group.
