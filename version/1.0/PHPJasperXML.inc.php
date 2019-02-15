@@ -277,7 +277,23 @@ class PHPJasperXML {
 
     public function subDataset_handler($data=[]){
     $this->subdataset[$data['name'].'']= $data->queryString;
+    }
 
+
+    protected function aggArray($arr=[],$aggtype='sum')
+    {
+      $total=0;
+      foreach($arr as $i=>$no)
+      {
+        switch($aggtype)
+        {
+          case 'sum':
+            $total+=$no;
+          break;  
+        }
+        
+      }
+      return $total;
     }
 //read level 0,Jasperreport page setting
     public function page_setting($xml_path=[]) {
@@ -4107,7 +4123,7 @@ foreach($this->arrayVariable as $name=>$value){
         $this->currentband='';
         $this->noData();
         
-        
+        $this->offsetposition=0;
         
     }
 

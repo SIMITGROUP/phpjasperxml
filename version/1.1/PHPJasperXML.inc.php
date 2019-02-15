@@ -14,6 +14,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
     // private $myconn;
     // private $con;
     // public $sql;
+
     public $group_name;
     public $newPageGroup = false;
     private $curgroup=0;
@@ -1343,7 +1344,7 @@ if($type=='stackedBarChart')
         }
         $this->currentband='';
         $this->noData();
-        
+        $this->offsetposition=0;
         
         
     }
@@ -1637,6 +1638,7 @@ if($type=='stackedBarChart')
                     
                     foreach ($this->arraydetail[$d] as $out) 
                     {
+
                         $this->currentrow=$this->arraysqltable[$this->global_pointer];
                   
                         switch ($out["hidden_type"]) 
@@ -1684,6 +1686,7 @@ if($type=='stackedBarChart')
                                   
                             break;
                             default:
+                            $this->detail_yposition=$checkpoint;
                                 $this->display($out,$checkpoint);
                                 $maxheight=$this->detailallowtill-$checkpoint;
                             break;

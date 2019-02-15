@@ -8,10 +8,11 @@ class abstractPHPJasperXML
         protected $pdflib;
         protected $lang;
         public $debugsql=false;
-        protected $myconn;        
+        protected $myconn;       
+        protected $detail_yposition = 0;
         protected $global_pointer;
         protected $arraysubdataset;
-        protected $offsetposition;
+        protected $offsetposition=0;
         protected $detailbandqty=0;
         protected $hideheader=false;
         public $arraysqltable;
@@ -679,6 +680,22 @@ class abstractPHPJasperXML
         }
 
         
+    }
+
+    protected function aggArray($arr=[],$aggtype='sum')
+    {
+      $total=0;
+      foreach($arr as $i=>$no)
+      {
+        switch($aggtype)
+        {
+          case 'sum':
+            $total+=$no;
+          break;  
+        }
+        
+      }
+      return $total;
     }
 
     protected function subDataset_handler($data=[]){
