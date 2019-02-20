@@ -2719,7 +2719,17 @@ protected function convertDigit($digit=0)
           if(is_numeric($value))
           {
             // ^(^\d\.\d+|^([0-9]|[1-9][0-9]*)$|^\d$|[1-9].*?|^0+$)$
-            if(preg_match("/^(^\d\.\d+|^([0-9]|[1-9][0-9]*)$|^\d$|[1-9].*?|^0+$)$/", $value))
+            // if(preg_match("/^(^\d\.\d+|^([0-9]|[1-9][0-9]*)$|^\d$|[1-9].*?|^0+$)$/", $value))
+
+            // Check if value with leading zero then we assume it is string
+            // Example: 0, -0, 01, -01 is not number
+            if(preg_match("/^(0\d+|\-0\d*)$/", $value))
+            {
+              return false;
+            }
+            // Check value is number
+            // https://regex101.com/ for reference
+            else if(preg_match("/^(^\d+\.?\d+|\-\d+\.?\d*|^0+$)$/", $value))
             {
               return true;
             }
