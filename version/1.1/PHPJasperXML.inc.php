@@ -35,7 +35,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
     
     // public $elementid=0;
     protected $autofetchpara=true;
-    
+
     // private $group_count = array(); //### New declaration
     public $generatestatus=false;       
     // public $lastrowresult=array();
@@ -51,7 +51,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
                            
         $this->pdflib=$pdflib;
         // if($this->fontdir=="")
-        
+       
 
     }
     
@@ -550,8 +550,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
 
 
     public function outpage($out_method="I",$filename="", $othername="") {
-
-
+            $this->detail_yposition = 0;
             if($_REQUEST['forceexceloutput']!=""){
                 $this->pdflib="XLS";
                 $filename=($othername!="")?($othername.".xls"):"file1.xls";
@@ -644,6 +643,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
                         break;
                   
                     case "detail":
+
     //                    if(!$this->newPageGroup) {
                         if($detailbandprinted==false){
                             $detailbandprinted=true;

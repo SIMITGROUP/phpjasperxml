@@ -9,7 +9,7 @@ class abstractPHPJasperXML
         protected $lang;
         public $debugsql=false;
         protected $myconn;       
-        protected $detail_yposition = 0;
+        // protected $detail_yposition = 0;
         protected $global_pointer;
         protected $arraysubdataset;
         protected $offsetposition=0;
