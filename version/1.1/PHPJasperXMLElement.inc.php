@@ -271,7 +271,9 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
     
     public function element_break($data) 
     {
-        return array("type"=>"break","hidden_type"=>"break","elementid"=>$this->elementid);                
+        $mydata=[];
+        $mydata[]=array("type"=>"break","hidden_type"=>"break","elementid"=>$this->elementid);
+        return $mydata;        
     }
 
     public function element_crossTab($data,$elementid){
