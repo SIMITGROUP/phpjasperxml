@@ -78,6 +78,7 @@ Obvious Limitation
 1. It is php library, it not not support java syntax or groovy code in when you define value or print when expression.
 2. Sub report is not support well in detail band, however it work reasonable at page header and footer.
 3. Chart support is bad, we need people to help that cause we not use chart in pdf.
+
 How to debug?
 -------------
 A lot of time we want to debug and what wrong in our report, easiest way is append at report url with string `debugsql=1&showhtmldata=1` as below:
