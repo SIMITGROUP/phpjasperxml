@@ -71,11 +71,9 @@ FROM
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{sample1_qty}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="dc07405f-3a48-420b-b999-4dcaa2ca1246" x="22" y="0" width="305" height="20"/>
-				<textElement>
-					<font fontName="msungstdlight" isBold="true"/>
-				</textElement>
+		<textField>
+				<reportElement uuid="ecefeccd-525f-4937-b15b-8a4d5ac50d3a" x="93" y="0" width="354" height="20"/>
+				<textElement/>
 				<textFieldExpression><![CDATA[$F{sample1_itemname}]]></textFieldExpression>
 			</textField>
 			<textField>
