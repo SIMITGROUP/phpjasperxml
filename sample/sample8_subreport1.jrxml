@@ -15,15 +15,16 @@
 		<band splitType="Stretch"/>
 	</title>
 	<pageHeader>
-		<band splitType="Stretch"/>
-	</pageHeader>
-	<columnHeader>
-		<band splitType="Stretch"/>
-	</columnHeader>
-	<detail>
-		<band height="120" splitType="Stretch">
+		<band splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1fd6addc-db94-48db-b41f-66bbc4314c71" x="0" y="0" width="305" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="msungstdlight" size="12" isBold="true" />
+				</textElement>
+				<text><![CDATA[Sub Report Title]]></text>
+			</staticText>
 			<textField>
-				<reportElement uuid="1920f2c6-56d5-4bad-8708-60a920ac28ca" mode="Opaque" x="20" y="14" width="484" height="85" backcolor="#66FF66"/>
+				<reportElement uuid="1920f2c6-56d5-4bad-8708-60a920ac28ca" mode="Opaque" x="0" y="20" width="200" height="20" backcolor="#66FF66"/>
 				<box>
 					<pen lineWidth="0.75"/>
 					<topPen lineWidth="0.75"/>
@@ -32,10 +33,18 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement markup="none">
-					<font size="24" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Sub Report Content="+$F{data}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Sub Report Content:"+$F{data}]]></textFieldExpression>
 			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="120" splitType="Stretch">			
+			
 		</band>
 	</detail>
 	<columnFooter>

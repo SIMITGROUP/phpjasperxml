@@ -57,7 +57,7 @@ FROM
 				<reportElement uuid="3ce2f044-6ab7-456d-8de5-1732a6906c35" x="0" y="0" width="555" height="133"/>
 				<subreportParameter name="no"/>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "sample8_subreport1.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA["./sample8_subreport1.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</pageHeader>
