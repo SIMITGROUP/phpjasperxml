@@ -1911,7 +1911,7 @@ public function printBorder($x1=0,$y1=0,$x2=0,$y2=0,$linewidth=0,$linedash='',$l
              }
            else{
                
-            if($av["ans"]!="" && is_numeric($av["ans"])&& (($this->left($av["ans"],1)||left($av["ans"],1)=='-' )>0))  {
+            if($av["ans"]!="" && is_numeric($av["ans"])&& (($this->left($av["ans"],1)||$this->left($av["ans"],1)=='-' )>0))  {
                  $av["ans"]=str_replace("+",$tmpplussymbol,$av["ans"]);
                  $fm=str_replace('$V_'.$vv.$backcurl,$av["ans"],$fm);
             }
@@ -1950,7 +1950,7 @@ public function printBorder($x1=0,$y1=0,$x2=0,$y2=0,$linewidth=0,$linedash='',$l
                        $tmpfieldvalue=str_replace('"', $doublequote,$tmpfieldvalue);
 
             //Remove the expression ($this->left($tmpfieldvalue,1)>0||left($tmpfieldvalue,1)=='-') to allow 0.0-1.0 become number By: CX
-           if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!="" && ($this->left($tmpfieldvalue,1)>0||left($tmpfieldvalue,1)=='-')){
+           if(is_numeric($tmpfieldvalue) && $tmpfieldvalue!="" && ($this->left($tmpfieldvalue,1)>0||$this->left($tmpfieldvalue,1)=='-')){
             $fm =str_replace('$F_'.$af.$backcurl,$tmpfieldvalue,$fm);
             
            }
