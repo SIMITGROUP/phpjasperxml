@@ -234,7 +234,14 @@ class PHPExcel_Cell
                 $this->value = PHPExcel_Cell_DataType::checkString($pValue);
                 break;
             case PHPExcel_Cell_DataType::TYPE_NUMERIC:
-                $this->value = (float) $pValue;
+                if(strstr($pValue,'.'))
+                {
+                    $this->value = (float) $pValue;
+                }
+                else
+                {
+                    $this->value = (int) $pValue;
+                }
                 break;
             case PHPExcel_Cell_DataType::TYPE_FORMULA:
                 $this->value = (string) $pValue;
