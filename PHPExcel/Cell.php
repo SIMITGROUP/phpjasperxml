@@ -240,7 +240,9 @@ class PHPExcel_Cell
                 }
                 else
                 {
-                    $this->value = (int) $pValue;
+                    // $this->value = (int) $pValue;
+                    // got case number is var_export number 14.99999999, by right is 15, but after int will be 14, so round it
+                    $this->value = (int) round($pValue);
                 }
                 break;
             case PHPExcel_Cell_DataType::TYPE_FORMULA:
