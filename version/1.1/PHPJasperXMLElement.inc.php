@@ -5,14 +5,14 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
 {
     private $defaultfont='helvetica';
     private $defaultfontsize = 10;
-	public function __construct()
-	{
+    public function __construct()
+    {
 
-	}
+    }
 
 
 
-	public function element_staticText($data,$elementid) 
+    public function element_staticText($data,$elementid) 
     {
 
         $this->elementid=$elementid;
@@ -207,7 +207,7 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
             "uuid"=>$data->reportElement['uuid'], 
             "hidden_type"=>"image",
             "linktarget"=>(string)$data["hyperlinkTarget"],
-	    "printWhenExpression"=>$data->reportElement->printWhenExpression, //Added to supports printWithExpression
+        "printWhenExpression"=>$data->reportElement->printWhenExpression, //Added to supports printWithExpression
             "elementid"=>$this->elementid, 
             "scale_type" => $scaleType
         ];
@@ -501,13 +501,19 @@ class PHPJasperXMLElement extends abstractPHPJasperXML
         if(isset($data->reportElement["backcolor"])) {
             $fillcolor=array("r"=>hexdec(substr($data->reportElement["backcolor"],1,2)),"g"=>hexdec(substr($data->reportElement["backcolor"],3,2)),"b"=>hexdec(substr($data->reportElement["backcolor"],5,2)));         
         }
-        
+        $printWhenExpression = "";
+        if(isset($data->reportElement->printWhenExpression))
+        {
+            $printWhenExpression= $data->reportElement->printWhenExpression."";
+        }
         //$color=array("r"=>$drawcolor["r"],"g"=>$drawcolor["g"],"b"=>$drawcolor["b"]);
-        $mydata[]=array("type"=>"SetFillColor","r"=>$fillcolor["r"],"g"=>$fillcolor["g"],"b"=>$fillcolor["b"],"hidden_type"=>"fillcolor","elementid"=>$this->elementid);
-        $mydata[]=array("type"=>"SetDrawColor","r"=>$drawcolor["r"],"g"=>$drawcolor["g"],"b"=>$drawcolor["b"],"hidden_type"=>"drawcolor","elementid"=>$this->elementid);
-        $mydata[]=array("type"=>"Ellipse","x"=>$data->reportElement["x"],"y"=>$data->reportElement["y"],"width"=>$data->reportElement["width"],"height"=>$data->reportElement["height"],"hidden_type"=>"ellipse","drawcolor"=>$drawcolor,"fillcolor"=>$fillcolor,'border'=>$border,"elementid"=>$this->elementid);
-        $mydata[]=array("type"=>"SetDrawColor","r"=>0,"g"=>0,"b"=>0,"hidden_type"=>"drawcolor","elementid"=>$this->elementid);
-        $mydata[]=array("type"=>"SetFillColor","r"=>255,"g"=>255,"b"=>255,"hidden_type"=>"fillcolor","elementid"=>$this->elementid);
+        $mydata[]=array("type"=>"SetFillColor","r"=>$fillcolor["r"],"g"=>$fillcolor["g"],"b"=>$fillcolor["b"],"hidden_type"=>"fillcolor","elementid"=>$this->elementid,"printWhenExpression"=>$printWhenExpression);
+        $mydata[]=array("type"=>"SetDrawColor","r"=>$drawcolor["r"],"g"=>$drawcolor["g"],"b"=>$drawcolor["b"],"hidden_type"=>"drawcolor","elementid"=>$this->elementid,"printWhenExpression"=>$printWhenExpression);
+        $mydata[]=array("type"=>"Ellipse","x"=>$data->reportElement["x"],"y"=>$data->reportElement["y"],"width"=>$data->reportElement["width"],"height"=>$data->reportElement["height"],"hidden_type"=>"ellipse","drawcolor"=>$drawcolor,"fillcolor"=>$fillcolor,'border'=>$border,"elementid"=>$this->elementid,"printWhenExpression"=>$printWhenExpression);
+        $mydata[]=array("type"=>"SetDrawColor","r"=>0,"g"=>0,"b"=>0,"hidden_type"=>"drawcolor","elementid"=>$this->elementid,"printWhenExpression"=>$printWhenExpression);
+        $mydata[]=array("type"=>"SetFillColor","r"=>255,"g"=>255,"b"=>255,"hidden_type"=>"fillcolor","elementid"=>$this->elementid,"printWhenExpression"=>$printWhenExpression);
+
+        
 
         return $mydata;
     }

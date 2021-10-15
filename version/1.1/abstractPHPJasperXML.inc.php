@@ -409,8 +409,11 @@ class abstractPHPJasperXML
         }
         elseif($arraydata["type"]=="Ellipse"){
             //$this->pdf->SetLineStyle($arraydata['border']);
+          if(isset($arraydata['printWhenExpression']) && ($arraydata['printWhenExpression']=='' || $this->analyse_expression($arraydata['printWhenExpression'])))
+          {
              $this->pdf->Ellipse($arraydata["x"]+$arraydata["width"]/2+$this->arrayPageSetting["leftMargin"], $arraydata["y"]+$y_axis+$arraydata["height"]/2, $arraydata["width"]/2,$arraydata["height"]/2,
                 0,0,360,'FD',$arraydata['border'],$arraydata['fillcolor']);
+          }
         }
         else if($arraydata["type"]=="Image")
         {
@@ -422,38 +425,38 @@ class abstractPHPJasperXML
             $arraydata["link"]=$this->analyse_expression($arraydata["link"]);
             // echo $imgtype.': '. $path ."<hr/>";
     
-           //### Print with expression for image ####			
+           //### Print with expression for image ####     
             //Function Reference: Image($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', 
-	    //$ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array())     
+      //$ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array())     
                 
             if($imgtype=='jpg' || $this->right($path,3)=='jpg' || $this->right($path,4)=='jpeg')
             {
                  $imgtype="JPEG";
                     $printimage=false;
-				$this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+        $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
                                   $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"],'',false,300,'',false,false,0,false,true); 
-				if($arraydata['printWhenExpression']=="")
-					$printimage=true;
-				else
-					$printimage=$this->analyse_expression($arraydata['printWhenExpression']);
-				if($printimage)
+        if($arraydata['printWhenExpression']=="")
+          $printimage=true;
+        else
+          $printimage=$this->analyse_expression($arraydata['printWhenExpression']);
+        if($printimage)
                  $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
                                   $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"],'',false,300,'',false,false,0,false,false);                                    
             }
             elseif($imgtype=='png'|| $imgtype=='PNG')
             {
                   $imgtype="PNG";$printimage=false;
-				$this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
-								  $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"],'',false,300,'',false,false,0,false,true); 
-				if($arraydata['printWhenExpression']=="")
-					$printimage=true;
-				else
-					$printimage=$this->analyse_expression($arraydata['printWhenExpression']);
-				if($printimage)
+        $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
+                  $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"],'',false,300,'',false,false,0,false,true); 
+        if($arraydata['printWhenExpression']=="")
+          $printimage=true;
+        else
+          $printimage=$this->analyse_expression($arraydata['printWhenExpression']);
+        if($printimage)
                   $this->pdf->Image($path,$arraydata["x"]+$this->arrayPageSetting["leftMargin"],$arraydata["y"]+$y_axis,
                                   $arraydata["width"],$arraydata["height"],$imgtype,$arraydata["link"],'',false,300,'',false,false,0,false,false);            
             }
-                //### Print with expression for image Ends ####	
+                //### Print with expression for image Ends #### 
             else
             {
                 
