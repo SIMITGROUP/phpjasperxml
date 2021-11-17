@@ -1,5 +1,7 @@
 # PHPJasperXML
 
+## this project going to abandom and another alternative will start soon. if you wish to help or give comment can go [[here](https://github.com/SIMITGROUP/phpjasperxml/issues/76)]
+
 _PHP WYSIWYG Web/PDF Report Library_
 
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/SIMITGROUP/phpjasperxml)
