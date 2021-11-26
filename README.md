@@ -1,7 +1,7 @@
 # PHPJasperXML
 
 ## this project going to abandom and another alternative will start soon. if you wish to help or give comment can go [[here](https://github.com/SIMITGROUP/phpjasperxml/issues/76)]
-## inprogress repository under [[phplib](https://github.com/SIMITGROUP/phplibs/blob/main/README.md)]
+## inprogress repository under [[phplib](https://github.com/SIMITGROUP/phplibs)]
 
 
 _PHP WYSIWYG Web/PDF Report Library_
