@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="allelements" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="75189d62-4e69-47ee-92ff-19102dcfc4db">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="postgres"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.report.description" value="description"/>
+	<style name="Crosstab_CH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab_CG" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab_CT" mode="Opaque" backcolor="#005FB3">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab_CD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset1" uuid="93a3965e-0f80-4d8e-8e5e-370e424af7cb">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<parameter name="paraconnection" class="java.sql.Connection"/>
+	<queryString>
+		<![CDATA[select 1 as a limit 0]]>
+	</queryString>
+	<field name="a" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="a"/>
+		<property name="com.jaspersoft.studio.field.label" value="a"/>
+	</field>
+	<noData>
+		<band height="802">
+			<textField>
+				<reportElement x="100" y="40" width="280" height="30" uuid="47e15f5d-8017-44ce-afdf-0ada0dc2600f"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="40" width="100" height="30" uuid="2519df48-a1f0-4fb1-8c01-c9cc3060389e"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Static Text]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="80" width="100" height="50" uuid="da965149-53bc-4638-85e4-64561589048b"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Images]]></text>
+			</staticText>
+			<image>
+				<reportElement x="100" y="80" width="50" height="50" uuid="31c7a0a7-ce95-4500-a785-96ae4c674bdd"/>
+				<imageExpression><![CDATA["images/simit.png"]]></imageExpression>
+			</image>
+			<frame>
+				<reportElement x="0" y="270" width="220" height="200" uuid="39c4ce78-928c-4d5a-96f3-62b907983371"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<rectangle>
+					<reportElement x="111" y="11" width="100" height="50" uuid="bcb55f66-7619-4f7d-b10f-ba4e2895b5ad"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="11" y="11" width="100" height="50" uuid="71e570f2-f4dd-4e63-89f8-3cd0cd4d6acf"/>
+					<textElement textAlignment="Right"/>
+					<text><![CDATA[Rectangle]]></text>
+				</staticText>
+				<ellipse>
+					<reportElement x="111" y="81" width="100" height="50" uuid="c3f6a9c0-6c06-49e4-875d-f0d67ca46084"/>
+				</ellipse>
+				<staticText>
+					<reportElement x="11" y="81" width="100" height="50" uuid="17b3f74b-a97a-40ad-a38c-5ce974559b2b"/>
+					<textElement textAlignment="Right"/>
+					<text><![CDATA[Ellipse]]></text>
+				</staticText>
+				<line>
+					<reportElement x="111" y="151" width="100" height="30" uuid="27dbf5ad-11a2-4ca1-b215-eea4ab0575ab"/>
+				</line>
+				<staticText>
+					<reportElement x="11" y="151" width="100" height="30" uuid="68d34a9e-ce40-46eb-b517-20d780aea1ca"/>
+					<textElement textAlignment="Right"/>
+					<text><![CDATA[Line]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="-29" width="220" height="30" uuid="5ad76ee3-1385-460b-8440-826dbee835c4"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Bottom"/>
+					<text><![CDATA[Frame with border]]></text>
+				</staticText>
+			</frame>
+			<componentElement>
+				<reportElement x="100" y="139" width="100" height="30" uuid="fe66bb5c-b4c5-449f-9b0d-57f4a6196403"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code128" drawText="false" checksumRequired="false">
+					<jr:codeExpression><![CDATA["12345678"]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<staticText>
+				<reportElement x="0" y="139" width="100" height="30" uuid="8809f553-63de-4ca2-84ea-10d6fb1c8570"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Barcode]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="180" width="100" height="49" uuid="d0a9a3b5-6724-460d-a765-4cfe14d3771c"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[QRCode]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="101" y="181" width="99" height="49" uuid="93494b39-aeba-4254-a892-53ddd878426e"/>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<jr:codeExpression><![CDATA["123456789"]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<staticText>
+				<reportElement x="0" y="0" width="550" height="30" uuid="aaf07c43-43a3-4ecf-8b2d-d60af34ccb2c"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[All Elements]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="335" y="290" width="160" height="41" uuid="a98e56db-4fb2-4fe1-a272-2bf21b531e62"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Dataset1" uuid="65c2f714-f179-4d0b-b1dc-16a501f4bc3f">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="41" width="160"/>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="230" y="290" width="100" height="41" uuid="4611d05c-c88d-41b4-b8c4-8f0d83ed18dd"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[List]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="227" y="181" width="100" height="41" uuid="b7ccff45-f001-4169-8fc0-a9dd8ccc2a73"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Crosstab]]></text>
+			</staticText>
+			<crosstab>
+				<reportElement x="335" y="180" width="225" height="101" uuid="78430a4b-10fe-4ce7-982a-df99a67659a1">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.crosstab.style.header" value="Crosstab_CH"/>
+					<property name="com.jaspersoft.studio.crosstab.style.group" value="Crosstab_CG"/>
+					<property name="com.jaspersoft.studio.crosstab.style.total" value="Crosstab_CT"/>
+					<property name="com.jaspersoft.studio.crosstab.style.detail" value="Crosstab_CD"/>
+				</reportElement>
+				<crosstabDataset>
+					<dataset resetType="Report"/>
+				</crosstabDataset>
+				<rowGroup name="COLUMN_NUMBER" width="60" totalPosition="End">
+					<bucket class="java.lang.Integer">
+						<bucketExpression><![CDATA[$V{COLUMN_NUMBER}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents mode="Opaque" style="Crosstab_CH">
+							<textField>
+								<reportElement x="0" y="0" width="60" height="20" uuid="a2416a87-4a5e-40ee-b08a-a2db07e61397"/>
+								<textFieldExpression><![CDATA[$V{COLUMN_NUMBER}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents mode="Opaque" style="Crosstab_CT">
+							<staticText>
+								<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="e7d76cbb-4332-497f-ab06-fc1d44cfad12"/>
+								<text><![CDATA[Total COLUMN_NUMBER]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="a" height="20" totalPosition="End">
+					<bucket class="java.lang.Integer">
+						<bucketExpression><![CDATA[$F{a}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents mode="Opaque" style="Crosstab_CH">
+							<textField>
+								<reportElement x="0" y="0" width="180" height="20" uuid="7a26d807-9721-4b17-8ab8-a900a8bcac61"/>
+								<textFieldExpression><![CDATA[$V{a}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents mode="Opaque" style="Crosstab_CT">
+							<staticText>
+								<reportElement x="0" y="0" width="60" height="60" forecolor="#FFFFFF" uuid="b30c8696-db3a-4d08-ac75-e55b829dc243"/>
+								<text><![CDATA[Total a]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="REPORT_PARAMETERS_MAP" height="20" totalPosition="End">
+					<bucket class="java.util.Map">
+						<bucketExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents mode="Opaque" style="Crosstab_CH">
+							<textField>
+								<reportElement x="0" y="0" width="120" height="20" uuid="5d0f2c0c-79c4-432e-9e73-a3f03788b294"/>
+								<textFieldExpression><![CDATA[$V{REPORT_PARAMETERS_MAP}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents mode="Opaque" style="Crosstab_CG">
+							<staticText>
+								<reportElement x="0" y="0" width="60" height="40" uuid="21b1f676-0f42-42e2-9d97-d3bf80f325b6"/>
+								<text><![CDATA[Total REPORT_PARAMETERS_MAP]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="REPORT_CONNECTION" height="20" totalPosition="End">
+					<bucket class="java.sql.Connection">
+						<bucketExpression><![CDATA[$P{REPORT_CONNECTION}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents mode="Opaque" style="Crosstab_CH">
+							<textField>
+								<reportElement x="0" y="0" width="60" height="20" uuid="a10b81d6-a787-4015-9237-06ee3c2bc74b"/>
+								<textFieldExpression><![CDATA[$V{REPORT_CONNECTION}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents mode="Opaque" style="Crosstab_CG">
+							<staticText>
+								<reportElement x="0" y="0" width="60" height="20" uuid="18343266-f0ac-4a24-9e4c-a9fcdec97171"/>
+								<text><![CDATA[Total REPORT_CONNECTION]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="JASPER_REPORTS_CONTEXT_MEASURE" class="java.lang.Integer" calculation="Count">
+					<measureExpression><![CDATA[$P{JASPER_REPORTS_CONTEXT}]]></measureExpression>
+				</measure>
+				<crosstabCell width="60" height="20">
+					<cellContents mode="Opaque" style="Crosstab_CD">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" uuid="281888e4-e66e-4398-bd71-2988801b4c92"/>
+							<textFieldExpression><![CDATA[$V{JASPER_REPORTS_CONTEXT_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" columnTotalGroup="a">
+					<cellContents mode="Opaque" style="Crosstab_CT">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="0a3f7cd7-6d93-453f-886b-ed5b38be3a7e"/>
+							<textFieldExpression><![CDATA[$V{JASPER_REPORTS_CONTEXT_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" columnTotalGroup="REPORT_PARAMETERS_MAP">
+					<cellContents mode="Opaque" style="Crosstab_CG">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" uuid="2547e522-2fcb-4d69-be6f-1e87c969f654"/>
+							<textFieldExpression><![CDATA[$V{JASPER_REPORTS_CONTEXT_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" columnTotalGroup="REPORT_CONNECTION">
+					<cellContents mode="Opaque" style="Crosstab_CG">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" uuid="551f01cd-71e8-48a9-9742-56860f7162b9"/>
+							<textFieldExpression><![CDATA[$V{JASPER_REPORTS_CONTEXT_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="COLUMN_NUMBER">
+					<cellContents mode="Opaque" style="Crosstab_CT">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="b29b6e7c-73ec-4ca6-afbf-a1a0483eef50"/>
+							<textFieldExpression><![CDATA[$V{JASPER_REPORTS_CONTEXT_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="COLUMN_NUMBER" columnTotalGroup="a">
+					<cellContents mode="Opaque" style="Crosstab_CT">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="4f6e08d8-cdd3-4f8e-9f37-19f6fd6a9aa5"/>
+							<textFieldExpression><![CDATA[$V{JASPER_REPORTS_CONTEXT_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="COLUMN_NUMBER" columnTotalGroup="REPORT_PARAMETERS_MAP">
+					<cellContents mode="Opaque" style="Crosstab_CT">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="11061e85-776d-4c77-bd2b-0ac55e094538"/>
+							<textFieldExpression><![CDATA[$V{JASPER_REPORTS_CONTEXT_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="60" height="20" rowTotalGroup="COLUMN_NUMBER" columnTotalGroup="REPORT_CONNECTION">
+					<cellContents mode="Opaque" style="Crosstab_CT">
+						<textField>
+							<reportElement x="0" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="0b5a6a36-f76b-4400-aa36-059748e8cee5"/>
+							<textFieldExpression><![CDATA[$V{JASPER_REPORTS_CONTEXT_MEASURE}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+			<componentElement>
+				<reportElement x="335" y="340" width="200" height="81" uuid="826fce09-440b-4fb8-8b03-7210f65a4baa"/>
+				<c:map xmlns:c="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<c:latitudeExpression><![CDATA[45.4339676f]]></c:latitudeExpression>
+					<c:longitudeExpression><![CDATA[12.337966899999993f]]></c:longitudeExpression>
+					<c:zoomExpression><![CDATA[8]]></c:zoomExpression>
+				</c:map>
+			</componentElement>
+			<staticText>
+				<reportElement x="230" y="340" width="100" height="41" uuid="c09070fa-cc43-459e-a03c-0dc50881151b"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Map]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="335" y="107" width="209" height="62" uuid="7df26405-328d-414f-82ea-a2185866bbf6">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Dataset1" uuid="11157399-acd0-4de3-881b-af3e7d659035">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="40" uuid="6b914f07-1061-4e67-a811-a3827daa98e5">
+						<jr:tableHeader style="Table_TH" height="30"/>
+						<jr:tableFooter style="Table_TH" height="30"/>
+						<jr:columnHeader style="Table_CH" height="30"/>
+						<jr:columnFooter style="Table_CH" height="30"/>
+						<jr:detailCell style="Table_TD" height="30"/>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<staticText>
+				<reportElement x="227" y="107" width="100" height="41" uuid="ee03dcc6-9180-426b-929b-c52ba5d4f48c"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Table]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="342" y="550" width="200" height="100" uuid="e587493c-bfd5-432b-b6ef-5844d64f0052"/>
+				<sc:spiderChart xmlns:sc="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<sc:chartSettings>
+						<chartTitle/>
+						<chartSubtitle/>
+						<chartLegend/>
+					</sc:chartSettings>
+					<sc:spiderDataset>
+						<dataset resetType="Report"/>
+					</sc:spiderDataset>
+					<sc:spiderPlot isWebFilled="true"/>
+				</sc:spiderChart>
+			</componentElement>
+			<staticText>
+				<reportElement x="233" y="430" width="100" height="41" uuid="95559b30-37fe-4aae-8eb9-a1f64cfd3e66"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Chart]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="233" y="550" width="100" height="41" uuid="32b66f86-d4e3-4394-8179-0bf582f8c4a7"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Spider Chart]]></text>
+			</staticText>
+			<areaChart>
+				<chart evaluationTime="Report">
+					<reportElement x="338" y="430" width="195" height="100" uuid="b6c8b861-1601-4c8c-8209-217ed41eae84"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<dataset resetType="Report"/>
+					<categorySeries>
+						<seriesExpression><![CDATA["SERIES 1"]]></seriesExpression>
+						<categoryExpression><![CDATA[0]]></categoryExpression>
+						<valueExpression><![CDATA[0]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<areaPlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</areaPlot>
+			</areaChart>
+			<genericElement>
+				<reportElement x="350" y="720" width="100" height="30" uuid="aff08608-c9ca-4319-8a00-b4b66d6f8870"/>
+				<genericElementType namespace="namespace" name="name"/>
+			</genericElement>
+			<staticText>
+				<reportElement x="240" y="720" width="100" height="49" uuid="7b5f902c-0120-4913-9887-dac1a8981b45"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Generic]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="355" y="664" width="100" height="30" uuid="5c1918ff-604a-4c55-b3b9-920b8e409ef0"/>
+				<cvc:customvisualization xmlns:cvc="http://www.jaspersoft.com/cvcomponent" xsi:schemaLocation="http://www.jaspersoft.com/cvcomponent http://www.jaspersoft.com/cvcomponent/component.xsd">
+					<cvc:itemProperty name="module" value="sparkline"/>
+					<cvc:itemProperty name="script" value="sparkline.min.js"/>
+					<cvc:itemProperty name="lineColor" value="#000000"/>
+					<cvc:itemProperty name="lineOpacity" value="1"/>
+					<cvc:itemProperty name="lineStroke" value="0.1"/>
+					<cvc:itemProperty name="interpolation" value="basis"/>
+					<cvc:itemProperty name="fillColor" value="#0000FF"/>
+					<cvc:itemProperty name="fillOpacity" value="0.1"/>
+					<cvc:itemProperty name="circleColor" value="#FF0000"/>
+					<cvc:itemProperty name="circleOpacity" value="1"/>
+					<cvc:itemProperty name="circleRadius" value="2"/>
+					<cvc:cvData>
+						<cvc:item>
+							<cvc:itemProperty name="value" value="0"/>
+						</cvc:item>
+					</cvc:cvData>
+				</cvc:customvisualization>
+			</componentElement>
+			<staticText>
+				<reportElement x="238" y="659" width="100" height="41" uuid="8449722a-d329-480e-8aca-4691d523a6f4"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Custom Visualization]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="0" y="530" width="211" height="200" uuid="083f8316-3972-4b29-a1d1-76f5a627c2b3"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["allelement_subreport.jrxml"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="0" y="490" width="199" height="41" uuid="08085e9e-a1e3-4e93-a06a-ad835fa3bb07"/>
+				<text><![CDATA[Subreport (use .jrxml)]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="formating" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f2db0891-8bf1-476d-a9e8-abaddc3ba818">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="postgres"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<queryString>
+		<![CDATA[SELECT * FROM global_user]]>
+	</queryString>
+	<field name="created" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="created"/>
+		<property name="com.jaspersoft.studio.field.label" value="created"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="global_user"/>
+	</field>
+	<field name="updated" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="updated"/>
+		<property name="com.jaspersoft.studio.field.label" value="updated"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="global_user"/>
+	</field>
+	<field name="gender" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="gender"/>
+		<property name="com.jaspersoft.studio.field.label" value="gender"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="global_user"/>
+	</field>
+	<field name="globaluser_id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="globaluser_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="globaluser_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="global_user"/>
+	</field>
+	<field name="fullname" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="fullname"/>
+		<property name="com.jaspersoft.studio.field.label" value="fullname"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="global_user"/>
+	</field>
+	<field name="email" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="email"/>
+		<property name="com.jaspersoft.studio.field.label" value="email"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="global_user"/>
+	</field>
+	<field name="description" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="description"/>
+		<property name="com.jaspersoft.studio.field.label" value="description"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="global_user"/>
+	</field>
+	<field name="createdby" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="createdby"/>
+		<property name="com.jaspersoft.studio.field.label" value="createdby"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="global_user"/>
+	</field>
+	<field name="updatedby" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="updatedby"/>
+		<property name="com.jaspersoft.studio.field.label" value="updatedby"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="global_user"/>
+	</field>
+	<field name="country_code" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="country_code"/>
+		<property name="com.jaspersoft.studio.field.label" value="country_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="global_user"/>
+	</field>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="180" height="30" uuid="a1d90150-cd7d-446f-bd22-6a236142dc58"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fullname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="0" width="237" height="30" uuid="869233f9-a2a7-4cff-aed9-e3cd95ea4dba"/>
+				<textElement textAlignment="Center">
+					<font fontName="Courier" isBold="false" isItalic="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="106">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
+			<textField textAdjust="StretchHeight">
+				<reportElement mode="Opaque" x="0" y="0" width="141" height="106" backcolor="#E6FF05" uuid="8a90a4de-b55c-46cd-a546-71954ee5b2cf"/>
+				<box>
+					<pen lineWidth="2.0" lineColor="#2205FF"/>
+					<topPen lineWidth="2.0" lineStyle="Solid" lineColor="#2205FF"/>
+					<leftPen lineWidth="2.0" lineStyle="Solid" lineColor="#2205FF"/>
+					<bottomPen lineWidth="2.0" lineStyle="Solid" lineColor="#2205FF"/>
+					<rightPen lineWidth="2.0" lineStyle="Solid" lineColor="#2205FF"/>
+				</box>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{description}+$F{description}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="141" y="0" width="138" height="106" backcolor="#A6FFB6" uuid="7d3b6a51-7bda-403d-86bf-7b870ee6a9e9"/>
+				<box>
+					<pen lineWidth="3.75" lineStyle="Solid"/>
+					<topPen lineWidth="2.75" lineStyle="Solid" lineColor="#FA232A"/>
+					<leftPen lineWidth="2.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="2.25" lineStyle="Solid" lineColor="#FA0FD7"/>
+					<rightPen lineWidth="2.5" lineStyle="Solid" lineColor="#0F1BFA"/>
+				</box>
+				<textElement textAlignment="Right" rotation="Left">
+					<font isUnderline="false" isStrikeThrough="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="279" y="0" width="138" height="106" backcolor="#FF99FD" uuid="5ea1f238-24ca-49e7-89e0-48884e9e8d30"/>
+				<box>
+					<pen lineWidth="1.75" lineStyle="Dotted"/>
+					<topPen lineWidth="4.0" lineStyle="Solid" lineColor="#0505FF"/>
+					<leftPen lineWidth="3.5" lineStyle="Dotted" lineColor="#F54505"/>
+					<bottomPen lineWidth="2.25" lineStyle="Dashed" lineColor="#0505FF"/>
+					<rightPen lineWidth="3.0" lineStyle="Dotted" lineColor="#2BFF05"/>
+				</box>
+				<textElement textAlignment="Justified" rotation="Right">
+					<font isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="417" y="0" width="138" height="106" backcolor="#52FFFF" uuid="78f3963f-fcc6-4a7b-a36d-e8329198770d"/>
+				<box>
+					<pen lineWidth="3.75" lineStyle="Solid"/>
+					<topPen lineWidth="2.75" lineStyle="Dotted" lineColor="#FA232A"/>
+					<leftPen lineWidth="2.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="2.5" lineStyle="Double" lineColor="#FA0FD7"/>
+					<rightPen lineWidth="2.5" lineStyle="Dashed" lineColor="#0F1BFA"/>
+				</box>
+				<textElement textAlignment="Center" rotation="UpsideDown">
+					<font fontName="Times" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="153">
+			<frame>
+				<reportElement mode="Transparent" x="20" y="13" width="140" height="140" uuid="52826fdc-9204-4bbb-a6bc-67d224b6a6fa">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<ellipse>
+					<reportElement mode="Opaque" x="0" y="10" width="130" height="125" backcolor="#FA0522" uuid="a2f021dc-80e7-4610-866b-dd52fcaaf3ad"/>
+					<graphicElement>
+						<pen lineWidth="7.0" lineStyle="Solid" lineColor="#ECFC0D"/>
+					</graphicElement>
+				</ellipse>
+				<ellipse>
+					<reportElement mode="Opaque" x="20" y="30" width="90" height="80" forecolor="#030303" backcolor="#0DFC41" uuid="69408f2e-2756-407a-99e7-8f1c08241dd6"/>
+					<graphicElement>
+						<pen lineWidth="5.0" lineStyle="Dashed" lineColor="#1134FA"/>
+					</graphicElement>
+				</ellipse>
+				<ellipse>
+					<reportElement x="44" y="50" width="40" height="40" uuid="406d5d27-df28-4474-a931-9e0fe293aba7"/>
+				</ellipse>
+			</frame>
+			<rectangle radius="0">
+				<reportElement mode="Opaque" x="210" y="8" width="100" height="50" backcolor="#FCE405" uuid="33106a8d-b90f-49c9-aef6-dc9e51fd871c"/>
+				<graphicElement>
+					<pen lineWidth="3.0" lineColor="#F70AFF"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="0">
+				<reportElement mode="Transparent" x="290" y="30" width="100" height="50" uuid="9b45f9f7-f739-4590-8bf4-c8a3a454242a"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Dashed" lineColor="#0D25FF"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="10">
+				<reportElement x="350" y="58" width="100" height="50" backcolor="#C4B9FA" uuid="8e339fd5-d17f-46f0-b95e-903bed476f31"/>
+				<graphicElement>
+					<pen lineWidth="7.0" lineStyle="Dotted" lineColor="#E6514E"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="360" y="60" width="79" height="40" forecolor="#FF0516" uuid="99768b41-2e52-4877-9aa2-8c2251c7027d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[line style wrong due to upstream bugs]]></text>
+			</staticText>
+		</band>
+		<band height="55">
+			<line>
+				<reportElement x="30" y="0" width="111" height="50" uuid="b52553a0-1471-4491-af51-aaad7ac1960f"/>
+			</line>
+			<line>
+				<reportElement x="160" y="0" width="160" height="50" uuid="c34ef847-adfd-40a5-a608-81b7dec38995"/>
+				<graphicElement>
+					<pen lineWidth="5.0" lineStyle="Dashed" lineColor="#0532FA"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="350" y="2" width="160" height="50" uuid="2bc911b0-c3cb-47ff-b41f-617264ce88b8"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Dotted" lineColor="#FF051E"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

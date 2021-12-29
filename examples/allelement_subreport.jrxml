@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="allelement_subreport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0679965e-8be3-4031-91da-75d7e2b42350">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="postgres"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<queryString>
+		<![CDATA[select 1 as a]]>
+	</queryString>
+	<field name="a" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="a"/>
+		<property name="com.jaspersoft.studio.field.label" value="a"/>
+	</field>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<noData>
+		<band height="130">
+			<rectangle>
+				<reportElement mode="Opaque" x="0" y="5" width="200" height="95" backcolor="#FFEE05" uuid="f1a3ef96-a07c-4140-bffc-4b89da671ff6"/>
+			</rectangle>
+			<textField>
+				<reportElement mode="Opaque" x="15" y="20" width="170" height="65" backcolor="#05FF2B" uuid="4ad6001c-8253-4470-96cf-66033848dce1"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["This is subreport"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="50" width="150" height="30" uuid="4094ed64-418c-431d-ac08-4756e9184c9e"/>
+				<text><![CDATA[Using no data band]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>

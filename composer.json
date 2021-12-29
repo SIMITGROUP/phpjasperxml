@@ -1,19 +1,30 @@
 {
-    "name": "simitgroup/phpjasperxml",
-    "description": "PHP WYSIWYG Web/PDF Report Library",
-    "license": "MIT",    
-    "type": "library",
-    "homepage": "https://github.com/SIMITGROUP/phpjasperxml",
+    "name": "simitsdk/phpjasperxml",
+    "description": "PHP PDF renderer of open source jasper report studio.",
+    "require": {
+        "php": ">=7.4",
+        "tecnickcom/tc-lib-pdf":"*",
+        "tecnickcom/tcpdf": "^6.4",
+        "fakerphp/faker": "^1.17",
+        "phpoffice/phpspreadsheet": "^1.20"         
+    },
+    "autoload": {
+        "psr-4": {
+            "simitsdk\\phpjasperxml\\": "src/"
+        }
+    },
     "authors": [
         {
-            "name": "KS Tan",
-            "role": "Developper"
+            "name": "kstan",
+            "email": "kstan@simitgroup.com"
         }
     ],
-     "autoload": {
-        "classmap": [""]
-    },
-    "require": {
+    "license": [
+        "BSD-3-Clause"
+     ],
+     "keywords":[
+         "pdf","print format","jasper","print preview"
+     ],
+     "readme": "README.md"
 
-    }
 }

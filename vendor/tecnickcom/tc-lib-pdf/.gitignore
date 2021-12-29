@@ -1,0 +1,16 @@
+composer.lock
+vendor
+target
+phpunit.xml
+**/auth.json
+**/.vagrant
+**/nbproject
+**/.idea
+**/.DS_Store
+**/.#*
+**/._*
+**/*.tmp
+**/*.tmp.php
+**/*.bak
+.phpunit.result.cache
+.phpdoc

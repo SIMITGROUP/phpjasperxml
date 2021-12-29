@@ -1,0 +1,52 @@
+{
+  "name": "tecnickcom/tc-lib-pdf",
+  "description": "PHP PDF Library",
+  "type": "library",
+  "homepage": "http://www.tecnick.com",
+  "license": "LGPL-3.0",
+  "keywords": [
+    "tc-lib-pdf",
+    "TCPDF",
+    "PDF",
+    "PDFD32000-2008",
+    "document"
+  ],
+  "authors": [
+    {
+      "name": "Nicola Asuni",
+      "email": "info@tecnick.com",
+      "role": "lead"
+    }
+  ],
+  "require": {
+    "php": ">=5.4",
+    "ext-date": "*",
+    "ext-pcre": "*",
+    "tecnickcom/tc-lib-barcode": "^1.17",
+    "tecnickcom/tc-lib-color": "^1.14",
+    "tecnickcom/tc-lib-pdf-image": "^1.3.0",
+    "tecnickcom/tc-lib-pdf-font": "^1.9",
+    "tecnickcom/tc-lib-file": "^1.7",
+    "tecnickcom/tc-lib-pdf-encrypt": "^1.6.0",
+    "tecnickcom/tc-lib-unicode-data": "^1.7",
+    "tecnickcom/tc-lib-unicode": "^1.4.0",
+    "tecnickcom/tc-lib-pdf-page": "^2.5",
+    "tecnickcom/tc-lib-pdf-graph": "^1.5"
+  },
+  "require-dev": {
+    "pdepend/pdepend": "2.8.0",
+    "phploc/phploc": "7.0.2 || 6.0.2 || 5.0.0 || 4.0.1 || 3.0.1 || 2.1.5",
+    "phpmd/phpmd": "2.9.1",
+    "phpunit/phpunit": "9.5.0 || 8.5.13 || 7.5.20 || 6.5.14 || 5.7.27 || 4.8.36",
+    "sebastian/phpcpd": "6.0.3 || 5.0.2 || 4.1.0 || 3.0.1 || 2.0.4",
+    "squizlabs/php_codesniffer": "3.5.8 || 2.9.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Com\\Tecnick\\Pdf\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": { "Test\\": "test" }
+  }
+}

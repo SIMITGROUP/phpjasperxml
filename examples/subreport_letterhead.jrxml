@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subreport_letterhead" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bc3ab437-4bf1-450c-98b1-5a68125da8fb">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="postgres"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="documenttitle" class="java.lang.String"/>
+	<parameter name="companyname" class="java.lang.String"/>
+	<parameter name="address" class="java.lang.String"/>
+	<parameter name="contacts" class="java.lang.String"/>
+	<parameter name="registrationno" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select 1 as a]]>
+	</queryString>
+	<field name="a" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="a"/>
+		<property name="com.jaspersoft.studio.field.label" value="a"/>
+	</field>
+	<detail>
+		<band height="89" splitType="Stretch">
+			<textField>
+				<reportElement x="100" y="0" width="300" height="30" uuid="4d6e0841-a79a-4377-aa3b-4b0e21b880ae"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{companyname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="30" width="450" height="20" uuid="0edd9f3c-3ab7-460b-9717-5d33d6010e1f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="48" width="450" height="20" uuid="221da2c9-f22e-4dde-beb1-3ff7cf5171d5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{registrationno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="67" width="450" height="20" uuid="1df7a0eb-2711-4d36-8fcd-d9420ddce8a2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{contacts}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="90" height="87" uuid="5489f0f1-1f42-485e-ba53-dbf76e4e6e5c">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA["images/simit.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="390" y="0" width="160" height="30" uuid="38988cde-ed53-4bac-bf03-5853bfcf3ad4"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times" size="18" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{documenttitle}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement mode="Opaque" x="0" y="88" width="550" height="1" forecolor="#354CFC" uuid="76587054-0802-4ada-b2be-26832c23ef1c"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

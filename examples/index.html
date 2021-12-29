@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>PHPJasperxml samples</title>
+        <script>
+            function changeformat(){
+                let formatvalue = document.getElementById('selectFormat').value;
+                document.getElementById("iframereport").src=formatvalue;
+            }
+
+        </script>
+    </head>
+    <body>
+        <label> Select Examples
+        <select id="selectFormat" onchange="changeformat()">
+            <option value="">None</option>
+            <option value="allelements.php">All Elements (Support & Not Supported)</option>
+            <option value="barcodes.php">Barcodes</option>
+            <option value="formating.php">Elements Format Setting</option>
+            <option value="invoice.php?type=pdf">Sample invoice (PDF)</option>
+            <option value="invoice.php?type=xlsx">Sample invoice (Xlsx)</option>
+            <option value="groups.php">Groups</option>
+            <option value="column_verticalorder.php">3 Columns Verticle Print Order</option>
+            <option value="column_horizontalorder.php">3 Column Horizontal Print Order</option>
+            <option value="databasesample.php">Use Database (array/mysql/postgresql/pdo)</option>            
+        </select>
+        </label>
+        <button onclick="changeformat()">Reload</button>
+        <iframe src="" id="iframereport" style="width: 95vw; height:90vh;border:none"></iframe>
+    </body>
+</html>

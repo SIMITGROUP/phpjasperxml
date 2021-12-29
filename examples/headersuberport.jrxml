@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="headersuberport" columnCount="2" printOrder="Horizontal" pageWidth="595" pageHeight="842" columnWidth="277" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a454fc8-b680-4a8a-84da-46c8c452ae4b">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="postgres"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="para1" class="java.lang.String"/>
+	<parameter name="para2" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * FROM sys_organization  ORDER BY org_id]]>
+	</queryString>
+	<field name="org_id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="org_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="org_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="sys_organization"/>
+	</field>
+	<field name="org_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="org_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="org_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="sys_organization"/>
+	</field>
+	<field name="org_code" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="org_code"/>
+		<property name="com.jaspersoft.studio.field.label" value="org_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="sys_organization"/>
+	</field>
+	<field name="description" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="description"/>
+		<property name="com.jaspersoft.studio.field.label" value="description"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="sys_organization"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="140" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField>
+				<reportElement x="0" y="0" width="200" height="30" uuid="c7c5f0cd-62a9-4fc1-b0b3-7d8735594e9c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e1bc4bef-6644-40ac-b7ea-2c5f515d2a49"/>
+				</reportElement>
+				<box>
+					<pen lineStyle="Dashed" lineColor="#FF0905"/>
+					<topPen lineWidth="1.0" lineStyle="Dashed" lineColor="#FF0905"/>
+					<leftPen lineWidth="1.0" lineStyle="Dashed" lineColor="#FF0905"/>
+					<bottomPen lineWidth="1.0" lineStyle="Dashed" lineColor="#FF0905"/>
+					<rightPen lineWidth="1.0" lineStyle="Dashed" lineColor="#FF0905"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{org_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="30" width="200" height="30" uuid="d64d35ae-68e0-4ef6-a160-ab66bb415681">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7a6dd094-2418-48ee-9a61-706f86fa0a09"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{org_code}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="0" y="60" width="200" height="80" uuid="f3a7c1d3-6920-4a8f-833b-377c1d23f7e3"/>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>
