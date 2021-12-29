@@ -14,17 +14,7 @@ Latest phpjasperxml require php 7.4, and php extension like php-curl, php-intl, 
 
 
 # Samples
-## Supported elements
-<img src="examples/images/allelements.png"/>
-
-## Supported Barcodes
-<img src="examples/images/barcodes.png"/>
-
-## Format Text/Rect/Ellipse and Line
-<img src="examples/images/formating.png"/>
-
-## Sample Invoice
-<img src="examples/images/invoice.png"/>
+Refer sample: https://github.com/SIMITGROUP/phpjasperxml/wiki/Sample-output
 
 # Compatibility:
 Generally, phpjasperxml provide below compatiblity result of:
