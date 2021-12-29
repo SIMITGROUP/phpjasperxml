@@ -1,7 +1,17 @@
 # Introduction
-This is php library read jasper report designed file (.jrxml) and generate pdf file.
+This is php library read jasper report designed file (.jrxml) and generate pdf file. 
 
 The goal of this project is to allow php developer design reasonable good printable pdf easily with concept WYSIWYG. However, since the .jrxml file design for java project, phpjasperxml not able to make it 100% compatible in php environment. Refer compatibility description to know what you can do and what you cannot do.
+
+It completely rewrite since version 1.x, if you use version 1.x before please verify your output carefully since it is more compatible to jasper studio, but may not work perfectly at last version.
+
+
+
+
+# Install
+Latest phpjasperxml require php 7.4, and php extension like php-curl, php-intl, php-simplexml. 
+`composer require simitgroup/phpjasperxml`
+
 
 # Samples
 ## Supported elements
