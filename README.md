@@ -5,16 +5,16 @@ The goal of this project is to allow php developer design reasonable good printa
 
 # Samples
 ## Supported elements
-<img src="../../examples/images/allelements.png"/>
+<img src="examples/images/allelements.png"/>
 
 ## Supported Barcodes
-<img src="../../examples/images/barcodes.png"/>
+<img src="examples/images/barcodes.png"/>
 
 ## Format Text/Rect/Ellipse and Line
-<img src="../../examples/images/formating.png"/>
+<img src="examples/images/formating.png"/>
 
 ## Sample Invoice
-<img src="../../examples/images/invoice.png"/>
+<img src="examples/images/invoice.png"/>
 
 # Compatibility:
 Generally, phpjasperxml provide below compatiblity result of:
