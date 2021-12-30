@@ -208,6 +208,14 @@ SortField support fields ASC and DESC. Variables/Function is not support
 # Scriptlet
 Scriptlet is a method to allow report fetch specific value from existing functions. To compatible with jasperstudio as much as possible, we use expression method to define php code in Scriptlet description so in jasperstudio not complain. Then in phpjasperxml we will execute and put the value into scriptlet parameter. Refer script from jasperreport to know more.
 
+How to use:
+1. Create scriptlet: "replace_as_alias" 
+2. Define description in scriptlet: str_replace("@",'_alias_',$F{email})
+3. textField define value from scriptlet's parameter "$P{replace_as_alias_SCRIPTLET}"
+
+Refer
+https://github.com/SIMITGROUP/phpjasperxml/blob/master/examples/groups.jrxml
+
 # :x: Styles
 Style template is ignore, and not effect element at the moment.
 
