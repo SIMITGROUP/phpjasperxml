@@ -3,6 +3,9 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="groups" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="91b09141-a7ac-4a00-9867-4b7b8d085c5d">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="postgres"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<scriptlet name="replace_as_alias" class="net.sf.jasperreports.engine.JRDefaultScriptlet">
+		<scriptletDescription><![CDATA[str_replace("@",'_alias_',$F{email})]]></scriptletDescription>
+	</scriptlet>
 	<queryString>
 		<![CDATA[select * from users]]>
 	</queryString>
@@ -250,7 +253,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{replace_as_alias_SCRIPTLET}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="0" width="41" height="20" uuid="13422f88-6c5c-4b6a-8b80-6995dbb8cb7d"/>
