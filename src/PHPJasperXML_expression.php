@@ -102,7 +102,7 @@ trait PHPJasperXML_expression
     }
     protected function getFieldValue(string $name,int $addrowqty=0,string $evaluationTime='')
     {
-        $rowno = $this->currentRow+$addrowqty;
+        $rowno = $this->currentRow+$addrowqty - $this->reducerowno;
         $datatype = $this->fields[$name]['datatype'];
         if(isset($this->rows[$rowno]))
         {

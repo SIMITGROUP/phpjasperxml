@@ -7,6 +7,7 @@ trait PHPJasperXML_output
     protected array $pageproperties=[];
     protected $output = null;
     protected int $currentRow=0;
+    protected int $reducerowno=0;
     protected array $descgroupnames=[];
     protected array $row = [];
     protected bool $isgroupchanged=false;
@@ -135,8 +136,10 @@ trait PHPJasperXML_output
         // $this->console("newpage withTitle:".$withTitle);
         if(!$withTitle)
         {
+            $this->reducerowno = 1;
             $this->draw_columnFooter();
             $this->draw_pageFooter(); //if no content, it will call draw_pageFooter
+            $this->reducerowno=0;
         }    
         // echo "\nAdd Page\n";
         $this->output->AddPage();          
