@@ -276,7 +276,7 @@
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textFieldExpression><![CDATA["Name ("+$F{country_code}+")"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Name ("+$F{country_code}+", total "+$V{grpcountry_COUNT}+" records)"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="230" y="0" width="150" height="20" uuid="eca3f289-ea43-4ffe-9ad1-0e8138e96428">
@@ -332,7 +332,7 @@
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[" of " +$V{PAGE_NUMBER}+" ("+$F{groupname}+")"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[" of " +$V{PAGE_NUMBER}+" ("+$F{groupname}+", total " +$V{grpgender_COUNT} +"records)"]]></textFieldExpression>
 			</textField>
 			<textField pattern="d-M-yyyy h:mm:ss a">
 				<reportElement x="0" y="0" width="178" height="20" uuid="ffd558c2-8b05-4669-8142-a7fdbc3ed46a"/>

@@ -212,7 +212,15 @@ trait PHPJasperXML_expression
                 }
                 else
                 {
-                    $data = $this->variables[$key]['value'];
+                    if($this->reducerowno > 0 )
+                    {
+                        $data = $this->variables[$key]['lastvalue'];
+                    }
+                    else
+                    {
+                        $data = $this->variables[$key]['value'];
+                    }
+                    
                     $datatype = $this->variables[$key]['datatype'];
                 }
 

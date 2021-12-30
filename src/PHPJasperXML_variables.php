@@ -69,6 +69,7 @@ trait PHPJasperXML_variables
             else
             {
                 $computevalue = call_user_func([$this,$computeMethodName],$varname,$setting,$rowno,$isreset);
+                $this->variables[$varname]['lastvalue'] = $this->variables[$varname]['value'];
                 $this->variables[$varname]['value']=$computevalue;
             }                        
         }        
