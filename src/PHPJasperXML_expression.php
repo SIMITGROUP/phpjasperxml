@@ -263,9 +263,9 @@ trait PHPJasperXML_expression
                 {
                     $value = '';
                 }
-                // $data = addslashes($value);
-                // $data = addslashes($value);
-                $data = '"'.addslashes($value).'"';
+                $data = addslashes($value);
+                $data = str_replace('$','\$',$data);
+                $data = '"'.$data.'"';
             break;
         }
         return (string) $data;
