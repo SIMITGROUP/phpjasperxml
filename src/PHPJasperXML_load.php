@@ -348,8 +348,8 @@ trait PHPJasperXML_load
         {
             case 'java.lang.Boolean':
                 $type='boolean';
-            break;
-            
+            break;            
+            case 'java.lang.Integer':
             case 'java.lang.Long':                    
             case 'java.lang.Short':
             case 'java.lang.Double':            

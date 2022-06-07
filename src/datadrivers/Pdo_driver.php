@@ -63,7 +63,7 @@ class Pdo_driver implements DataInterface
     {        
         $dsn = $config['dsn'];
         $user = $config['user'];
-        $password = $config['user'];
+        $password = $config['pass'];
         
 
         if(gettype($config['connection'])=='object')
