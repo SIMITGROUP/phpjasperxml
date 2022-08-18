@@ -34,6 +34,8 @@ $report->load_xml_file($filename)
     ->export('Pdf'); 
 ```
 
+Refer https://github.com/SIMITGROUP/phpjasperxml/blob/master/examples/databasesample.php if you want to use database driver instead of prepare array.
+
 
 # Samples
 Refer sample: https://github.com/SIMITGROUP/phpjasperxml/wiki/Sample-output
