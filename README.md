@@ -10,7 +10,29 @@ It completely rewrite since version 1.x, if you use version 1.x before please ve
 
 # Install
 Latest phpjasperxml require php 7.4, and php extension like php-curl, php-intl, php-simplexml. 
-`composer require simitgroup/phpjasperxml`
+```php
+composer require simitgroup/phpjasperxml
+```
+
+# How to use
+```php
+<?php
+require __DIR__."/vendor/autoload.php";
+
+use simitsdk\phpjasperxml\PHPJasperXML;
+$filename = __DIR__.'/sample.jrxml';
+
+$data=[ ['user_id'=>0, 'fullname' => 'name1','email'=>'email1@a.com','gender'=>'M' ], 
+        ['user_id'=>1, 'fullname' => 'name2','email'=>'email2@a.com','gender'=>'F' ], 
+        ['user_id'=>2, 'fullname' => 'name3','email'=>'email3@a.com','gender'=>'M' ], ];
+
+$config = ['driver'=>'array','data'=>$data];
+
+$report = new PHPJasperXML();
+$report->load_xml_file($filename)    
+    ->setDataSource($config)
+    ->export('Pdf'); 
+```
 
 
 # Samples
