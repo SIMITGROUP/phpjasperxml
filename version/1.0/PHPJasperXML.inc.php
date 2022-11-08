@@ -1959,7 +1959,7 @@ $data->reportElement['uuid']=$data->reportElement['uuid']."";
     }
 
 
-    public function outpage($out_method="I",$filename="", $othername="") {
+    public function outpage($out_method="I",$filename="", $othername="", $pdf_password="") {
     if($_REQUEST['forceexceloutput']!=""){
         $this->pdflib="XLS";
         $filename=($othername!="")?($othername.".xls"):"file1.xls";
@@ -1967,9 +1967,22 @@ $data->reportElement['uuid']=$data->reportElement['uuid']."";
     
             if($this->pdflib=="TCPDF") {
                 if($this->arrayPageSetting["orientation"]=="P")
+                {
                     $this->pdf=new TCPDF($this->arrayPageSetting["orientation"],'pt',array(intval($this->arrayPageSetting["pageWidth"]),intval($this->arrayPageSetting["pageHeight"])),true);
-                else
+                }
+                else {
                     $this->pdf=new TCPDF($this->arrayPageSetting["orientation"],'pt',array( intval($this->arrayPageSetting["pageHeight"]),intval($this->arrayPageSetting["pageWidth"])),true);
+                }
+
+                if(!empty($pdf_password))
+                {
+                    $permissions = array('print', 'copy', 'modify');
+                    $owner_pass = null;
+                    $mode = 0;
+                    $pubkeys = null;
+                    $this->pdf->SetProtection($permissions, $pdf_password, $owner_pass, $mode, $pubkeys);
+                }
+                
                 $this->pdf->setPrintHeader(false);
                 $this->pdf->setPrintFooter(false);
                 
