@@ -630,7 +630,7 @@ class PHPJasperXML {
         if($data->reportElement["mode"]=="Opaque") {
             $fill=1;
         }
-        if(isset($data["isStretchWithOverflow"])&&$data["isStretchWithOverflow"]=="true") {
+        if(isset($data["isStretchWithOverflow"])&&$data["isStretchWithOverflow"]=="true" || isset($data["textAdjust"]) && $data["textAdjust"] == "StretchHeight") {
             $stretchoverflow="true";
         }
         if(isset($data->reportElement["isPrintWhenDetailOverflows"])&&$data->reportElement["isPrintWhenDetailOverflows"]=="true") {
@@ -1355,7 +1355,7 @@ class PHPJasperXML {
         if($data->reportElement["mode"]=="Opaque") {
             $fill=1;
         }
-        if(isset($data["isStretchWithOverflow"])&&$data["isStretchWithOverflow"]=="true") {
+        if(isset($data["isStretchWithOverflow"])&&$data["isStretchWithOverflow"]=="true" || isset($data["textAdjust"]) && $data["textAdjust"] == "StretchHeight") {
             $stretchoverflow="true";
         }
         if(isset($data->reportElement["isPrintWhenDetailOverflows"])&&$data->reportElement["isPrintWhenDetailOverflows"]=="true") {
