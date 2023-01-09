@@ -2383,7 +2383,7 @@ protected function convertDigit($digit=0)
                     }
                     $fm = implode('__gluestring__', $fm_r);
 
-                    $fm=str_replace('__gluestring__', '.', $fm);
+                    $fm=str_replace('__gluestring__', ' . ', $fm);
                   }
                    $fm=str_replace('convertNumber', '', $fm);
                    $firstword=$this->left( ltrim($fm) ,1);
