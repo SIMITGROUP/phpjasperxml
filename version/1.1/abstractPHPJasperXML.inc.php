@@ -2695,26 +2695,27 @@ protected function convertDigit($digit=0)
             }
 
         }
+        
        protected function tweakValue($value,$type='tweek')
-       {                    
-            
-            $i=0;           
-            $singlequote="|_q_|";
-            $doublequote="|_qq_|";
+       {
+          $i=0;
+          $singlequote="|_q_|";
+          $doublequote="|_qq_|";
+          $backslash = "|_bs_|";
 
-            if($type=='tweek')
-            {
-
-                    $newvalue=str_replace("'", $singlequote, $value);
-                    $newvalue=str_replace('"', $doublequote, $newvalue);
-            }
-            else
-            {
-                    $newvalue=str_replace( $singlequote,"'", $value);
-                    $newvalue=str_replace( $doublequote,'\"', $newvalue);                       
-            }
-            return $newvalue;
-            
+          if($type=='tweek')
+          {
+              $newvalue = str_replace("'", $singlequote, $value);
+              $newvalue = str_replace('"', $doublequote, $newvalue);
+              $newvalue = str_replace('\\', $backslash, $newvalue);
+          }
+          else
+          {
+              $newvalue = str_replace($singlequote, "'", $value);
+              $newvalue = str_replace($doublequote, '\"', $newvalue);    
+              $newvalue = str_replace($backslash, '\\\\', $newvalue);                   
+          }
+          return $newvalue;
        }
 
        protected function isNumber($value)
