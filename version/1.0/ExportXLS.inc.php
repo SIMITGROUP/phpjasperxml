@@ -868,28 +868,34 @@ foreach($this->arraylastPageFooter as $out){
   	  			if($this->debughtml)
   	  			   echo  $txt.",align:".$arraydata['align']."<br/>";
 
-                // is not html, exec eval()
+                // if not html, exec eval()
                 if( ! preg_match('/<[^>]*>/', $txt) ){
-                    $txt = preg_replace('/\'/', '"', $txt);
-                    $txt = preg_replace('/([0-9]+)(\.[0-9]+)?/', '" . "$1$2" . "', $txt);
-                    $txt = preg_replace('/\. " \./', '.', $txt);
-                    // $txt = preg_replace('/^(\$[A-Z]{1}_)/', '" . $0', $txt);
+                
+                    $php_text = $txt;
+                    $php_text = html_entity_decode($php_text, ENT_QUOTES, 'UTF-8');
+
+                    $php_text = preg_replace('/\'/', '"', $php_text);
+                    $php_text = preg_replace('/(?<![\(<])([0-9]+)(\.[0-9]+)?(?![\)>])/', '" . "$1$2" . "', $php_text);// replace number outside of () & <>, avoid function param
+                    $php_text = preg_replace('/\. " \./', '.', $php_text);
+
+                    $start_w_var = preg_match('/^(\$[A-Z]{1}_)(.*?)___/', $php_text) ? '' : "\"";
+                    $end_w_var   = preg_match('/(\$[A-Z]{1}_)(.*?)___$/', $php_text) ? '' : "\"";
+
+                    $php_text = 'return ' . $start_w_var . $php_text . $end_w_var . ';';
 
                     try{
-                        $txt = eval("return \"".$txt."\";");
+                        $txt = eval($php_text);
                     }
                     catch(Error $e){
-                        print_r([
-                            "Error Msg" => $e->getMessage(),
-                            "Error File" => $e->getFile(),
-                            "Error Line" => $e->getLine(),
-                            "Raw Cell Data" => $txt,
-                            "Parsed Cell Data" => $txt,
-                            "Execute Code" => "return \"".$txt."\";"
-                        ]);
+                        echo 
+                            "Error :"   . $e->getMessage() . "<br/>".
+                            "File :"    . $e->getFile() . "<br/>".
+                            "Executed : php <pre>". $php_text . "</pre><br/>"
+                        ;
                         die;
                     };
                 };
+
                 $this->setText($this->relativex,($this->relativey+$rowpos),  $txt,$arraydata['align'], $arraydata['pattern']); 
                 $this->mergeCells(    $this->relativex,  ($this->relativey+$rowpos),   ($this->cols['c'.($this->mergex+$arraydata['width'])]-1),   ($this->relativey+$rowpos)  );
 
