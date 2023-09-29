@@ -42,7 +42,7 @@ class ExportXLS{
     private $arrfont=array();
     
     public function ExportXLS($raw=[],$filename='', $type='Excel5',$out_method='I'){
-    $type='Excel5';
+        $type='Excel5';
     global $forceexcelib;
     $this->maxrow=1;
     if($forceexcelib)
@@ -210,6 +210,7 @@ class ExportXLS{
                 }
          
          }
+
        if($out_method=='F' || $out_method=='f'){
           
              $this->savexls($filename,$type,$out_method);   
@@ -867,8 +868,30 @@ foreach($this->arraylastPageFooter as $out){
   	  			if($this->debughtml)
   	  			   echo  $txt.",align:".$arraydata['align']."<br/>";
 
-                  $this->setText($this->relativex,($this->relativey+$rowpos),  $txt,$arraydata['align'], $arraydata['pattern']); 
-                                      $this->mergeCells(    $this->relativex,  ($this->relativey+$rowpos),   ($this->cols['c'.($this->mergex+$arraydata['width'])]-1),   ($this->relativey+$rowpos)  );
+                // is not html, exec eval()
+                if( ! preg_match('/<[^>]*>/', $txt) ){
+                    $txt = preg_replace('/\'/', '"', $txt);
+                    $txt = preg_replace('/([0-9]+)(\.[0-9]+)?/', '" . "$1$2" . "', $txt);
+                    $txt = preg_replace('/\. " \./', '.', $txt);
+                    // $txt = preg_replace('/^(\$[A-Z]{1}_)/', '" . $0', $txt);
+
+                    try{
+                        $txt = eval("return \"".$txt."\";");
+                    }
+                    catch(Error $e){
+                        print_r([
+                            "Error Msg" => $e->getMessage(),
+                            "Error File" => $e->getFile(),
+                            "Error Line" => $e->getLine(),
+                            "Raw Cell Data" => $txt,
+                            "Parsed Cell Data" => $txt,
+                            "Execute Code" => "return \"".$txt."\";"
+                        ]);
+                        die;
+                    };
+                };
+                $this->setText($this->relativex,($this->relativey+$rowpos),  $txt,$arraydata['align'], $arraydata['pattern']); 
+                $this->mergeCells(    $this->relativex,  ($this->relativey+$rowpos),   ($this->cols['c'.($this->mergex+$arraydata['width'])]-1),   ($this->relativey+$rowpos)  );
 
                 break;
             case "Cell":
