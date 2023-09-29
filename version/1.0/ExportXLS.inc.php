@@ -42,7 +42,7 @@ class ExportXLS{
     private $arrfont=array();
     
     public function ExportXLS($raw=[],$filename='', $type='Excel5',$out_method='I'){
-        $type='Excel5';
+    $type='Excel5';
     global $forceexcelib;
     $this->maxrow=1;
     if($forceexcelib)
@@ -210,7 +210,6 @@ class ExportXLS{
                 }
          
          }
-
        if($out_method=='F' || $out_method=='f'){
           
              $this->savexls($filename,$type,$out_method);   
