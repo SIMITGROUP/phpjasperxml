@@ -867,8 +867,36 @@ foreach($this->arraylastPageFooter as $out){
   	  			if($this->debughtml)
   	  			   echo  $txt.",align:".$arraydata['align']."<br/>";
 
-                  $this->setText($this->relativex,($this->relativey+$rowpos),  $txt,$arraydata['align'], $arraydata['pattern']); 
-                                      $this->mergeCells(    $this->relativex,  ($this->relativey+$rowpos),   ($this->cols['c'.($this->mergex+$arraydata['width'])]-1),   ($this->relativey+$rowpos)  );
+                // if not html, exec eval()
+                if( ! preg_match('/<[^>]*>/', $txt) ){
+                
+                    $php_text = $txt;
+                    $php_text = html_entity_decode($php_text, ENT_QUOTES, 'UTF-8');
+
+                    $php_text = preg_replace('/\'/', '"', $php_text);
+                    $php_text = preg_replace('/(?<![\(<])([0-9]+)(\.[0-9]+)?(?![\)>])/', '" . "$1$2" . "', $php_text);// replace number outside of () & <>, avoid function param
+                    $php_text = preg_replace('/\. " \./', '.', $php_text);
+
+                    $start_w_var = preg_match('/^(\$[A-Z]{1}_)(.*?)___/', $php_text) ? '' : "\"";
+                    $end_w_var   = preg_match('/(\$[A-Z]{1}_)(.*?)___$/', $php_text) ? '' : "\"";
+
+                    $php_text = 'return ' . $start_w_var . $php_text . $end_w_var . ';';
+
+                    try{
+                        $txt = eval($php_text);
+                    }
+                    catch(Error $e){
+                        echo 
+                            "Error :"   . $e->getMessage() . "<br/>".
+                            "File :"    . $e->getFile() . "<br/>".
+                            "Executed : php <pre>". $php_text . "</pre><br/>"
+                        ;
+                        die;
+                    };
+                };
+
+                $this->setText($this->relativex,($this->relativey+$rowpos),  $txt,$arraydata['align'], $arraydata['pattern']); 
+                $this->mergeCells(    $this->relativex,  ($this->relativey+$rowpos),   ($this->cols['c'.($this->mergex+$arraydata['width'])]-1),   ($this->relativey+$rowpos)  );
 
                 break;
             case "Cell":
