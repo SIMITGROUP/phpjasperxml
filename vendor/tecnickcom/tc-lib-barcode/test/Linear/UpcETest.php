@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UpcETest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
@@ -16,7 +17,7 @@
 namespace Test\Linear;
 
 use PHPUnit\Framework\TestCase;
-use \Test\TestUtil;
+use Test\TestUtil;
 
 /**
  * Barcode class test
@@ -25,7 +26,7 @@ use \Test\TestUtil;
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2019 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
@@ -33,7 +34,7 @@ class UpcETest extends TestUtil
 {
     protected function getTestObject()
     {
-        return new \Com\Tecnick\Barcode\Barcode;
+        return new \Com\Tecnick\Barcode\Barcode();
     }
 
     public function testGetGrid()
@@ -43,47 +44,47 @@ class UpcETest extends TestUtil
         $grid = $bobj->getGrid();
         $expected = "101001000100100110110001001101101110110100111010101\n";
         $this->assertEquals($expected, $grid);
-        
+
         $bobj = $testObj->getBarcodeObj('UPCE', '725271');
         $grid = $bobj->getGrid();
         $expected = "101001000100100110111001001001101110110110011010101\n";
         $this->assertEquals($expected, $grid);
-        
+
         $bobj = $testObj->getBarcodeObj('UPCE', '725272');
         $grid = $bobj->getGrid();
         $expected = "101001000100100110111001001001100100010010011010101\n";
         $this->assertEquals($expected, $grid);
-        
+
         $bobj = $testObj->getBarcodeObj('UPCE', '725273');
         $grid = $bobj->getGrid();
         $expected = "101001000100100110110001001101101110110100001010101\n";
         $this->assertEquals($expected, $grid);
-        
+
         $bobj = $testObj->getBarcodeObj('UPCE', '725274');
         $grid = $bobj->getGrid();
         $expected = "101001000100100110110001001101100100010100011010101\n";
         $this->assertEquals($expected, $grid);
-        
+
         $bobj = $testObj->getBarcodeObj('UPCE', '725275');
         $grid = $bobj->getGrid();
         $expected = "101001000100100110111001001101101110110110001010101\n";
         $this->assertEquals($expected, $grid);
-        
+
         $bobj = $testObj->getBarcodeObj('UPCE', '725276');
         $grid = $bobj->getGrid();
         $expected = "101001000100110110110001001101101110110101111010101\n";
         $this->assertEquals($expected, $grid);
-        
+
         $bobj = $testObj->getBarcodeObj('UPCE', '725277');
         $grid = $bobj->getGrid();
         $expected = "101001000100100110111001001001101110110010001010101\n";
         $this->assertEquals($expected, $grid);
-        
+
         $bobj = $testObj->getBarcodeObj('UPCE', '725278');
         $grid = $bobj->getGrid();
         $expected = "101001000100100110110001001101100100010110111010101\n";
         $this->assertEquals($expected, $grid);
-        
+
         $bobj = $testObj->getBarcodeObj('UPCE', '725279');
         $grid = $bobj->getGrid();
         $expected = "101001000100110110110001001001100100010001011010101\n";

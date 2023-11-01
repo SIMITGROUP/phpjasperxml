@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Encrypt.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfEncrypt
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\Pdf\Encrypt;
 
-use \Com\Tecnick\Pdf\Encrypt\Exception as EncException;
+use Com\Tecnick\Pdf\Encrypt\Exception as EncException;
 
 /**
  * Com\Tecnick\Pdf\Encrypt\Encrypt
@@ -26,19 +27,12 @@ use \Com\Tecnick\Pdf\Encrypt\Exception as EncException;
  * @category    Library
  * @package     PdfEncrypt
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
  */
 class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
 {
-    /**
-     * Encryption data
-     *
-     * @var array
-     */
-    protected $encryptdata = array('encrypted' => false, 'mode' => false);
-
     /**
      * Set PDF document protection (permission settings)
      *
@@ -73,11 +67,11 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
      *
      * @param string $user_pass   User password. Empty by default.
      * @param string $owner_pass  Owner password. If not specified, a random value is used.
-     * @param string $pubkeys     Array of recipients containing public-key certificates ('c') and permissions ('p').
+     * @param array  $pubkeys     Array of recipients containing public-key certificates ('c') and permissions ('p').
      *                            For example:
      *                            array(array('c' => 'file://../examples/data/cert/test.crt', 'p' => array('print')))
      *                            To create self-signed certificate:
-     *                            openssl req -x509 -nodes -days 365000 -newkey rsa:1024 -keyout key.pem -out cert.pem
+     *                            openssl req -x509 -nodes -days 365000 -newkey rsa:1024 -keyout cert.pem -out cert.pem
      *                            To export crt to p12: openssl pkcs12 -export -in cert.pem -out cert.p12
      *                            To convert pfx certificate to pem: openssl pkcs12 -in cert.pfx -out cert.pem -nodes
      */
@@ -132,7 +126,7 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
         $this->encryptdata['owner_password'] = $owner_pass;
 
         if (($mode < 0) || ($mode > 3)) {
-            throw new EncException('unknown encryption mode: '.$this->encryptdata['mode']);
+            throw new EncException('unknown encryption mode: ' . $this->encryptdata['mode']);
         }
         $this->encryptdata['mode'] = $mode;
 
@@ -156,103 +150,6 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
     }
 
     /**
-     * Encrypt data using the specified encrypt type.
-     *
-     * @param string $type   Encrypt type.
-     * @param string $data   Data string to encrypt.
-     * @param string $key    Encryption key.
-     * @param int    $objnum Object number.
-     *
-     * @return string Encrypted data string.
-     */
-    public function encrypt($type, $data = '', $key = null, $objnum = null)
-    {
-        if (empty($this->encryptdata['encrypted']) || ($type === false)) {
-            return $data;
-        }
-
-        if (!isset(self::$encmap[$type])) {
-            throw new EncException('unknown encryption type: '.$type);
-        }
-
-        if (($key === null) && ($type == $this->encryptdata['mode'])) {
-            $key = '';
-            if ($this->encryptdata['mode'] < 3) {
-                $key = $this->getObjectKey($objnum);
-            } elseif ($this->encryptdata['mode'] == 3) {
-                $key = $this->encryptdata['key'];
-            }
-        }
-
-        $class = '\\Com\\Tecnick\\Pdf\\Encrypt\\Type\\'.self::$encmap[$type];
-        $obj = new $class;
-        return $obj->encrypt($data, $key);
-    }
-
-    /**
-     * Compute encryption key depending on object number where the encrypted data is stored.
-     * This is used for all strings and streams without crypt filter specifier.
-     *
-     * @param int $objnum Object number.
-     *
-     * @return int
-     */
-    public function getObjectKey($objnum)
-    {
-        $objkey = $this->encryptdata['key'].pack('VXxx', $objnum);
-        if ($this->encryptdata['mode'] == 2) {
-            // AES-128 padding
-            $objkey .= "\x73\x41\x6C\x54"; // sAlT
-        }
-        $objkey = substr($this->encrypt('MD5-16', $objkey, 'H*'), 0, (($this->encryptdata['Length'] / 8) + 5));
-        $objkey = substr($objkey, 0, 16);
-        return $objkey;
-    }
-
-    /**
-     * Convert encryption P value to a string of bytes, low-order byte first.
-     *
-     * @param string $protection 32bit encryption permission value (P value).
-     *
-     * @return string
-     */
-    public function getEncPermissionsString($protection)
-    {
-        $binprot = sprintf('%032b', $protection);
-        return chr(bindec(substr($binprot, 24, 8)))
-            .chr(bindec(substr($binprot, 16, 8)))
-            .chr(bindec(substr($binprot, 8, 8)))
-            .chr(bindec(substr($binprot, 0, 8)));
-    }
-
-    /**
-     * Return the permission code used on encryption (P value).
-     *
-     * @param array $permissions The set of permissions (specify the ones you want to block).
-     * @param $mode (int) encryption strength: 0 = RC4 40 bit; 1 = RC4 128 bit; 2 = AES 128 bit; 3 = AES 256 bit.
-     *
-     * @return int
-     */
-    public function getUserPermissionCode($permissions, $mode = 0)
-    {
-        $protection = 2147422012; // 32 bit: (01111111 11111111 00001111 00111100)
-        foreach ($permissions as $permission) {
-            if (isset(self::$permbits[$permission])) {
-                if (($mode > 0) || (self::$permbits[$permission] <= 32)) {
-                    // set only valid permissions
-                    if (self::$permbits[$permission] == 2) {
-                        // the logic for bit 2 is inverted (cleared by default)
-                        $protection += self::$permbits[$permission];
-                    } else {
-                        $protection -= self::$permbits[$permission];
-                    }
-                }
-            }
-        }
-        return $protection;
-    }
-
-    /**
      * Convert hexadecimal string to string.
      *
      * @param string $bstr Byte-string to convert.
@@ -269,7 +166,7 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
             ++$bslength;
         }
         for ($idx = 0; $idx < $bslength; $idx += 2) {
-            $str .= chr(hexdec($bstr[$idx].$bstr[($idx + 1)]));
+            $str .= chr(hexdec($bstr[$idx] . $bstr[($idx + 1)]));
         }
         return $str;
     }
@@ -314,18 +211,6 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
     }
 
     /**
-     * Escape a string: add "\" before "\", "(" and ")".
-     *
-     * @param string $str String to escape.
-     *
-     * @return string
-     */
-    public function escapeString($str)
-    {
-        return strtr($str, array(')' => '\\)', '(' => '\\(', '\\' => '\\\\', chr(13) => '\r'));
-    }
-
-    /**
      * Encrypt a string.
      *
      * @param string $str    String to encrypt.
@@ -348,7 +233,7 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
      */
     public function escapeDataString($str, $objnum = null)
     {
-        return '('.$this->escapeString($this->encryptString($str, $objnum)).')';
+        return '(' . $this->escapeString($this->encryptString($str, $objnum)) . ')';
     }
 
     /**
@@ -364,6 +249,9 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
         if ($time === null) {
             $time = time(); // get current UTC time
         }
-        return $this->escapeDataString('D:'.substr_replace(date('YmdHisO', intval($time)), '\'', -2, 0).'\'', $objnum);
+        return $this->escapeDataString(
+            'D:' . substr_replace(date('YmdHisO', intval($time)), '\'', -2, 0) . '\'',
+            $objnum
+        );
     }
 }

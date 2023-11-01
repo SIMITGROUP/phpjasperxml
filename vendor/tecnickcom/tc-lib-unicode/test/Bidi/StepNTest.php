@@ -1,4 +1,5 @@
 <?php
+
 /**
  * StepNTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  */
@@ -41,7 +42,7 @@ class StepNTest extends TestCase
         $this->assertEquals($expected, $stepn->getSequence());
     }
 
-    public function stepN0DataProvider()
+    public static function stepN0DataProvider()
     {
         return array(
             array(
@@ -435,7 +436,7 @@ class StepNTest extends TestCase
         $this->assertEquals($expected, $stepn->getSequence());
     }
 
-    public function stepN1DataProvider()
+    public static function stepN1DataProvider()
     {
         return array(
             array(
@@ -783,7 +784,7 @@ class StepNTest extends TestCase
         $this->assertEquals($expected, $stepn->getSequence());
     }
 
-    public function stepN2DataProvider()
+    public static function stepN2DataProvider()
     {
         return array(
             array(
@@ -824,7 +825,7 @@ class StepNTest extends TestCase
         $this->assertEquals($expected, $stepn->getSequence());
     }
 
-    public function stepNDataProvider()
+    public static function stepNDataProvider()
     {
         return array(
             array(

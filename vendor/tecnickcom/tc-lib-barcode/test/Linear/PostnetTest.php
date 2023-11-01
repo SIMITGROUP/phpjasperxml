@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PostnetTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
@@ -16,7 +17,7 @@
 namespace Test\Linear;
 
 use PHPUnit\Framework\TestCase;
-use \Test\TestUtil;
+use Test\TestUtil;
 
 /**
  * Barcode class test
@@ -25,7 +26,7 @@ use \Test\TestUtil;
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
@@ -33,7 +34,7 @@ class PostnetTest extends TestUtil
 {
     protected function getTestObject()
     {
-        return new \Com\Tecnick\Barcode\Barcode;
+        return new \Com\Tecnick\Barcode\Barcode();
     }
 
     public function testGetGrid()
@@ -42,9 +43,9 @@ class PostnetTest extends TestUtil
         $bobj = $testObj->getBarcodeObj('POSTNET', '0123456789');
         $grid = $bobj->getGrid();
         $expected = "101010000000000000101000001000100000101000001000001000"
-            ."10001000001010000010000000101000001000100010000000100010001\n"
-            ."1010101010101010101010101010101010101010101010101010101010101"
-            ."0101010101010101010101010101010101010101010101010101\n";
+            . "10001000001010000010000000101000001000100010000000100010001\n"
+            . "1010101010101010101010101010101010101010101010101010101010101"
+            . "0101010101010101010101010101010101010101010101010101\n";
         $this->assertEquals($expected, $grid);
     }
 

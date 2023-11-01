@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TrueType.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -15,9 +16,9 @@
 
 namespace Com\Tecnick\Pdf\Font\Import;
 
-use \Com\Tecnick\File\File;
-use \Com\Tecnick\Unicode\Data\Encoding;
-use \Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\File\File;
+use Com\Tecnick\Unicode\Data\Encoding;
+use Com\Tecnick\Pdf\Font\Exception as FontException;
 
 /**
  * Com\Tecnick\Pdf\Font\Import\TrueTypeFormat
@@ -26,7 +27,7 @@ use \Com\Tecnick\Pdf\Font\Exception as FontException;
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  */
@@ -45,6 +46,34 @@ abstract class TrueTypeFormat
      * @var array
      */
     protected $subglyphs = array();
+
+    /**
+     * Pointer position on the original font data
+     *
+     * @var int
+     */
+    protected $offset = 0;
+
+    /**
+     * Content of the input font file
+     *
+     * @var string
+     */
+    protected $font = '';
+
+    /**
+     * Extracted font metrics
+     *
+     * @var array
+     */
+    protected $fdt = array();
+
+    /**
+     * Object used to read font bytes
+     *
+     * @var \Com\Tecnick\File\Byte
+     */
+    protected $fbyte;
 
     /**
      * Add CTG entry
@@ -69,14 +98,15 @@ abstract class TrueTypeFormat
         $this->fdt['ctgdata'] = array();
         foreach ($this->fdt['encodingTables'] as $enctable) {
             // get only specified Platform ID and Encoding ID
-            if (($enctable['platformID'] == $this->fdt['platform_id'])
+            if (
+                ($enctable['platformID'] == $this->fdt['platform_id'])
                 && ($enctable['encodingID'] == $this->fdt['encoding_id'])
             ) {
                 $this->offset = ($this->fdt['table']['cmap']['offset'] + $enctable['offset']);
                 $format = $this->fbyte->getUShort($this->offset);
                 $this->offset += 2;
                 if (in_array($format, $valid_format)) {
-                    $method = 'processFormat'.$format;
+                    $method = 'processFormat' . $format;
                     $this->$method();
                 }
             }
@@ -134,6 +164,7 @@ abstract class TrueTypeFormat
             $subHeaders[$ish]['idRangeOffset'] /= 2;
             $numGlyphIndexArray += $subHeaders[$ish]['entryCount'];
         }
+        $glyphIndexArray = array(0 => 0);
         for ($gid = 0; $gid < $numGlyphIndexArray; ++$gid) {
             $glyphIndexArray[$gid] = $this->fbyte->getUShort($this->offset);
             $this->offset += 2;

@@ -2,10 +2,10 @@
 *PHP library to encrypt data for PDF*
 
 [![Latest Stable Version](https://poser.pugx.org/tecnickcom/tc-lib-pdf-encrypt/version)](https://packagist.org/packages/tecnickcom/tc-lib-pdf-encrypt)
-[![Master Build Status](https://secure.travis-ci.org/tecnickcom/tc-lib-pdf-encrypt.png?branch=main)](https://travis-ci.org/tecnickcom/tc-lib-pdf-encrypt?branch=main)
-[![Master Coverage Status](https://coveralls.io/repos/tecnickcom/tc-lib-pdf-encrypt/badge.svg?branch=main&service=github)](https://coveralls.io/github/tecnickcom/tc-lib-pdf-encrypt?branch=main)
+![Build](https://github.com/tecnickcom/tc-lib-pdf-encrypt/actions/workflows/check.yml/badge.svg)
+[![Coverage](https://codecov.io/gh/tecnickcom/tc-lib-pdf-encrypt/graph/badge.svg?token=Pv1MNH3X3v)](https://codecov.io/gh/tecnickcom/tc-lib-pdf-encrypt)
 [![License](https://poser.pugx.org/tecnickcom/tc-lib-pdf-encrypt/license)](https://packagist.org/packages/tecnickcom/tc-lib-pdf-encrypt)
-[![Total Downloads](https://poser.pugx.org/tecnickcom/tc-lib-pdf-encrypt/downloads)](https://packagist.org/packages/tecnickcom/tc-lib-pdf-encrypt)
+[![Downloads](https://poser.pugx.org/tecnickcom/tc-lib-pdf-encrypt/downloads)](https://packagist.org/packages/tecnickcom/tc-lib-pdf-encrypt)
 
 [![Donate via PayPal](https://img.shields.io/badge/donate-paypal-87ceeb.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tc-lib-pdf-encrypt%20project)
 *Please consider supporting this project by making a donation via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tc-lib-pdf-encrypt%20project)*
@@ -13,7 +13,7 @@
 * **category**    Library
 * **package**     \Com\Tecnick\Pdf\Encrypt
 * **author**      Nicola Asuni <info@tecnick.com>
-* **copyright**   2011-2021 Nicola Asuni - Tecnick.com LTD
+* **copyright**   2011-2023 Nicola Asuni - Tecnick.com LTD
 * **license**     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
 * **link**        https://github.com/tecnickcom/tc-lib-pdf-encrypt
 * **SRC DOC**     https://tcpdf.org/docs/srcdoc/tc-lib-pdf-encrypt
@@ -24,6 +24,45 @@ PHP library to encrypt data for PDF.
 
 The initial source code has been derived from [TCPDF](<http://www.tcpdf.org>).
 
+
+### OpenSSL 3
+
+When using OpenSSL 3 some legacy providers are disabled by default.
+This will trigger the following error when executing the test:
+
+```
+error:0308010C:digital envelope routines::unsupported
+```
+
+Legacy provider can be enabled by followign the instructions at: https://wiki.openssl.org/index.php/OpenSSL_3.0#Providers
+
+```bash
+sudo nano /etc/ssl/openssl.cnf
+```
+
+```bash
+   openssl_conf = openssl_init
+
+   [openssl_init]
+   providers = provider_sect
+   
+   [provider_sect]
+   default = default_sect
+   legacy = legacy_sect
+   
+   [default_sect]
+   activate = 1
+   
+   [legacy_sect]
+   activate = 1
+```
+
+An alternative OpenSSL configuration file is provided on and set by default in the Makefile.
+To overrride the custom OpenSSL configuration file set the following environment variable:
+
+```bash
+export OPENSSL_CONF=/etc/ssl/openssl.cnf
+```
 
 ## Getting started
 

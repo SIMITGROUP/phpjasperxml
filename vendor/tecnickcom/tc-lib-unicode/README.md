@@ -2,10 +2,10 @@
 *PHP library containing Unicode and UTF-8 methods, including the Unicode Bidirectional Algorithm*
 
 [![Latest Stable Version](https://poser.pugx.org/tecnickcom/tc-lib-unicode/version)](https://packagist.org/packages/tecnickcom/tc-lib-unicode)
-[![Master Build Status](https://secure.travis-ci.org/tecnickcom/tc-lib-unicode.png?branch=main)](https://travis-ci.org/tecnickcom/tc-lib-unicode?branch=main)
-[![Master Coverage Status](https://coveralls.io/repos/tecnickcom/tc-lib-unicode/badge.svg?branch=main&service=github)](https://coveralls.io/github/tecnickcom/tc-lib-unicode?branch=main)
+![Build](https://github.com/tecnickcom/tc-lib-unicode/actions/workflows/check.yml/badge.svg)
+[![Coverage](https://codecov.io/gh/tecnickcom/tc-lib-unicode/graph/badge.svg?token=XLM0QWY9BE)](https://codecov.io/gh/tecnickcom/tc-lib-unicode)
 [![License](https://poser.pugx.org/tecnickcom/tc-lib-unicode/license)](https://packagist.org/packages/tecnickcom/tc-lib-unicode)
-[![Total Downloads](https://poser.pugx.org/tecnickcom/tc-lib-unicode/downloads)](https://packagist.org/packages/tecnickcom/tc-lib-unicode)
+[![Downloads](https://poser.pugx.org/tecnickcom/tc-lib-unicode/downloads)](https://packagist.org/packages/tecnickcom/tc-lib-unicode)
 
 [![Donate via PayPal](https://img.shields.io/badge/donate-paypal-87ceeb.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tc-lib-unicode%20project)
 *Please consider supporting this project by making a donation via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tc-lib-unicode%20project)*
@@ -13,7 +13,7 @@
 * **category**    Library
 * **package**     \Com\Tecnick\Unicode
 * **author**      Nicola Asuni <info@tecnick.com>
-* **copyright**   2011-2021 Nicola Asuni - Tecnick.com LTD
+* **copyright**   2011-2023 Nicola Asuni - Tecnick.com LTD
 * **license**     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
 * **link**        https://github.com/tecnickcom/tc-lib-unicode
 * **SRC DOC**     https://tcpdf.org/docs/srcdoc/tc-lib-unicode

@@ -2,8 +2,7 @@
 
 namespace Faker;
 
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
+use Faker\Container\ContainerInterface;
 
 /**
  * @property string $citySuffix
@@ -121,18 +120,6 @@ use Psr\Container\ContainerInterface;
  * @property string $toUpper
  *
  * @method string toUpper($string = '')
- *
- * @property mixed $optional
- *
- * @method mixed optional($weight = null, $default = null)
- *
- * @property UniqueGenerator $unique
- *
- * @method UniqueGenerator unique($reset = false, $maxRetries = 10000)
- *
- * @property ValidGenerator $valid
- *
- * @method ValidGenerator valid($validator = null, $maxRetries = 10000)
  *
  * @property int $biasedNumberBetween
  *
@@ -268,7 +255,7 @@ use Psr\Container\ContainerInterface;
  *
  * @property string $timezone
  *
- * @method string timezone()
+ * @method string timezone($countryCode = null)
  *
  * @property void $setDefaultTimezone
  *
@@ -288,7 +275,7 @@ use Psr\Container\ContainerInterface;
  *
  * @property string $imageUrl
  *
- * @method string imageUrl($width = 640, $height = 480, $category = null, $randomize = true, $word = null, $gray = false)
+ * @method string imageUrl($width = 640, $height = 480, $category = null, $randomize = true, $word = null, $gray = false, string $format = 'png')
  *
  * @property string $image
  *
@@ -526,6 +513,10 @@ use Psr\Container\ContainerInterface;
  *
  * @method string chrome()
  *
+ * @property string $msedge
+ *
+ * @method string msedge()
+ *
  * @property string $firefox
  *
  * @method string firefox()
@@ -550,6 +541,10 @@ use Psr\Container\ContainerInterface;
  *
  * @method string macPlatformToken()
  *
+ * @property string $iosMobileToken
+ *
+ * @method string iosMobileToken()
+ *
  * @property string $linuxPlatformToken
  *
  * @method string linuxPlatformToken()
@@ -565,9 +560,14 @@ class Generator
 
     private $container;
 
+    /**
+     * @var UniqueGenerator
+     */
+    private $uniqueGenerator;
+
     public function __construct(ContainerInterface $container = null)
     {
-        $this->container = $container ?: Extension\ContainerBuilder::getDefault();
+        $this->container = $container ?: Container\ContainerBuilder::getDefault();
     }
 
     /**
@@ -575,7 +575,6 @@ class Generator
      *
      * @param class-string<T> $id
      *
-     * @throws ContainerExceptionInterface
      * @throws Extension\ExtensionNotFound
      *
      * @return T
@@ -585,7 +584,7 @@ class Generator
         if (!$this->container->has($id)) {
             throw new Extension\ExtensionNotFound(sprintf(
                 'No Faker extension with id "%s" was loaded.',
-                $id
+                $id,
             ));
         }
 
@@ -601,11 +600,86 @@ class Generator
     public function addProvider($provider)
     {
         array_unshift($this->providers, $provider);
+
+        $this->formatters = [];
     }
 
     public function getProviders()
     {
         return $this->providers;
+    }
+
+    /**
+     * With the unique generator you are guaranteed to never get the same two
+     * values.
+     *
+     * <code>
+     * // will never return twice the same value
+     * $faker->unique()->randomElement(array(1, 2, 3));
+     * </code>
+     *
+     * @param bool $reset      If set to true, resets the list of existing values
+     * @param int  $maxRetries Maximum number of retries to find a unique value,
+     *                         After which an OverflowException is thrown.
+     *
+     * @throws \OverflowException When no unique value can be found by iterating $maxRetries times
+     *
+     * @return self A proxy class returning only non-existing values
+     */
+    public function unique($reset = false, $maxRetries = 10000)
+    {
+        if ($reset || $this->uniqueGenerator === null) {
+            $this->uniqueGenerator = new UniqueGenerator($this, $maxRetries);
+        }
+
+        return $this->uniqueGenerator;
+    }
+
+    /**
+     * Get a value only some percentage of the time.
+     *
+     * @param float $weight A probability between 0 and 1, 0 means that we always get the default value.
+     *
+     * @return self
+     */
+    public function optional(float $weight = 0.5, $default = null)
+    {
+        if ($weight > 1) {
+            trigger_deprecation('fakerphp/faker', '1.16', 'First argument ($weight) to method "optional()" must be between 0 and 1. You passed %f, we assume you meant %f.', $weight, $weight / 100);
+            $weight = $weight / 100;
+        }
+
+        return new ChanceGenerator($this, $weight, $default);
+    }
+
+    /**
+     * To make sure the value meet some criteria, pass a callable that verifies the
+     * output. If the validator fails, the generator will try again.
+     *
+     * The value validity is determined by a function passed as first argument.
+     *
+     * <code>
+     * $values = array();
+     * $evenValidator = function ($digit) {
+     *   return $digit % 2 === 0;
+     * };
+     * for ($i=0; $i < 10; $i++) {
+     *   $values []= $faker->valid($evenValidator)->randomDigit;
+     * }
+     * print_r($values); // [0, 4, 8, 4, 2, 6, 0, 8, 8, 6]
+     * </code>
+     *
+     * @param ?\Closure $validator  A function returning true for valid values
+     * @param int       $maxRetries Maximum number of retries to find a valid value,
+     *                              After which an OverflowException is thrown.
+     *
+     * @throws \OverflowException When no valid value can be found by iterating $maxRetries times
+     *
+     * @return self A proxy class returning only valid values
+     */
+    public function valid(?\Closure $validator = null, int $maxRetries = 10000)
+    {
+        return new ValidGenerator($this, $validator, $maxRetries);
     }
 
     public function seed($seed = null)
@@ -670,7 +744,7 @@ class Generator
             return $this->format($matches[1]);
         };
 
-        return preg_replace_callback('/\{\{\s?(\w+)\s?\}\}/u', $callback, $string);
+        return preg_replace_callback('/{{\s?(\w+|[\w\\\]+->\w+?)\s?}}/u', $callback, $string);
     }
 
     /**
@@ -819,7 +893,7 @@ class Generator
         return $this->ext(Extension\NumberExtension::class)->randomFloat(
             $nbMaxDecimals !== null ? (int) $nbMaxDecimals : null,
             (float) $min,
-            $max !== null ? (float) $max : null
+            $max !== null ? (float) $max : null,
         );
     }
 
@@ -837,7 +911,7 @@ class Generator
     {
         return $this->ext(Extension\NumberExtension::class)->randomNumber(
             $nbDigits !== null ? (int) $nbDigits : null,
-            (bool) $strict
+            (bool) $strict,
         );
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * EncryptTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfEncrypt
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     PdfEncrypt
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
  */
@@ -59,7 +60,7 @@ class EncryptTest extends TestUtil
 
     public function testEncryptPubThree()
     {
-        $pubkeys = array(array('c' => __DIR__.'/data/cert.pem', 'p' => array('print')));
+        $pubkeys = array(array('c' => __DIR__ . '/data/cert.pem', 'p' => array('print')));
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(
             true,
             md5('file_id'),
@@ -75,7 +76,7 @@ class EncryptTest extends TestUtil
 
     public function testEncryptPubNoP()
     {
-        $pubkeys = array(array('c' => __DIR__.'/data/cert.pem'));
+        $pubkeys = array(array('c' => __DIR__ . '/data/cert.pem'));
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(
             true,
             md5('file_id'),
@@ -105,7 +106,8 @@ class EncryptTest extends TestUtil
 
     public function testEncryptModZeroPub()
     {
-        $pubkeys = array(array('c' => __DIR__.'/data/cert.pem', 'p' => array('print')));
+        error_reporting(E_ALL); // DEBUG
+        $pubkeys = array(array('c' => __DIR__ . '/data/cert.pem', 'p' => array('print')));
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(
             true,
             md5('file_id'),
@@ -116,6 +118,8 @@ class EncryptTest extends TestUtil
             $pubkeys
         );
         $result = $enc->encrypt(1, 'alpha');
+        // Check for "error:0308010C:digital envelope routines::unsupported" when using OpenSSL 3.
+        // var_dump(openssl_error_string());
         $this->assertEquals(5, strlen($result));
     }
 
@@ -143,7 +147,7 @@ class EncryptTest extends TestUtil
             'assemble',
             'print-high'
         );
-        
+
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(true, md5('file_id'), 2, $permissions, 'alpha', 'beta');
         $result = $enc->getObjectKey(123);
         $this->assertEquals('93879594941619c98047c404192b977d', bin2hex($result));
@@ -162,7 +166,7 @@ class EncryptTest extends TestUtil
             'assemble',
             'print-high'
         );
-        
+
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt();
         $result = $enc->getUserPermissionCode($permissions, 0);
         $this->assertEquals(2147421954, $result);
@@ -171,13 +175,13 @@ class EncryptTest extends TestUtil
     public function testConvertHexStringToString()
     {
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt();
-        
+
         $result = $enc->convertHexStringToString('');
         $this->assertEquals('', $result);
-        
+
         $result = $enc->convertHexStringToString('68656c6c6f20776f726c64');
         $this->assertEquals('hello world', $result);
-        
+
         $result = $enc->convertHexStringToString('68656c6c6f20776f726c642');
         $this->assertEquals('hello world ', $result);
     }
@@ -185,10 +189,10 @@ class EncryptTest extends TestUtil
     public function testConvertStringToHexString()
     {
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt();
-        
+
         $result = $enc->convertStringToHexString('');
         $this->assertEquals('', $result);
-        
+
         $result = $enc->convertStringToHexString('hello world');
         $this->assertEquals('68656c6c6f20776f726c64', $result);
     }
@@ -196,13 +200,13 @@ class EncryptTest extends TestUtil
     public function testEncodeNameObject()
     {
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt();
-        
+
         $result = $enc->encodeNameObject('');
         $this->assertEquals('', $result);
-        
+
         $result = $enc->encodeNameObject('059akzAKZ#_=-');
         $this->assertEquals('059akzAKZ#_=-', $result);
-        
+
         $result = $enc->encodeNameObject('059[]{}+~*akzAKZ#_=-');
         $this->assertEquals('059#5B#5D#7B#7D#2B#7E#2AakzAKZ#_=-', $result);
     }
@@ -210,29 +214,29 @@ class EncryptTest extends TestUtil
     public function testEscapeString()
     {
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt();
-        
+
         $result = $enc->escapeString('');
         $this->assertEquals('', $result);
-        
+
         $result = $enc->escapeString('hello world');
         $this->assertEquals('hello world', $result);
 
-        $result = $enc->escapeString('(hello world) slash \\'.chr(13));
+        $result = $enc->escapeString('(hello world) slash \\' . chr(13));
         $this->assertEquals('\\(hello world\\) slash \\\\\r', $result);
     }
 
     public function testEncryptStringDisabled()
     {
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt();
-        
+
         $result = $enc->encryptString('');
         $this->assertEquals('', $result);
-        
+
         $result = $enc->encryptString('hello world');
         $this->assertEquals('hello world', $result);
 
-        $result = $enc->encryptString('(hello world) slash \\'.chr(13).chr(250));
-        $this->assertEquals('(hello world) slash \\'.chr(13).chr(250), $result);
+        $result = $enc->encryptString('(hello world) slash \\' . chr(13) . chr(250));
+        $this->assertEquals('(hello world) slash \\' . chr(13) . chr(250), $result);
     }
 
     public function testEncryptStringEnabled()
@@ -247,27 +251,27 @@ class EncryptTest extends TestUtil
             'assemble',
             'print-high'
         );
-        
+
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(true, md5('file_id'), 0, $permissions, 'alpha');
-        $result = $enc->encryptString('(hello world) slash \\'.chr(13));
+        $result = $enc->encryptString('(hello world) slash \\' . chr(13));
         $this->assertEquals('728cc693be1e4c1fb6b7e7b2a34644ad', md5($result));
 
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(true, md5('file_id'), 1, $permissions, 'alpha', 'beta');
-        $result = $enc->encryptString('(hello world) slash \\'.chr(13));
+        $result = $enc->encryptString('(hello world) slash \\' . chr(13));
         $this->assertEquals('258ad774ddeec21b3b439a720df18e0d', md5($result));
     }
 
     public function testEscapeDataStringDisabled()
     {
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt();
-        
+
         $result = $enc->escapeDataString('');
         $this->assertEquals('()', $result);
-        
+
         $result = $enc->escapeDataString('hello world');
         $this->assertEquals('(hello world)', $result);
 
-        $result = $enc->escapeDataString('(hello world) slash \\'.chr(13));
+        $result = $enc->escapeDataString('(hello world) slash \\' . chr(13));
         $this->assertEquals('(\\(hello world\\) slash \\\\\r)', $result);
     }
 
@@ -283,13 +287,13 @@ class EncryptTest extends TestUtil
             'assemble',
             'print-high'
         );
-        
+
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(true, md5('file_id'), 0, $permissions, 'alpha');
-        $result = $enc->escapeDataString('(hello world) slash \\'.chr(13));
+        $result = $enc->escapeDataString('(hello world) slash \\' . chr(13));
         $this->assertEquals('24f60765c1c07a44fc3c9b44d2f55dbc', md5($result));
 
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(true, md5('file_id'), 1, $permissions, 'alpha', 'beta');
-        $result = $enc->escapeDataString('(hello world) slash \\'.chr(13));
+        $result = $enc->escapeDataString('(hello world) slash \\' . chr(13));
         $this->assertEquals('ebc28272f4aff661fa0b7764d791fb79', md5($result));
     }
 
@@ -305,12 +309,12 @@ class EncryptTest extends TestUtil
             'assemble',
             'print-high'
         );
-        
+
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(false);
         $result = $enc->getFormattedDate();
         $this->assertEquals('(D:', substr($result, 0, 3));
         $this->assertEquals('+00\'00\')', substr($result, -8));
-        
+
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(true, md5('file_id'), 0, $permissions, 'alpha');
         $result = $enc->getFormattedDate();
         $this->assertNotEmpty($result);

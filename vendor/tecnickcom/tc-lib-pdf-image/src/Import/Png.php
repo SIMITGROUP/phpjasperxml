@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Png.php
  *
@@ -15,8 +16,8 @@
 
 namespace Com\Tecnick\Pdf\Image\Import;
 
-use \Com\Tecnick\File\Byte;
-use \Com\Tecnick\Pdf\Image\Exception as ImageException;
+use Com\Tecnick\File\Byte;
+use Com\Tecnick\Pdf\Image\Exception as ImageException;
 
 /**
  * Com\Tecnick\Pdf\Image\Import\Png
@@ -32,11 +33,11 @@ use \Com\Tecnick\Pdf\Image\Exception as ImageException;
 class Png implements ImageImportInterface
 {
     /**
-     * Extract data from a PNG image
+     * Extract data from a PNG image.
      *
-     * @param array $data Image raw data
+     * @param array $data Image raw data.
      *
-     * @return array Image raw data array
+     * @return array Image raw data array.
      */
     public function getData($data)
     {
@@ -45,7 +46,7 @@ class Png implements ImageImportInterface
 
         $offset = 0;
         // check signature
-        if (substr($data['raw'], $offset, 8) != chr(137).'PNG'.chr(13).chr(10).chr(26).chr(10)) {
+        if (substr($data['raw'], $offset, 8) != chr(137) . 'PNG' . chr(13) . chr(10) . chr(26) . chr(10)) {
             // @codeCoverageIgnoreStart
             throw new ImageException('Not a PNG image');
             // @codeCoverageIgnoreEnd
@@ -55,10 +56,13 @@ class Png implements ImageImportInterface
 
         $data = $this->getIhdrChunk($data, $offset);
 
+        $offset += 3;
+
         // check compression, filter and interlacing settings
-        if (($byte->getByte($offset++) != 0)
-            || ($byte->getByte($offset++) != 0)
-            || ($byte->getByte($offset++) != 0)
+        if (
+            ($byte->getByte($offset - 3) != 0)
+            || ($byte->getByte($offset - 2) != 0)
+            || ($byte->getByte($offset - 1) != 0)
         ) {
             if (!empty($data['recoded'])) {
                 // this image has been already re-encoded
@@ -74,29 +78,31 @@ class Png implements ImageImportInterface
         if (strpos($data['colspace'], '+Alpha') !== false) {
             // alpha channel: split images (plain + alpha)
             $data['splitalpha'] = true;
+            $data['colspace'] = substr($data['colspace'], 0, -6);
             return $data;
         }
 
         $data['parms'] = '/DecodeParms <<'
-            .' /Predictor 15'
-            .' /Colors '.$data['channels']
-            .' /BitsPerComponent '.$data['bits']
-            .' /Columns '.$data['width']
-            .' >>';
+            . ' /Predictor 15'
+            . ' /Colors ' . $data['channels']
+            . ' /BitsPerComponent ' . $data['bits']
+            . ' /Columns ' . $data['width']
+            . ' >>';
 
         $offset += 4;
         return $this->getChunks($data, $offset);
     }
 
     /**
-     * Extract the IHDR chunk data
+     * Extract the IHDR chunk data.
      *
      * The header chunk (IHDR) contains basic information about the image data and must appear as the first chunk,
      * and there must only be one header chunk in a PNG data stream.
-     * @param array  $data   Image raw data
-     * @param int    $offset Current byte offset
      *
-     * @return array Image raw data array
+     * @param array  $data   Image raw data.
+     * @param int    $offset Current byte offset.
+     *
+     * @return array Image raw data array.
      */
     protected function getIhdrChunk($data, &$offset)
     {
@@ -134,12 +140,12 @@ class Png implements ImageImportInterface
     }
 
     /**
-     * Extract chunks data from a PNG image
+     * Extract chunks data from a PNG image.
      *
-     * @param array  $data   Image raw data
-     * @param int    $offset Current byte offset
+     * @param array  $data   Image raw data.
+     * @param int    $offset Current byte offset.
      *
-     * @return array Image raw data array
+     * @return array Image raw data array.
      */
     protected function getChunks($data, $offset)
     {
@@ -174,16 +180,16 @@ class Png implements ImageImportInterface
     }
 
     /**
-     * Extract the PLTE chunk data
+     * Extract the PLTE chunk data.
      *
      * The palette chunk (PLTE) stores the colormap data associated with the image data.
      * This chunk is presentonly if the image data uses a color palette and must appear before the image data chunk.
      *
-     * @param array  $data   Image raw data
-     * @param int    $offset Current byte offset
-     * @param int    $len    NUmber of bytes in this chunk
+     * @param array  $data   Image raw data.
+     * @param int    $offset Current byte offset.
+     * @param int    $len    NUmber of bytes in this chunk.
      *
-     * @return array Image raw data array
+     * @return array Image raw data array.
      */
     protected function getPlteChunk($data, &$offset, $len)
     {
@@ -194,13 +200,13 @@ class Png implements ImageImportInterface
     }
 
     /**
-     * Extract the tRNS chunk data
+     * Extract the tRNS chunk data.
      *
-     * @param array  $data   Image raw data
-     * @param int    $offset Current byte offset
-     * @param int    $len    NUmber of bytes in this chunk
+     * @param array  $data   Image raw data.
+     * @param int    $offset Current byte offset.
+     * @param int    $len    NUmber of bytes in this chunk.
      *
-     * @return array Image raw data array
+     * @return array Image raw data array.
      */
     protected function getTrnsChunk($data, &$offset, $len)
     {
@@ -224,16 +230,16 @@ class Png implements ImageImportInterface
     }
 
     /**
-     * Extract the IDAT chunk data
+     * Extract the IDAT chunk data.
      *
      * The image data chunk (IDAT) stores the actual image data,
      * and multiple image data chunks may occur in a data stream and must be stored in contiguous order.
      *
-     * @param array  $data   Image raw data
-     * @param int    $offset Current byte offset
-     * @param int    $len    NUmber of bytes in this chunk
+     * @param array  $data   Image raw data.
+     * @param int    $offset Current byte offset.
+     * @param int    $len    NUmber of bytes in this chunk.
      *
-     * @return array Image raw data array
+     * @return array Image raw data array.
      */
     protected function getIdatChunk($data, &$offset, $len)
     {
@@ -244,14 +250,14 @@ class Png implements ImageImportInterface
     }
 
     /**
-     * Extract the iCCP chunk data
+     * Extract the iCCP chunk data.
      *
-     * @param Byte   $byte   Byte class object
-     * @param array  $data   Image raw data
-     * @param int    $offset Current byte offset
-     * @param int    $len    NUmber of bytes in this chunk
+     * @param Byte   $byte   Byte class object.
+     * @param array  $data   Image raw data.
+     * @param int    $offset Current byte offset.
+     * @param int    $len    NUmber of bytes in this chunk.
      *
-     * @return array Image raw data array
+     * @return array Image raw data array.
      */
     protected function getIccpChunk($byte, $data, &$offset, $len)
     {

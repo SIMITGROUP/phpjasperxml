@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WebTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Color
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-color
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     Color
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-color
  */
@@ -32,7 +33,7 @@ class WebTest extends TestUtil
 {
     protected function getTestObject()
     {
-        return new \Com\Tecnick\Color\Web;
+        return new \Com\Tecnick\Color\Web();
     }
 
     public function testGetMap()
@@ -194,7 +195,7 @@ class WebTest extends TestUtil
         $this->assertEquals('#3f80bfd9', $res->getRgbaHexColor());
     }
 
-    public function getBadColor()
+    public static function getBadColor()
     {
         return array(
             array('g(-)'),

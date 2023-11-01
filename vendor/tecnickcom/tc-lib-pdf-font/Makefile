@@ -4,7 +4,7 @@
 # @category    Library
 # @package     PdfFont
 # @author      Nicola Asuni <info@tecnick.com>
-# @copyright   2011-2020 Nicola Asuni - Tecnick.com LTD
+# @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
 # @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
 # @link        https://github.com/tecnickcom/tc-lib-pdf-font
 #
@@ -138,7 +138,7 @@ clean:
 # Fix code style violations
 .PHONY: codefix
 codefix:
-	./vendor/bin/phpcbf --ignore="./vendor/" --standard=psr2 src test
+	./vendor/bin/phpcbf --ignore="./vendor/" --standard=psr12 src test
 
 # Build a DEB package for Debian-like Linux distributions
 .PHONY: deb
@@ -170,6 +170,8 @@ endif
 deps: ensuretarget
 	rm -rf ./vendor/* $(TARGETDIR)/fonts
 	($(COMPOSER) install -vvv --no-interaction)
+	curl --silent --show-error --fail --location --output ./vendor/phpstan.phar https://github.com/phpstan/phpstan/releases/download/1.10.38/phpstan.phar \
+	&& chmod +x ./vendor/phpstan.phar
 	cd util && make deps
 
 # Generate source code documentation
@@ -211,9 +213,10 @@ endif
 # Test source code for coding standard violations
 .PHONY: lint
 lint:
-	./vendor/bin/phpcs --ignore="./vendor/" --standard=psr2 src test
+	./vendor/bin/phpcs --ignore="./vendor/" --standard=phpcs.xml src test
 	./vendor/bin/phpmd src text codesize,unusedcode,naming,design --exclude vendor
 	./vendor/bin/phpmd test text unusedcode,naming,design
+	php -r 'exit((int)version_compare(PHP_MAJOR_VERSION, "7", ">"));' || ./vendor/phpstan.phar analyse
 
 # Run all tests and reports
 .PHONY: qa
@@ -222,8 +225,6 @@ qa: ensuretarget lint test report
 # Generate various reports
 .PHONY: report
 report: ensuretarget
-	./vendor/bin/phpcpd src --exclude vendor > $(TARGETDIR)/report/phpcpd.txt
-	./vendor/bin/phploc src --exclude vendor > $(TARGETDIR)/report/phploc.txt
 	./vendor/bin/pdepend --jdepend-xml=$(TARGETDIR)/report/dependencies.xml --summary-xml=$(TARGETDIR)/report/metrics.xml --jdepend-chart=$(TARGETDIR)/report/dependecies.svg --overview-pyramid=$(TARGETDIR)/report/overview-pyramid.svg --ignore=vendor ./src
 	#./vendor/bartlett/php-compatinfo/bin/phpcompatinfo --no-ansi analyser:run src/ > $(TARGETDIR)/report/phpcompatinfo.txt
 
@@ -261,7 +262,9 @@ tag:
 # Run unit tests
 .PHONY: test
 test:
-	./vendor/bin/phpunit test
+	cp phpunit.xml.dist phpunit.xml
+	./vendor/bin/phpunit --migrate-configuration || true
+	./vendor/bin/phpunit --stderr test
 
 # Remove all installed files
 .PHONY: uninstall

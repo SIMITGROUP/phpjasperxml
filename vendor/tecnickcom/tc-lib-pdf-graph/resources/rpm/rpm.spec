@@ -19,9 +19,9 @@ BuildArch: noarch
 Requires:  php(language) >= 5.4.0
 Requires:  php-zlib
 Requires:  php-composer(%{c_vendor}/tc-lib-color) < 2.0.0
-Requires:  php-composer(%{c_vendor}/tc-lib-color) >= 1.14.6
+Requires:  php-composer(%{c_vendor}/tc-lib-color) >= 1.14.39
 Requires:  php-composer(%{c_vendor}/tc-lib-pdf-encrypt) < 2.0.0
-Requires:  php-composer(%{c_vendor}/tc-lib-pdf-encrypt) >= 1.6.4
+Requires:  php-composer(%{c_vendor}/tc-lib-pdf-encrypt) >= 1.6.35
 
 Provides:  php-composer(%{c_vendor}/%{gh_project}) = %{version}
 Provides:  php-%{gh_project} = %{version}

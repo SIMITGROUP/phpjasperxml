@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Buffer.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -15,8 +16,8 @@
 
 namespace Com\Tecnick\Pdf\Font;
 
-use \Com\Tecnick\Pdf\Font\Font;
-use \Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\Pdf\Font\Font;
+use Com\Tecnick\Pdf\Font\Exception as FontException;
 
 /**
  * Com\Tecnick\Pdf\Font\Buffer
@@ -25,7 +26,7 @@ use \Com\Tecnick\Pdf\Font\Exception as FontException;
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  */
@@ -37,7 +38,7 @@ abstract class Buffer
      * @var array
      */
     protected $font = array();
-    
+
     /**
      * Font counter
      *
@@ -51,7 +52,7 @@ abstract class Buffer
      * @var array
      */
     protected $encdiff = array();
-    
+
     /**
      * Index for Encoding differences
      *
@@ -169,14 +170,14 @@ abstract class Buffer
      *
      * @param string $key Font key
      *
-     * @return array|bool Returns the fonts array of palse in case of missing font.
+     * @return array|bool Returns the fonts array or false in case of missing font.
      *
      * @throws FontException in case of error
      */
     public function getFont($key)
     {
         if (!isset($this->font[$key])) {
-            throw new FontException('The font '.$key.' has not been loaded');
+            throw new FontException('The font ' . $key . ' has not been loaded');
         }
         return $this->font[$key];
     }
@@ -184,9 +185,9 @@ abstract class Buffer
     /**
      * Set font sub-key value
      *
-     * @param int   $key    The font key
-     * @param int   $subkey Font sub-key
-     * @param mixed $data   The data to set
+     * @param string $key    The font key
+     * @param string $subkey Font sub-key
+     * @param mixed  $data   The data to set
      */
     public function setFontSubKey($key, $subkey, $data)
     {
@@ -259,7 +260,7 @@ abstract class Buffer
         $this->setFontFile($key);
         $this->setFontDiff($key);
 
-        $this->font[$key]['i'] = $this->numfonts++;
+        $this->font[$key]['i'] = ++$this->numfonts;
         $this->font[$key]['n'] = ++$objnum;
 
         return $key;
@@ -285,7 +286,7 @@ abstract class Buffer
         $this->file[$file]['dir'] = $this->font[$key]['dir'];
         $this->file[$file]['length1'] = $this->font[$key]['length1'];
         $this->file[$file]['length2'] = $this->font[$key]['length2'];
-        
+
         if (!isset($this->file[$file]['subset'])) {
             $this->file[$file]['subset'] = true;
         }

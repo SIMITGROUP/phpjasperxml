@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Bidi.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  *
@@ -15,19 +16,18 @@
 
 namespace Com\Tecnick\Unicode;
 
-use \Com\Tecnick\Unicode\Exception as UnicodeException;
-
-use \Com\Tecnick\Unicode\Convert;
-use \Com\Tecnick\Unicode\Bidi\StepP;
-use \Com\Tecnick\Unicode\Bidi\StepX;
-use \Com\Tecnick\Unicode\Bidi\StepXten;
-use \Com\Tecnick\Unicode\Bidi\StepW;
-use \Com\Tecnick\Unicode\Bidi\StepN;
-use \Com\Tecnick\Unicode\Bidi\StepI;
-use \Com\Tecnick\Unicode\Bidi\Shaping;
-use \Com\Tecnick\Unicode\Bidi\StepL;
-use \Com\Tecnick\Unicode\Data\Pattern as UniPattern;
-use \Com\Tecnick\Unicode\Data\Type as UniType;
+use Com\Tecnick\Unicode\Exception as UnicodeException;
+use Com\Tecnick\Unicode\Convert;
+use Com\Tecnick\Unicode\Bidi\StepP;
+use Com\Tecnick\Unicode\Bidi\StepX;
+use Com\Tecnick\Unicode\Bidi\StepXten;
+use Com\Tecnick\Unicode\Bidi\StepW;
+use Com\Tecnick\Unicode\Bidi\StepN;
+use Com\Tecnick\Unicode\Bidi\StepI;
+use Com\Tecnick\Unicode\Bidi\Shaping;
+use Com\Tecnick\Unicode\Bidi\StepL;
+use Com\Tecnick\Unicode\Data\Pattern as UniPattern;
+use Com\Tecnick\Unicode\Data\Type as UniType;
 
 /**
  * Com\Tecnick\Unicode\Bidi
@@ -36,7 +36,7 @@ use \Com\Tecnick\Unicode\Data\Type as UniType;
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  */
@@ -85,7 +85,7 @@ class Bidi
     protected $bidiordarr = array();
 
     /**
-     * If true force processign the string in RTL mode
+     * If true force processing the string in RTL mode
      *
      * @var bool
      */

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * StepL.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  *
@@ -15,8 +16,8 @@
 
 namespace Com\Tecnick\Unicode\Bidi;
 
-use \Com\Tecnick\Unicode\Data\Mirror as UniMirror;
-use \Com\Tecnick\Unicode\Data\Constant as UniConstant;
+use Com\Tecnick\Unicode\Data\Mirror as UniMirror;
+use Com\Tecnick\Unicode\Data\Constant as UniConstant;
 
 /**
  * Com\Tecnick\Unicode\Bidi\StepL
@@ -25,7 +26,7 @@ use \Com\Tecnick\Unicode\Data\Constant as UniConstant;
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  */
@@ -114,16 +115,18 @@ class StepL
      */
     protected function processL1b($idx, $jdx)
     {
-        if ($jdx >= $this->numchars) {
+        if ($jdx >= ($this->numchars - 1)) {
             return;
         }
-        if ((($this->chardata[$jdx]['otype'] == 'S') || ($this->chardata[$jdx]['otype'] == 'B'))
+        if (
+            (($this->chardata[$jdx]['otype'] == 'S') || ($this->chardata[$jdx]['otype'] == 'B'))
             || (($jdx == ($this->numchars - 1)) && ($this->chardata[$jdx]['otype'] == 'WS'))
         ) {
             $this->chardata[$idx]['level'] = $this->pel;
             return;
         }
-        if (($this->chardata[$jdx]['otype'] != 'WS')
+        if (
+            ($this->chardata[$jdx]['otype'] != 'WS')
             && (($this->chardata[$idx]['char'] < UniConstant::LRI)
             || ($this->chardata[$idx]['char'] > UniConstant::PDI))
         ) {

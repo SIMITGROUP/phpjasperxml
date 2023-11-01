@@ -1,4 +1,5 @@
 <?php
+
 /**
  * RCFourTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfEncrypt
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2017 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
@@ -16,7 +17,7 @@
 namespace Test;
 
 use PHPUnit\Framework\TestCase;
-use \Test\TestUtil;
+use Test\TestUtil;
 
 /**
  * RC4 encryption Test
@@ -25,7 +26,7 @@ use \Test\TestUtil;
  * @category    Library
  * @package     PdfEncrypt
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2017 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
  */
@@ -45,7 +46,7 @@ class RCFourTest extends TestUtil
         $enc_a = $testObj->encrypt($data, $key, '');
         $enc_b = $testObj->encrypt($data, $key, 'RC4-40');
         $this->assertEquals($enc_a, $enc_b);
-        
+
         $eobj = new \Com\Tecnick\Pdf\Encrypt\Type\RCFourFive();
         $enc_c = $eobj->encrypt($data, $key);
         $this->assertEquals($enc_a, $enc_c);
@@ -60,7 +61,7 @@ class RCFourTest extends TestUtil
         $enc_a = $testObj->encrypt($data, $key);
         $enc_b = $testObj->encrypt($data, $key, 'RC4');
         $this->assertEquals($enc_a, $enc_b);
-        
+
         $eobj = new \Com\Tecnick\Pdf\Encrypt\Type\RCFourSixteen();
         $enc_c = $eobj->encrypt($data, $key);
         $this->assertEquals($enc_a, $enc_c);

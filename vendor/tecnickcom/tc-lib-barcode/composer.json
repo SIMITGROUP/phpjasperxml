@@ -3,43 +3,47 @@
   "description": "PHP library to generate linear and bidimensional barcodes",
   "type": "library",
   "homepage": "http://www.tecnick.com",
-  "license": "LGPL-3.0",
+  "license": "LGPL-3.0-or-later",
   "keywords": [
-    "tc-lib-barcode",
-    "barcode",
-    "CODE 39",
-    "ANSI MH10.8M-1983",
-    "USD-3",
     "3 of 9",
-    "CODE 93",
-    "USS-93",
-    "Standard 2 of 5",
-    "Interleaved 2 of 5",
-    "CODE 128 A B C",
-    "UPC",
-    "EAN 8",
-    "EAN 13",
-    "UPC-A",
-    "UPC-E",
-    "MSI",
-    "POSTNET",
-    "PLANET",
-    "RMS4CC",
-    "Royal Mail",
+    "ANSI MH10.8M-1983",
+    "AZTEC",
+    "barcode",
     "CBC",
-    "KIX",
-    "Klant",
-    "Intelligent Mail Barcode",
-    "Onecode",
-    "USPS-B-3200",
     "CODABAR",
     "CODE 11",
-    "PHARMACODE",
-    "PHARMACODE TWO-TRACKS",
+    "CODE 128 A B C",
+    "CODE 39",
+    "CODE 93",
     "Datamatrix",
+    "EAN 13",
+    "EAN 8",
     "ECC200",
+    "Intelligent Mail Barcode",
+    "Interleaved 2 of 5",
+    "ISO IEC 15438 2006",
+    "ISO IEC 16022",
+    "ISO IEC 24778 2008",
+    "KIX",
+    "Klant",
+    "MSI",
+    "Onecode",
+    "PDF417",
+    "PHARMACODE TWO-TRACKS",
+    "PHARMACODE",
+    "PLANET",
+    "POSTNET",
     "QR-Code",
-    "PDF417"
+    "RMS4CC",
+    "Royal Mail",
+    "Standard 2 of 5",
+    "tc-lib-barcode",
+    "UPC-A",
+    "UPC-E",
+    "UPC",
+    "USD-3",
+    "USPS-B-3200",
+    "USS-93"
   ],
   "authors": [
     {
@@ -49,7 +53,7 @@
     }
   ],
   "require": {
-    "php": ">=5.4",
+    "php": ">=5.6",
     "ext-bcmath": "*",
     "ext-date": "*",
     "ext-gd": "*",
@@ -57,12 +61,10 @@
     "tecnickcom/tc-lib-color": "^1.14"
   },
   "require-dev": {
-    "pdepend/pdepend": "2.8.0",
-    "phploc/phploc": "7.0.2 || 6.0.2 || 5.0.0 || 4.0.1 || 3.0.1 || 2.1.5",
-    "phpmd/phpmd": "2.9.1",
-    "phpunit/phpunit": "9.5.0 || 8.5.13 || 7.5.20 || 6.5.14 || 5.7.27 || 4.8.36",
-    "sebastian/phpcpd": "6.0.3 || 5.0.2 || 4.1.0 || 3.0.1 || 2.0.4",
-    "squizlabs/php_codesniffer": "3.5.8 || 2.9.2"
+    "pdepend/pdepend": "2.13.0",
+    "phpmd/phpmd": "2.13.0",
+    "phpunit/phpunit": "10.1.2 || 9.6.7 || 8.5.31 || 7.5.20 || 6.5.14 || 5.7.27 || 4.8.36",
+    "squizlabs/php_codesniffer": "3.7.2 || 2.9.2"
   },
   "autoload": {
     "psr-4": {
@@ -73,8 +75,5 @@
     "psr-4": {
       "Test\\": "test"
     }
-  },
-  "autoload-dev": {
-    "psr-4": { "Test\\": "test" }
   }
 }

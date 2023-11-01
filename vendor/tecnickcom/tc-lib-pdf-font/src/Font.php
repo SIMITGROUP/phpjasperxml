@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Font.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\Pdf\Font;
 
-use \Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\Pdf\Font\Exception as FontException;
 
 /**
  * Com\Tecnick\Pdf\Font\Font
@@ -24,58 +25,12 @@ use \Com\Tecnick\Pdf\Font\Exception as FontException;
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  */
 class Font extends \Com\Tecnick\Pdf\Font\Load
 {
-    /**
-     * Font data
-     *
-     * @var array
-     */
-    protected $data = array(
-        'n'           => 0,              // PDF object number
-        'i'           => 0,              // font number
-        'key'         => '',             // font key
-        'ifile'       => '',             // JSON font file
-        'family'      => '',             // font family name
-        'unicode'     => true,           // unicode mode
-        'pdfa'        => false,          // PDF/A mode
-        'style'       => '',             // font style string
-        'fakestyle'   => false,          // emulated style
-        'mode'        => array(
-            'bold'        => false,
-            'italic'      => false,
-            'underline'   => false,
-            'linethrough' => false,
-            'overline'    => false
-        ),
-        'type'        => '',
-        'name'        => '',
-        'desc'        => array(),
-        'up'          => -100,
-        'ut'          => 50,
-        'cw'          => array(),
-        'cbbox'       => array(),
-        'dw'          => 0,
-        'enc'         => '',
-        'cidinfo'     => array(
-            'Registry'    => 'Adobe',
-            'Ordering'    => 'Identity',
-            'Supplement'  => 0,
-            'uni2cid'     => array()
-        ),
-        'file'        => '',             // original font file
-        'dir'         => '',             // font directory
-        'ctg'         => '',             // font CTG file
-        'diff'        => '',             // encoding differences
-        'diff_n'      => 0,              // object ID of the difference object
-        'subset'      => false,          // True if the font is subset
-        'subsetchars' => array(),        // subset characters
-    );
-
     /**
      * Load an imported font
      *
@@ -104,11 +59,19 @@ class Font extends \Com\Tecnick\Pdf\Font\Load
      *                       The file size of the PDF would also be smaller because you are embedding only a subset.
      * @param bool $unicode  True if we are in Unicode mode, False otherwhise.
      * @param bool $pdfa     True if we are in PDF/A mode.
+     * @param bool $compress Set to false to disable stream compression.
      *
      * @throws FontException in case of error
      */
-    public function __construct($font, $style = '', $ifile = '', $subset = false, $unicode = true, $pdfa = false)
-    {
+    public function __construct(
+        $font,
+        $style = '',
+        $ifile = '',
+        $subset = false,
+        $unicode = true,
+        $pdfa = false,
+        $compress = true
+    ) {
         if (empty($font)) {
             throw new FontException('empty font family name');
         }
@@ -116,9 +79,10 @@ class Font extends \Com\Tecnick\Pdf\Font\Load
         $this->data['family'] = $font;
         $this->data['unicode'] = (bool) $unicode;
         $this->data['pdfa'] = (bool) $pdfa;
+        $this->data['compress'] = (bool) $compress;
         $this->data['subset'] = $subset;
         $this->data['subsetchars'] = array_fill(0, 255, true);
-        
+
         // generate the font key and set styles
         $this->setStyle($style);
     }
@@ -136,7 +100,7 @@ class Font extends \Com\Tecnick\Pdf\Font\Load
     /**
      * Get the font data
      *
-     * @return string
+     * @return array
      */
     public function getFontData()
     {
@@ -169,7 +133,7 @@ class Font extends \Com\Tecnick\Pdf\Font\Load
         }
         if ($this->data['pdfa'] && (isset(Core::$font[$this->data['family']]))) {
             // core fonts must be embedded in PDF/A
-            $this->data['family'] = 'pdfa'.$this->data['family'];
+            $this->data['family'] = 'pdfa' . $this->data['family'];
         }
         $this->setStyleMode($style);
     }
@@ -178,8 +142,6 @@ class Font extends \Com\Tecnick\Pdf\Font\Load
      * Set style mode properties
      *
      * @param string $style Style
-     *
-     * @return string Style
      */
     protected function setStyleMode($style)
     {
@@ -205,6 +167,6 @@ class Font extends \Com\Tecnick\Pdf\Font\Load
             $this->data['mode']['overline'] = true;
             $this->data['style'] .= 'O';
         }
-        $this->data['key'] = $this->data['family'].$suffix;
+        $this->data['key'] = $this->data['family'] . $suffix;
     }
 }

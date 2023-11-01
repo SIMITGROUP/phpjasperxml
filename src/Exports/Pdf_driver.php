@@ -28,7 +28,7 @@ class Pdf_driver extends TCPDF implements ExportInterface
     protected int $columnCount;
     protected string $defaultfont='helvetica';
     protected int $currentRowNo=0;
-    
+    protected string $lastBand='';
     protected string $groupbandprefix = 'report_group_';
     protected int $printbandcount=0;
     public bool $islastrow = false;

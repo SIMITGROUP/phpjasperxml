@@ -1,4 +1,5 @@
 <?php
+
 /**
  * StepN.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\Unicode\Bidi;
 
-use \Com\Tecnick\Unicode\Data\Bracket as UniBracket;
+use Com\Tecnick\Unicode\Data\Bracket as UniBracket;
 
 /**
  * Com\Tecnick\Unicode\Bidi\StepN
@@ -24,7 +25,7 @@ use \Com\Tecnick\Unicode\Data\Bracket as UniBracket;
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  */
@@ -35,14 +36,14 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @var array
      */
-    protected $brackets= array();
+    protected $brackets = array();
 
     /**
      * Stack used to store bracket positions
      *
      * @var array
      */
-    protected $bstack= array();
+    protected $bstack = array();
 
     /**
      * Process N steps
@@ -182,8 +183,6 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      * @param int    $open  Open bracket entry
      * @param int    $close Close bracket entry
      * @param string $type  Type
-     *
-     * @return bool True if type has not been found
      */
     protected function setBracketsType($open, $close, $type)
     {

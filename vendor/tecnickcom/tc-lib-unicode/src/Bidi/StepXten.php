@@ -1,4 +1,5 @@
 <?php
+
 /**
  * StepXten.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\Unicode\Bidi;
 
-use \Com\Tecnick\Unicode\Data\Constant as UniConstant;
+use Com\Tecnick\Unicode\Data\Constant as UniConstant;
 
 /**
  * Com\Tecnick\Unicode\Bidi\StepXten
@@ -24,7 +25,7 @@ use \Com\Tecnick\Unicode\Data\Constant as UniConstant;
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  */
@@ -142,8 +143,6 @@ class StepXten
 
     /**
      * Set level Isolated Level Run Sequences
-     *
-     * @return array
      */
     protected function setIsolatedLevelRunSequences()
     {
@@ -173,7 +172,8 @@ class StepXten
             if ($this->isIsolateInitiator($endchar)) {
                 // find the next sequence with the same level that starts with a PDI
                 for ($kdx = ($idx + 1); $kdx < $this->numrunseq; ++$kdx) {
-                    if (($this->runseq[$kdx]['e'] == $isorun['e'])
+                    if (
+                        ($this->runseq[$kdx]['e'] == $isorun['e'])
                         && ($this->chardata[$this->runseq[$kdx]['start']]['char'] == UniConstant::PDI)
                     ) {
                         $pdimatch = $this->runseq[$kdx]['start'];
@@ -232,7 +232,7 @@ class StepXten
                 $next = $this->chardata[($seq['end'] + 1)]['level'];
             }
             $this->ilrs[$key]['eos'] = $this->getEmbeddedDirection(($next > $lev) ? $next : $lev);
-            
+
             // If the higher level is odd, the sos or eos is R; otherwise, it is L.
         }
     }

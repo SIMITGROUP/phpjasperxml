@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TypeTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  */
@@ -34,22 +35,22 @@ class TypeTest extends TestCase
     {
         $this->assertEquals(3, count(\Com\Tecnick\Unicode\Data\Type::$strong));
     }
-    
+
     public function testWeak()
     {
         $this->assertEquals(7, count(\Com\Tecnick\Unicode\Data\Type::$weak));
     }
-    
+
     public function testNeutral()
     {
         $this->assertEquals(4, count(\Com\Tecnick\Unicode\Data\Type::$neutral));
     }
-    
+
     public function testExplicitFormatting()
     {
         $this->assertEquals(9, count(\Com\Tecnick\Unicode\Data\Type::$explicit_formatting));
     }
-    
+
     public function testUni()
     {
         $this->assertEquals(17720, count(\Com\Tecnick\Unicode\Data\Type::$uni));

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * RegionTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  */
@@ -32,7 +33,7 @@ class RegionTest extends TestUtil
 {
     protected function getTestObject()
     {
-        $col = new \Com\Tecnick\Color\Pdf;
+        $col = new \Com\Tecnick\Color\Pdf();
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(false);
         return new \Com\Tecnick\Pdf\Page\Page('mm', $col, $enc, false, false);
     }
@@ -56,7 +57,7 @@ class RegionTest extends TestUtil
         );
         $this->bcAssertEqualsWithDelta($exp, $res);
 
-        $res = $testObj->getCurrentRegion();
+        $res = $testObj->getRegion();
         $this->bcAssertEqualsWithDelta($exp, $res);
 
         $res = $testObj->getNextRegion();
@@ -84,7 +85,7 @@ class RegionTest extends TestUtil
     {
         $testObj = $this->getTestObject();
         $testObj->add(array('columns' => 3));
-        $region = $testObj->getCurrentRegion();
+        $region = $testObj->getRegion();
 
         $res = $testObj->isYOutRegion(null, 1);
         $this->assertFalse($res);
@@ -104,7 +105,7 @@ class RegionTest extends TestUtil
         $this->assertTrue($res);
 
         $testObj->getNextRegion();
-        $region = $testObj->getCurrentRegion();
+        $region = $testObj->getRegion();
 
         $res = $testObj->isXOutRegion(null, 1);
         $this->assertFalse($res);

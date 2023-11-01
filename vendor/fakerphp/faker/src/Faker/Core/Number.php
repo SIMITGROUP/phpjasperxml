@@ -13,8 +13,8 @@ final class Number implements Extension\NumberExtension
 {
     public function numberBetween(int $min = 0, int $max = 2147483647): int
     {
-        $int1 = $min < $max ? $min : $max;
-        $int2 = $min < $max ? $max : $min;
+        $int1 = min($min, $max);
+        $int2 = max($min, $max);
 
         return mt_rand($int1, $int2);
     }
@@ -40,7 +40,7 @@ final class Number implements Extension\NumberExtension
         return mt_rand(1, 9);
     }
 
-    public function randomFloat(int $nbMaxDecimals = null, float $min = 0, float $max = null): float
+    public function randomFloat(?int $nbMaxDecimals = null, float $min = 0, ?float $max = null): float
     {
         if (null === $nbMaxDecimals) {
             $nbMaxDecimals = $this->randomDigit();

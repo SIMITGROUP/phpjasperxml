@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cache.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-filecache
  *
@@ -22,7 +23,7 @@ namespace Com\Tecnick\File;
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2016 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-filecache
  */
@@ -33,7 +34,7 @@ class Cache
      *
      * @var string
      */
-    protected static $path;
+    protected static $path = '';
 
     /**
      * File prefix
@@ -52,9 +53,9 @@ class Cache
         $this->defineSystemCachePath();
         $this->setCachePath();
         if ($prefix === null) {
-            $prefix = rtrim(base64_encode(pack('H*', md5(uniqid(rand(), true)))), '=');
+            $prefix = rtrim(base64_encode(pack('H*', md5(uniqid((string)rand(), true)))), '=');
         }
-        self::$prefix = '_'.preg_replace('/[^a-zA-Z0-9_\-]/', '', strtr($prefix, '+/', '-_')).'_';
+        self::$prefix = '_' . preg_replace('/[^a-zA-Z0-9_\-]/', '', strtr($prefix, '+/', '-_')) . '_';
     }
 
     /**
@@ -75,10 +76,11 @@ class Cache
     public function setCachePath($path = null)
     {
         if (($path === null) || !is_writable($path)) {
+            /* @phpstan-ignore-next-line */
             self::$path = K_PATH_CACHE;
-        } else {
-            self::$path = $this->normalizePath($path);
+            return;
         }
+        self::$path = $this->normalizePath($path);
     }
 
     /**
@@ -101,7 +103,7 @@ class Cache
      */
     public function getNewFileName($type = 'tmp', $key = '0')
     {
-        return tempnam(self::$path, self::$prefix.$type.'_'.$key.'_');
+        return tempnam(self::$path, self::$prefix . $type . '_' . $key . '_');
     }
 
     /**
@@ -113,11 +115,11 @@ class Cache
      */
     public function delete($type = null, $key = null)
     {
-        $path = self::$path.self::$prefix;
+        $path = self::$path . self::$prefix;
         if ($type !== null) {
-            $path .= $type.'_';
+            $path .= $type . '_';
             if ($key !== null) {
-                $path .= $key.'_';
+                $path .= $key . '_';
             }
         }
         $path .= '*';
@@ -135,8 +137,8 @@ class Cache
         if (defined('K_PATH_CACHE')) {
             return;
         }
-        $K_PATH_CACHE = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
-        define('K_PATH_CACHE', $this->normalizePath($K_PATH_CACHE));
+        $kPathCache = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
+        define('K_PATH_CACHE', $this->normalizePath($kPathCache));
     }
 
     /**

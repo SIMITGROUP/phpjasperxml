@@ -20,7 +20,7 @@
     }
   ],
   "require": {
-    "tecnickcom/tc-font-mirror": "dev-master"
+    "tecnickcom/tc-font-mirror": "^2.0"
   },
   "require-dev": {},
   "repositories": [
@@ -28,11 +28,11 @@
       "type": "package",
       "package": {
         "name": "tecnickcom/tc-font-mirror",
-        "version": "master",
+        "version": "2.0.0",
         "dist": {
           "type": "zip",
-          "url": "https://github.com/tecnickcom/tc-font-mirror/archive/master.zip",
-          "reference": "master"
+          "url": "https://github.com/tecnickcom/tc-font-mirror/archive/refs/tags/2.0.0.zip",
+          "reference": "main"
         },
         "autoload": {
           "classmap": [

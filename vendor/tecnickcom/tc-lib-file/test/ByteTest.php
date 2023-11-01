@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ByteTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-file
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-file
  */
@@ -32,12 +33,12 @@ class ByteTest extends TestUtil
 {
     protected function getTestObject()
     {
-        $str = chr(0).chr(0).chr(0).chr(0)
-            .chr(1).chr(3).chr(7).chr(15)
-            .chr(31).chr(63).chr(127).chr(255)
-            .chr(254).chr(252).chr(248).chr(240)
-            .chr(224).chr(192).chr(128).chr(0)
-            .chr(255).chr(255).chr(255).chr(255);
+        $str = chr(0) . chr(0) . chr(0) . chr(0)
+            . chr(1) . chr(3) . chr(7) . chr(15)
+            . chr(31) . chr(63) . chr(127) . chr(255)
+            . chr(254) . chr(252) . chr(248) . chr(240)
+            . chr(224) . chr(192) . chr(128) . chr(0)
+            . chr(255) . chr(255) . chr(255) . chr(255);
         return new \Com\Tecnick\File\Byte($str);
     }
 
@@ -51,7 +52,7 @@ class ByteTest extends TestUtil
         $this->assertEquals($expected, $res);
     }
 
-    public function getByteDataProvider()
+    public static function getByteDataProvider()
     {
         return array(
             array(0, 0),
@@ -91,7 +92,7 @@ class ByteTest extends TestUtil
         $this->assertEquals($expected, $res);
     }
 
-    public function getULongDataProvider()
+    public static function getULongDataProvider()
     {
         return array(
             array(0, 0),
@@ -138,7 +139,7 @@ class ByteTest extends TestUtil
         $this->assertEquals($expected, $res);
     }
 
-    public function getUShortDataProvider()
+    public static function getUShortDataProvider()
     {
         return array(
             array(0, 0),
@@ -177,7 +178,7 @@ class ByteTest extends TestUtil
         $this->assertEquals($expected, $res);
     }
 
-    public function getShortDataProvider()
+    public static function getShortDataProvider()
     {
         return array(
             array(0, 0),
@@ -216,7 +217,7 @@ class ByteTest extends TestUtil
         $this->assertEquals($expected, $res);
     }
 
-    public function getFWordDataProvider()
+    public static function getFWordDataProvider()
     {
         return array(
             array(0, 0),
@@ -255,7 +256,7 @@ class ByteTest extends TestUtil
         $this->assertEquals($expected, $res);
     }
 
-    public function getFixedDataProvider()
+    public static function getFixedDataProvider()
     {
         return array(
             array(0, 0),

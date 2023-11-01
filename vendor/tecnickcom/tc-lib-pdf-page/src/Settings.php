@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Settings.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  *
@@ -15,8 +16,8 @@
 
 namespace Com\Tecnick\Pdf\Page;
 
-use \Com\Tecnick\Color\Pdf as Color;
-use \Com\Tecnick\Pdf\Page\Exception as PageException;
+use Com\Tecnick\Color\Pdf as Color;
+use Com\Tecnick\Pdf\Page\Exception as PageException;
 
 /**
  * Com\Tecnick\Pdf\Page\Settings
@@ -25,7 +26,7 @@ use \Com\Tecnick\Pdf\Page\Exception as PageException;
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  *
@@ -34,14 +35,98 @@ use \Com\Tecnick\Pdf\Page\Exception as PageException;
 abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
 {
     /**
-     * Epsilon precision used to compare floating point values
+     * Epsilon precision used to compare floating point values.
      */
     const EPS = 0.0001;
 
     /**
+     * Alias for total number of pages in a group.
+     *
+     * @var string
+     */
+    const PAGE_TOT = '~#PT';
+
+    /**
+     * Alias for page number.
+     *
+     * @var string
+     */
+    const PAGE_NUM = '~#PN';
+
+    /**
+     * Array of pages (stack).
+     *
+     * @var array
+     */
+    protected $page = array();
+
+    /**
+     * Current page ID.
+     *
+     * @var int
+     */
+    protected $pid = -1;
+
+    /**
+     * Maximum page ID.
+     *
+     * @var int
+     */
+    protected $pmaxid = -1;
+
+    /**
+     * Count pages in each group.
+     *
+     * @var array
+     */
+    protected $group = array(0 => 0);
+
+    /**
+     * Encrypt object.
+     *
+     * @var \Com\Tecnick\Pdf\Encrypt\Encrypt
+     */
+    protected $enc;
+
+    /**
+     * True if we are in PDF/A mode.
+     *
+     * @var bool
+     */
+    protected $pdfa = false;
+
+    /**
+     * Enable stream compression.
+     *
+     * @var bool
+     */
+    protected $compress = true;
+
+    /**
+     * True if the signature approval is enabled (for incremental updates).
+     *
+     * @var bool
+     */
+    protected $sigapp = false;
+
+    /**
+     * Reserved Object ID for the resource dictionary.
+     *
+     * @var int
+     */
+    protected $rdoid = 1;
+
+    /**
+     * Root object ID.
+     *
+     * @var int
+     */
+    protected $rootoid = 0;
+
+    /**
      * Sanitize or set the page modification time.
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizePageNumber(array &$data)
     {
@@ -53,7 +138,7 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     /**
      * Sanitize or set the page modification time.
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizeTime(array &$data)
     {
@@ -65,9 +150,9 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     }
 
     /**
-     * Sanitize or set the page group
+     * Sanitize or set the page group.
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizeGroup(array &$data)
     {
@@ -81,7 +166,7 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     /**
      * Sanitize or set the page content.
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizeContent(array &$data)
     {
@@ -93,9 +178,9 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     }
 
     /**
-     * Sanitize or set the annotation references
+     * Sanitize or set the annotation references.
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizeAnnotRefs(array &$data)
     {
@@ -109,7 +194,7 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
      * The number of degrees by which the page shall be rotated clockwise when displayed or printed.
      * The value shall be a multiple of 90.
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizeRotation(array &$data)
     {
@@ -123,7 +208,7 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     /**
      * Sanitize or set the page preferred zoom (magnification) factor.
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizeZoom(array &$data)
     {
@@ -137,7 +222,7 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     /**
      * Sanitize or set the page transitions.
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizeTransitions(array &$data)
     {
@@ -175,21 +260,24 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
             $data['transition']['D'] = intval($data['transition']['D']);
         }
         // dimension in which the specified transition effect shall occur
-        if (empty($data['transition']['Dm'])
+        if (
+            empty($data['transition']['Dm'])
             || !in_array($data['transition']['S'], array('Split', 'Blinds'))
             || !in_array($data['transition']['Dm'], array('H', 'V'))
         ) {
             unset($data['transition']['Dm']);
         }
         // direction of motion for the specified transition effect
-        if (empty($data['transition']['M'])
+        if (
+            empty($data['transition']['M'])
             || !in_array($data['transition']['S'], array('Split', 'Box', 'Fly'))
             || !in_array($data['transition']['M'], array('I', 'O'))
         ) {
             unset($data['transition']['M']);
         }
         // direction in which the specified transition effect shall moves
-        if (empty($data['transition']['Di'])
+        if (
+            empty($data['transition']['Di'])
             || !in_array($data['transition']['S'], array('Wipe', 'Glitter', 'Fly', 'Cover', 'Uncover', 'Push'))
             || !in_array($data['transition']['Di'], array('None', 0, 90, 180, 270, 315))
             || (in_array($data['transition']['Di'], array(90, 180)) && ($data['transition']['S'] != 'Wipe'))
@@ -211,9 +299,9 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     }
 
     /**
-     * Sanitize or set the page margins
+     * Sanitize or set the page margins.
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizeMargins(array &$data)
     {
@@ -256,9 +344,9 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     }
 
     /**
-     * Sanitize or set the page regions (columns)
+     * Sanitize or set the page regions (columns).
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizeRegions(array &$data)
     {
@@ -326,7 +414,7 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     /**
      * Sanitize or set the page boxes containing the page boundaries.
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizeBoxData(array &$data)
     {
@@ -398,9 +486,9 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     }
 
     /**
-     * Sanitize or set the page format
+     * Sanitize or set the page format.
      *
-     * @param array $data Page data
+     * @param array $data Page data.
      */
     public function sanitizePageFormat(array &$data)
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Arabic.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\Unicode\Bidi\Shaping;
 
-use \Com\Tecnick\Unicode\Data\Arabic as UniArabic;
+use Com\Tecnick\Unicode\Data\Arabic as UniArabic;
 
 /**
  * Com\Tecnick\Unicode\Bidi\Shaping\Arabic
@@ -24,12 +25,40 @@ use \Com\Tecnick\Unicode\Data\Arabic as UniArabic;
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  */
 abstract class Arabic
 {
+    /**
+     * Sequence to process and return
+     *
+     * @var array
+     */
+    protected $seq = array();
+
+    /**
+     * Array of processed chars
+     *
+     * @var array
+     */
+    protected $newchardata = array();
+
+    /**
+     * Array of AL characters
+     *
+     * @var array
+     */
+    protected $alchars = array();
+
+    /**
+     * Number of AL characters
+     *
+     * @var int
+     */
+    protected $numalchars = 0;
+
     /**
      * Check if it is a LAA LETTER
      *
@@ -37,7 +66,8 @@ abstract class Arabic
      */
     protected function isLaaLetter($prevchar, $thischar)
     {
-        if (($prevchar !== false)
+        if (
+            ($prevchar !== false)
             && ($prevchar['char'] == UniArabic::LAM)
             && (isset(UniArabic::$laa[$thischar['char']]))
         ) {
@@ -49,8 +79,8 @@ abstract class Arabic
     /**
      * Check next char
      *
-     * @param int       $thischar Current char
-     * @param int|false $nextchar Next char
+     * @param array $thischar Current char
+     * @param array $nextchar Next char
      *
      * @return bool
      */
@@ -66,8 +96,8 @@ abstract class Arabic
     /**
      * Check previous char
      *
-     * @param int|false $prevchar Previous char
-     * @param int       $thischar Current char
+     * @param array $prevchar Previous char
+     * @param array $thischar Current char
      *
      * @return bool
      */
@@ -82,9 +112,9 @@ abstract class Arabic
     /**
      * Check if it is a middle character
      *
-     * @param int|false $prevchar Previous char
-     * @param int       $thischar Current char
-     * @param int|false $nextchar Next char
+     * @param array $prevchar Previous char
+     * @param array $thischar Current char
+     * @param array $nextchar Next char
      *
      * @return bool
      */
@@ -96,9 +126,9 @@ abstract class Arabic
     /**
      * Check if it is a final character
      *
-     * @param int|false $prevchar Previous char
-     * @param int       $thischar Current char
-     * @param int|false $nextchar Next char
+     * @param array $prevchar Previous char
+     * @param array $thischar Current char
+     * @param array $nextchar Next char
      *
      * @return bool
      */
@@ -108,14 +138,14 @@ abstract class Arabic
             || (($nextchar !== false) && ($nextchar['char'] == UniArabic::QUESTION_MARK))
         );
     }
-    
+
     /**
      * Set initial or middle char
      *
-     * @param int       $idx       Current index
-     * @param int|false $prevchar Previous char
-     * @param int       $thischar Current char
-     * @param array     $arabicarr Substitution array
+     * @param int   $idx       Current index
+     * @param array $prevchar  Previous char
+     * @param array $thischar  Current char
+     * @param array $arabicarr Substitution array
      */
     protected function setMiddleChar($idx, $prevchar, $thischar, $arabicarr)
     {
@@ -131,13 +161,13 @@ abstract class Arabic
             }
         }
     }
-    
+
     /**
      * Set initial char
      *
-     * @param int       $idx       Current index
-     * @param int       $thischar Current char
-     * @param array     $arabicarr Substitution array
+     * @param int   $idx       Current index
+     * @param array $thischar  Current char
+     * @param array $arabicarr Substitution array
      */
     protected function setInitialChar($idx, $thischar, $arabicarr)
     {
@@ -145,18 +175,19 @@ abstract class Arabic
             $this->newchardata[$idx]['char'] = $arabicarr[$thischar['char']][2];
         }
     }
-    
+
     /**
      * Set final char
      *
-     * @param int       $idx       Current index
-     * @param int|false $prevchar  Previous char
-     * @param int       $thischar  Current char
-     * @param array     $arabicarr Substitution array
+     * @param int   $idx       Current index
+     * @param array $prevchar  Previous char
+     * @param array $thischar  Current char
+     * @param array $arabicarr Substitution array
      */
     protected function setFinalChar($idx, $prevchar, $thischar, $arabicarr)
     {
-        if (($idx > 1)
+        if (
+            ($idx > 1)
             && ($thischar['char'] == UniArabic::HEH)
             && ($this->seq['item'][($idx - 1)]['char'] == UniArabic::LAM)
             && ($this->seq['item'][($idx - 2)]['char'] == UniArabic::LAM)
@@ -183,11 +214,11 @@ abstract class Arabic
     /**
      * Process AL character
      *
-     * @param int       $idx      Current index
-     * @param int       $pos      Current char position
-     * @param int|false $prevchar Previous char
-     * @param int       $thischar Current char
-     * @param int|false $nextchar Next char
+     * @param int   $idx      Current index
+     * @param int   $pos      Current char position
+     * @param array $prevchar Previous char
+     * @param array $thischar Current char
+     * @param array $nextchar Next char
      */
     protected function processAlChar($idx, $pos, $prevchar, $thischar, $nextchar)
     {
@@ -211,7 +242,7 @@ abstract class Arabic
             $this->newchardata[$idx]['char'] = $arabicarr[$thischar['char']][0];
         }
 
-        
+
         // if laa letter
         if ($laaletter) {
             // mark characters to delete with false

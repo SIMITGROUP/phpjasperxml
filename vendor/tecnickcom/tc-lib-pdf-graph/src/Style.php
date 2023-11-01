@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Style.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfGraph
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2016 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\Pdf\Graph;
 
-use \Com\Tecnick\Pdf\Graph\Exception as GraphException;
+use Com\Tecnick\Pdf\Graph\Exception as GraphException;
 
 /**
  * Com\Tecnick\Pdf\Graph\Style
@@ -24,56 +25,58 @@ use \Com\Tecnick\Pdf\Graph\Exception as GraphException;
  * @category    Library
  * @package     PdfGraph
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2016 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
 {
     /**
-     * Stack containing style data
+     * Stack containing style data.
      *
      * @var array
      */
     protected $style = array();
 
     /**
-     * Stack index
+     * Stack index.
      *
      * @var int
      */
     protected $styleid = -1;
 
     /**
-     * Array of restore points (style ID)
+     * Array of restore points (style ID).
      *
      * @var array
      */
     protected $stylemark = array(0);
 
     /**
-     * Unit of measure conversion ratio
+     * Unit of measure conversion ratio.
      *
      * @var float
      */
     protected $kunit = 1.0;
 
     /**
-     * Map values for lineCap
+     * Map values for lineCap.
      *
      * @var array
      */
-    protected static $linecapmap = array(0 => 0, 1 => 1, 2 => 2, 'butt' => 0, 'round'=> 1, 'square' => 2);
+    protected static $linecapmap = array(0 => 0, 1 => 1, 2 => 2, 'butt' => 0, 'round' => 1, 'square' => 2);
 
     /**
-     * Map values for lineJoin
+     * Map values for lineJoin.
      *
      * @var array
      */
     protected static $linejoinmap = array(0 => 0, 1 => 1, 2 => 2, 'miter' => 0, 'round' => 1, 'bevel' => 2);
 
     /**
-     * Map path paint operators
+     * Map path paint operators.
      *
      * @var array
      */
@@ -112,13 +115,6 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     );
 
     /**
-     * Array of transparency objects and parameters.
-     *
-     * @var array
-     */
-    protected $extgstates = array();
-
-    /**
      * Initialize default style
      */
     public function init()
@@ -154,9 +150,9 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     }
 
     /**
-     * Remove and return last style
+     * Remove and return last style.
      *
-     * @return string PDF style string
+     * @return string PDF style string.
      */
     public function pop()
     {
@@ -170,24 +166,24 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     }
 
     /**
-     * Save the current style ID to be restored later
+     * Save the current style ID to be restored later.
      */
-    public function saveStyleStaus()
+    public function saveStyleStatus()
     {
         $this->stylemark[] = $this->styleid;
     }
 
     /**
-     * Restore the saved style status
+     * Restore the saved style status.
      */
-    public function restoreStyleStaus()
+    public function restoreStyleStatus()
     {
         $this->styleid = array_pop($this->stylemark);
         $this->style = array_slice($this->style, 0, ($this->styleid + 1), true);
     }
 
     /**
-     * Returns the last style array
+     * Returns the last style array.
      *
      * @return array
      */
@@ -197,12 +193,12 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     }
 
     /**
-     * Returns the last set value of the specified property
+     * Returns the last set value of the specified property.
      *
      * @param string $property Property to search.
-     * @param mixed  default   Default value to return in case the property is not found.
+     * @param mixed  $default  Default value to return in case the property is not found.
      *
-     * @return mixed Property value or $default in case the property is not found
+     * @return mixed Property value or $default in case the property is not found.
      */
     public function getLastStyleProperty($property, $default = null)
     {
@@ -215,14 +211,14 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     }
 
     /**
-     * Returns the value of th especified item from the last inserted style
+     * Returns the value of th especified item from the last inserted style.
      *
      * @return mixed
      */
     public function getCurrentStyleItem($item)
     {
         if (!isset($this->style[$this->styleid][$item])) {
-            throw new GraphException('The '.$item.' value is not set in the current style');
+            throw new GraphException('The ' . $item . ' value is not set in the current style');
         }
         return $this->style[$this->styleid][$item];
     }
@@ -247,7 +243,7 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     {
         $out = '';
         if (isset($style['lineWidth'])) {
-            $out .= sprintf('%F w'."\n", ((float) $style['lineWidth'] * $this->kunit));
+            $out .= sprintf('%F w' . "\n", ((float) $style['lineWidth'] * $this->kunit));
         }
         $out .= $this->getLineModeCmd($style);
         if (isset($style['lineColor'])) {
@@ -260,33 +256,35 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     }
 
     /**
-     * Returns the PDF string of the specified line style
+     * Returns the PDF string of the specified line style.
      *
      * @param array $style Style to represent.
      *
      * @return string
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function getLineModeCmd(array $style)
     {
         $out = '';
         if (isset($style['lineCap']) && isset(self::$linecapmap[$style['lineCap']])) {
-            $out .= self::$linecapmap[$style['lineCap']].' J'."\n";
+            $out .= self::$linecapmap[$style['lineCap']] . ' J' . "\n";
         }
-
         if (isset($style['lineJoin']) && isset(self::$linejoinmap[$style['lineJoin']])) {
-            $out .= self::$linejoinmap[$style['lineJoin']].' j'."\n";
+            $out .= self::$linejoinmap[$style['lineJoin']] . ' j' . "\n";
         }
-
         if (isset($style['miterLimit'])) {
-            $out .= sprintf('%F M'."\n", ((float) $style['miterLimit'] * $this->kunit));
+            $out .= sprintf('%F M' . "\n", ((float) $style['miterLimit'] * $this->kunit));
         }
-
-        if (!empty($style['dashArray'])) {
+        if (isset($style['dashArray']) && is_array($style['dashArray'])) {
             $dash = array();
             foreach ($style['dashArray'] as $val) {
                 $dash[] = sprintf('%F', ((float) $val * $this->kunit));
             }
-            $out .= sprintf('[%s] %F d'."\n", implode(' ', $dash), ((float) $style['dashPhase'] * $this->kunit));
+            if (!isset($style['dashPhase'])) {
+                $style['dashPhase'] = 0;
+            }
+            $out .= sprintf('[%s] %F d' . "\n", implode(' ', $dash), $style['dashPhase']);
         }
         return $out;
     }
@@ -318,16 +316,16 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     public function getPathPaintOp($mode, $default = 'S')
     {
         if (!empty(self::$ppopmap[$mode])) {
-            return self::$ppopmap[$mode]."\n";
+            return self::$ppopmap[$mode] . "\n";
         }
         if (!empty(self::$ppopmap[$default])) {
-            return self::$ppopmap[$default]."\n";
+            return self::$ppopmap[$default] . "\n";
         }
         return '';
     }
 
     /**
-     * Returns true if the specified path paint operator includes the filling option
+     * Returns true if the specified path paint operator includes the filling option.
      *
      * @param string $mode Path paint operator (mode of rendering).
      *
@@ -336,12 +334,13 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     public function isFillingMode($mode)
     {
         return (!empty(self::$ppopmap[$mode])
-            && in_array(self::$ppopmap[$mode], array('f', 'f*', 'B', 'B*', 'b', 'b*'))
+            && (in_array(self::$ppopmap[$mode], array('f', 'f*', 'B', 'B*', 'b', 'b*'))
+            || $this->isClippingMode($mode))
         );
     }
 
     /**
-     * Returns true if the specified mode includes the stroking option
+     * Returns true if the specified mode includes the stroking option.
      *
      * @param string $mode Path paint operator (mode of rendering).
      *
@@ -355,7 +354,7 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     }
 
     /**
-     * Returns true if the specified mode includes "closing the path" option
+     * Returns true if the specified mode includes "closing the path" option.
      *
      * @param string $mode Path paint operator (mode of rendering).
      *
@@ -364,7 +363,22 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     public function isClosingMode($mode)
     {
         return (!empty(self::$ppopmap[$mode])
-            && in_array(self::$ppopmap[$mode], array('s', 'b', 'b*'))
+            && (in_array(self::$ppopmap[$mode], array('b','b*','s'))
+            || $this->isClippingMode($mode))
+        );
+    }
+
+    /**
+     * Returns true if the specified mode is of clippping type.
+     *
+     * @param string $mode Path paint operator (mode of rendering).
+     *
+     * @return bool
+     */
+    public function isClippingMode($mode)
+    {
+        return (!empty(self::$ppopmap[$mode])
+            && in_array(self::$ppopmap[$mode], array('CEO','CNZ','W n','W* n'))
         );
     }
 
@@ -417,11 +431,11 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     }
 
     /**
-     * Add transparency parameters to the current extgstate
+     * Add transparency parameters to the current extgstate.
      *
-     * @param array $parms parameters
+     * @param array $parms parameters.
      *
-     * @return string PDF command
+     * @return string PDF command.
      */
     public function getExtGState($parms)
     {
@@ -440,6 +454,6 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
         if (empty($this->extgstates[$gsx])) {
             $this->extgstates[$gsx] = array('parms' => $parms);
         }
-        return '/GS'.$gsx.' gs'."\n";
+        return '/GS' . $gsx . ' gs' . "\n";
     }
 }

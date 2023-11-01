@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BaseTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfGraph
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2016 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     PdfGraph
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2016 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
  */
@@ -55,12 +56,12 @@ class BaseTest extends TestUtil
         $testObj->getAlpha();
         $res = $testObj->getOutExtGState(10);
         $this->assertEquals(
-            '11 0 obj'."\n"
-            .'<< /Type /ExtGState /OP true /op true /OPM 0.000000 >>'."\n"
-            .'endobj'."\n"
-            .'12 0 obj'."\n"
-            .'<< /Type /ExtGState /CA 1.000000 /ca 1.000000 /BM /Normal /AIS false >>'."\n"
-            .'endobj'."\n",
+            '11 0 obj' . "\n"
+            . '<< /Type /ExtGState /OP true /op true /OPM 0.000000 >>' . "\n"
+            . 'endobj' . "\n"
+            . '12 0 obj' . "\n"
+            . '<< /Type /ExtGState /CA 1.000000 /ca 1.000000 /BM /Normal /AIS false >>' . "\n"
+            . 'endobj' . "\n",
             $res
         );
 
@@ -102,8 +103,8 @@ class BaseTest extends TestUtil
 
         $res = $testObj->getOutGradientResources();
         $this->assertEquals(
-            ' /Pattern << /p1 13 0 R /p2 13 0 R >>'."\n"
-            .' /Shading << /Sh1 12 0 R /Sh2 12 0 R >>'."\n",
+            ' /Pattern << /p1 13 0 R >>' . "\n"
+            . ' /Shading << /Sh1 12 0 R >>' . "\n",
             $res
         );
     }
@@ -119,8 +120,8 @@ class BaseTest extends TestUtil
             array('color' => 'skyblue', 'exponent' => 1, 'opacity' => 0.9),
         );
         $this->assertEquals(
-            '/TGS1 gs'."\n"
-            .'/Sh1 sh'."\n",
+            '/TGS1 gs' . "\n"
+            . '/Sh1 sh' . "\n",
             $testObj->getGradient(2, array(0,0,1,0), $stops, '', false)
         );
 
@@ -133,7 +134,7 @@ class BaseTest extends TestUtil
 
         $res = $testObj->getOutExtGStateResources();
         $this->assertEquals(
-            ' /ExtGState << /GS1 1 0 R /GS2 2 0 R /TGS1 20 0 R >>'."\n",
+            ' /ExtGState << /GS1 1 0 R /GS2 2 0 R /TGS1 20 0 R >>' . "\n",
             $res
         );
     }

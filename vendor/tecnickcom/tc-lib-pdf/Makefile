@@ -4,7 +4,7 @@
 # @category    Library
 # @package     Pdf
 # @author      Nicola Asuni <info@tecnick.com>
-# @copyright   2015-2020 Nicola Asuni - Tecnick.com LTD
+# @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
 # @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
 # @link        https://github.com/tecnickcom/tc-lib-pdf
 #
@@ -96,6 +96,7 @@ help:
 	@echo "  make deb      : Build a DEB package for Debian-like Linux distributions"
 	@echo "  make deps     : Download all dependencies"
 	@echo "  make doc      : Generate source code documentation"
+	@echo "  make fonts    : Build default tc-font-mirror fonts via tc-lib-pdf-font"
 	@echo "  make lint     : Test source code for coding standard violations"
 	@echo "  make qa       : Run all tests and reports"
 	@echo "  make report   : Generate various reports"
@@ -113,7 +114,9 @@ all: help
 
 # Full build and test sequence
 .PHONY: buildall
-buildall: deps codefix qa bz2 rpm deb
+buildall: deps
+	cd vendor/tecnickcom/tc-lib-pdf-font/ && make buildall
+	$(MAKE) codefix qa bz2 rpm deb
 
 # Package the library in a compressed bz2 archive
 .PHONY: bz2
@@ -130,7 +133,7 @@ clean:
 # Fix code style violations
 .PHONY: codefix
 codefix:
-	./vendor/bin/phpcbf --ignore="./vendor/" --standard=psr2 src test
+	./vendor/bin/phpcbf --ignore="./vendor/" --standard=psr12 src test
 
 # Build a DEB package for Debian-like Linux distributions
 .PHONY: deb
@@ -162,6 +165,8 @@ endif
 deps: ensuretarget
 	rm -rf ./vendor/*
 	($(COMPOSER) install -vvv --no-interaction)
+	curl --silent --show-error --fail --location --output ./vendor/phpstan.phar https://github.com/phpstan/phpstan/releases/download/1.10.38/phpstan.phar \
+	&& chmod +x ./vendor/phpstan.phar
 
 # Generate source code documentation
 .PHONY: doc
@@ -175,6 +180,11 @@ ensuretarget:
 	mkdir -p $(TARGETDIR)/test
 	mkdir -p $(TARGETDIR)/report
 	mkdir -p $(TARGETDIR)/doc
+
+# Build default tc-font-mirror fonts via tc-lib-pdf-font
+.PHONY: fonts
+fonts:
+	cd vendor/tecnickcom/tc-lib-pdf-font/ && make deps fonts
 
 # Install this application
 .PHONY: install
@@ -201,9 +211,10 @@ endif
 # Test source code for coding standard violations
 .PHONY: lint
 lint:
-	./vendor/bin/phpcs --ignore="./vendor/" --standard=psr2 src test
-	./vendor/bin/phpmd src text codesize,unusedcode,naming,design --exclude vendor
+	./vendor/bin/phpcs --ignore="./vendor/" --standard=phpcs.xml src test
+	./vendor/bin/phpmd src text unusedcode,naming,design --exclude vendor
 	./vendor/bin/phpmd test text unusedcode,naming,design
+	php -r 'exit((int)version_compare(PHP_MAJOR_VERSION, "7", ">"));' || ./vendor/phpstan.phar analyse
 
 # Run all tests and reports
 .PHONY: qa
@@ -212,8 +223,6 @@ qa: version ensuretarget lint test report
 # Generate various reports
 .PHONY: report
 report: ensuretarget
-	./vendor/bin/phpcpd src --exclude vendor > $(TARGETDIR)/report/phpcpd.txt
-	./vendor/bin/phploc src --exclude vendor > $(TARGETDIR)/report/phploc.txt
 	./vendor/bin/pdepend --jdepend-xml=$(TARGETDIR)/report/dependencies.xml --summary-xml=$(TARGETDIR)/report/metrics.xml --jdepend-chart=$(TARGETDIR)/report/dependecies.svg --overview-pyramid=$(TARGETDIR)/report/overview-pyramid.svg --ignore=vendor ./src
 	#./vendor/bartlett/php-compatinfo/bin/phpcompatinfo --no-ansi analyser:run src/ > $(TARGETDIR)/report/phpcompatinfo.txt
 
@@ -251,7 +260,9 @@ tag:
 # Run unit tests
 .PHONY: test
 test:
-	./vendor/bin/phpunit test
+	cp phpunit.xml.dist phpunit.xml
+	./vendor/bin/phpunit --migrate-configuration || true
+	./vendor/bin/phpunit --stderr test
 
 # Remove all installed files
 .PHONY: uninstall
@@ -261,4 +272,4 @@ uninstall:
 
 # set the version
 version:
-	sed -i -e "s/protected \$$version = '.*';/protected \$$version = '${VERSION}';/g" src/MetaInfo.php
+	sed -i -e "s/protected \$$version = '.*';/protected \$$version = '${VERSION}';/g" src/Output.php

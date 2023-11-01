@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Core.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -15,9 +16,9 @@
 
 namespace Com\Tecnick\Pdf\Font\Import;
 
-use \Com\Tecnick\File\File;
-use \Com\Tecnick\Unicode\Data\Encoding;
-use \Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\File\File;
+use Com\Tecnick\Unicode\Data\Encoding;
+use Com\Tecnick\Pdf\Font\Exception as FontException;
 
 /**
  * Com\Tecnick\Pdf\Font\Import\Core
@@ -26,7 +27,7 @@ use \Com\Tecnick\Pdf\Font\Exception as FontException;
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  */
@@ -63,7 +64,7 @@ class Core
     /**
      * Get all the extracted font metrics
      *
-     * @return string
+     * @return array
      */
     public function getFontMetrics()
     {
@@ -108,9 +109,9 @@ class Core
                     $this->fdt['MaxWidth'] = $cwidths[$cid];
                 }
                 $this->fdt['AvgWidth'] += $cwidths[$cid];
-                $this->fdt['cw'] .= ',"'.$cid.'":'.$cwidths[$cid];
+                $this->fdt['cw'] .= ',"' . $cid . '":' . $cwidths[$cid];
             } else {
-                $this->fdt['cw'] .= ',"'.$cid.'":'.$this->fdt['MissingWidth'];
+                $this->fdt['cw'] .= ',"' . $cid . '":' . $this->fdt['MissingWidth'];
             }
         }
         $this->fdt['AvgWidth'] = round($this->fdt['AvgWidth'] / count($cwidths));
@@ -148,11 +149,13 @@ class Core
             $cwd[$cid] = (int)$col[4];
             if (!empty($col[14])) {
                 //cbbox
-                $this->fdt['cbbox'] .= ',"'.$cid.'":['.$col[10].','.$col[11].','.$col[12].','.$col[13].']';
+                $this->fdt['cbbox'] .= ',"' . $cid
+                . '":[' . $col[10] . ',' . $col[11] . ',' . $col[12] . ',' . $col[13] . ']';
             }
-        } elseif (in_array(
-            $col[0],
-            array(
+        } elseif (
+            in_array(
+                $col[0],
+                array(
                 'FontName',
                 'FullName',
                 'FamilyName',
@@ -160,12 +163,14 @@ class Core
                 'CharacterSet',
                 'Version',
                 'EncodingScheme'
+                )
             )
-        )) {
+        ) {
             $this->fdt[$col[0]] = (string)$col[1];
-        } elseif (in_array(
-            $col[0],
-            array(
+        } elseif (
+            in_array(
+                $col[0],
+                array(
                 'ItalicAngle',
                 'UnderlinePosition',
                 'UnderlineThickness',
@@ -175,8 +180,9 @@ class Core
                 'Descender',
                 'StdHW',
                 'StdVW'
+                )
             )
-        )) {
+        ) {
             $this->fdt[$col[0]] = (int)$col[1];
         } elseif ($col[0] == 'IsFixedPitch') {
             $this->fdt[$col[0]] = ($col[1] == 'true');
@@ -199,7 +205,7 @@ class Core
             'Descender'          => 'Descent',
             'StdVW'              => 'StemV',
             'StdHW'              => 'StemH',
-            
+
         );
 
         foreach ($map as $old => $new) {

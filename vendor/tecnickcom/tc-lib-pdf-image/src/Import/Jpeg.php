@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Jpeg.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfImage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-image
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\Pdf\Image\Import;
 
-use \Com\Tecnick\File\Byte;
+use Com\Tecnick\File\Byte;
 
 /**
  * Com\Tecnick\Pdf\Image\Import\Jpeg
@@ -24,18 +25,18 @@ use \Com\Tecnick\File\Byte;
  * @category    Library
  * @package     PdfImage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2016 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-image
  */
 class Jpeg implements ImageImportInterface
 {
     /**
-     * Extract data from a JPEG image
+     * Extract data from a JPEG image.
      *
-     * @param array $data Image raw data
+     * @param array $data Image raw data.
      *
-     * @return array Image raw data array
+     * @return array Image raw data array.
      */
     public function getData($data)
     {
@@ -45,7 +46,7 @@ class Jpeg implements ImageImportInterface
         // extract embedded ICC profile (if any)
         $icc = array();
         $offset = 0;
-        while (($pos = strpos($data['raw'], 'ICC_PROFILE'."\0", $offset)) !== false) {
+        while (($pos = strpos($data['raw'], 'ICC_PROFILE' . "\0", $offset)) !== false) {
             // get ICC sequence length
             $length = ($byte->getUShort($pos - 2) - 16);
             // marker sequence number

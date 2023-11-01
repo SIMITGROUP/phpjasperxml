@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ConvertTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  *
@@ -24,13 +25,12 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  */
 class ConvertTest extends TestCase
 {
-
     protected function getTestObject()
     {
         return new \Com\Tecnick\Unicode\Convert();
@@ -56,7 +56,7 @@ class ConvertTest extends TestCase
         $this->assertEquals($expected, $ord);
     }
 
-    public function chrDataProvider()
+    public static function chrDataProvider()
     {
         return array(
             array(32, ' '),
@@ -154,7 +154,7 @@ class ConvertTest extends TestCase
         $this->assertEquals($str, $res);
     }
 
-    public function strToHexDataProvider()
+    public static function strToHexDataProvider()
     {
         return array(
             array('', ''),
@@ -175,7 +175,7 @@ class ConvertTest extends TestCase
         $this->assertEquals($exp, $testObj->strToHex($res));
     }
 
-    public function toUTF16BEDataProvider()
+    public static function toUTF16BEDataProvider()
     {
         return array(
             array('', ''),
@@ -194,7 +194,7 @@ class ConvertTest extends TestCase
         $this->assertEquals($exp, $res);
     }
 
-    public function toUTF8DataProvider()
+    public static function toUTF8DataProvider()
     {
         return array(
             array('', ''),

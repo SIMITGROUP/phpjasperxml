@@ -1,4 +1,5 @@
 <?php
+
 /**
  * FileTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-file
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-file
  */
@@ -70,7 +71,7 @@ class FileTest extends TestUtil
     public function testRfRead()
     {
         $testObj = $this->getTestObject();
-        $handle = fopen(dirname(__DIR__).'/src/File.php', 'rb');
+        $handle = fopen(dirname(__DIR__) . '/src/File.php', 'rb');
         $res = $testObj->rfRead($handle, 2);
         $this->assertEquals('<?', $res);
         $res = $testObj->rfRead($handle, 3);
@@ -99,7 +100,7 @@ class FileTest extends TestUtil
         $this->assertEquals($expected, $alt);
     }
 
-    public function getAltFilePathsDataProvider()
+    public static function getAltFilePathsDataProvider()
     {
         return array(
             array(

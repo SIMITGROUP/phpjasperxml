@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SettingsTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  */
@@ -32,7 +33,7 @@ class SettingsTest extends TestUtil
 {
     protected function getTestObject()
     {
-        $col = new \Com\Tecnick\Color\Pdf;
+        $col = new \Com\Tecnick\Color\Pdf();
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(false);
         return new \Com\Tecnick\Pdf\Page\Page('mm', $col, $enc, false, false);
     }
@@ -43,17 +44,17 @@ class SettingsTest extends TestUtil
         $data = array();
         $testObj->sanitizePageNumber($data);
         $this->assertEquals(array(), $data);
-        
+
         $data = array('num' => -1);
         $testObj->sanitizePageNumber($data);
         $this->assertEquals(array('num' => 0), $data);
-        
-        
+
+
         $data = array('num' => 0);
         $testObj->sanitizePageNumber($data);
         $this->assertEquals(array('num' => 0), $data);
-        
-        
+
+
         $data = array('num' => 1);
         $testObj->sanitizePageNumber($data);
         $this->assertEquals(array('num' => 1), $data);
@@ -64,7 +65,7 @@ class SettingsTest extends TestUtil
         $testObj = $this->getTestObject();
         $data = array();
         $testObj->sanitizeTime($data);
-        $this->assertNotEmpty($data['time']);
+        $this->assertNotEmpty($data['time']); /* @phpstan-ignore-line */
 
         $data = array('time' => -1);
         $testObj->sanitizeTime($data);
@@ -85,17 +86,17 @@ class SettingsTest extends TestUtil
         $data = array();
         $testObj->sanitizeGroup($data);
         $this->assertEquals(array('group' => 0), $data);
-        
+
         $data = array('group' => -1);
         $testObj->sanitizeGroup($data);
         $this->assertEquals(array('group' => 0), $data);
-        
-        
+
+
         $data = array('group' => 0);
         $testObj->sanitizeGroup($data);
         $this->assertEquals(array('group' => 0), $data);
-        
-        
+
+
         $data = array('group' => 1);
         $testObj->sanitizeGroup($data);
         $this->assertEquals(array('group' => 1), $data);
@@ -107,7 +108,7 @@ class SettingsTest extends TestUtil
         $data = array();
         $testObj->sanitizeContent($data);
         $this->assertEquals(array('content' => array('')), $data);
-        
+
         $data = array('content' => 'test');
         $testObj->sanitizeContent($data);
         $this->assertEquals(array('content' => array('test')), $data);
@@ -159,7 +160,7 @@ class SettingsTest extends TestUtil
         $data = array();
         $testObj->sanitizeZoom($data);
         $this->assertEquals(array('zoom' => 1), $data);
-        
+
         $data = array('zoom' => 1.2);
         $testObj->sanitizeZoom($data);
         $this->assertEquals(array('zoom' => 1.2), $data);
@@ -171,7 +172,7 @@ class SettingsTest extends TestUtil
         $data = array();
         $testObj->sanitizeTransitions($data);
         $this->assertEquals(array(), $data);
-        
+
         $data = array('transition' => array('Dur' => 0));
         $testObj->sanitizeTransitions($data);
         $exp = array(

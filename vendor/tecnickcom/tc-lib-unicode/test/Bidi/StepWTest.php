@@ -1,4 +1,5 @@
 <?php
+
 /**
  * StepWTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  */
@@ -39,7 +40,7 @@ class StepWTest extends TestCase
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public function stepWDataProvider()
+    public static function stepWDataProvider()
     {
         return array(
             array(
@@ -74,7 +75,7 @@ class StepWTest extends TestCase
             ),
         );
     }
-    
+
     /**
      * @dataProvider stepW1DataProvider
      */
@@ -85,7 +86,7 @@ class StepWTest extends TestCase
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public function stepW1DataProvider()
+    public static function stepW1DataProvider()
     {
         return array(
             array(
@@ -243,7 +244,7 @@ class StepWTest extends TestCase
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public function stepW2DataProvider()
+    public static function stepW2DataProvider()
     {
         return array(
             array(
@@ -407,7 +408,7 @@ class StepWTest extends TestCase
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public function stepW3DataProvider()
+    public static function stepW3DataProvider()
     {
         return array(
             array(
@@ -451,7 +452,7 @@ class StepWTest extends TestCase
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public function stepW4DataProvider()
+    public static function stepW4DataProvider()
     {
         return array(
             array(
@@ -557,7 +558,7 @@ class StepWTest extends TestCase
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public function stepW5DataProvider()
+    public static function stepW5DataProvider()
     {
         return array(
             array(
@@ -697,7 +698,7 @@ class StepWTest extends TestCase
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public function stepW6DataProvider()
+    public static function stepW6DataProvider()
     {
         return array(
             array(
@@ -829,7 +830,7 @@ class StepWTest extends TestCase
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public function stepW7DataProvider()
+    public static function stepW7DataProvider()
     {
         return array(
             array(

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Box.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  *
@@ -15,7 +16,8 @@
 
 namespace Com\Tecnick\Pdf\Page;
 
-use \Com\Tecnick\Pdf\Page\Exception as PageException;
+use Com\Tecnick\Color\Pdf as Color;
+use Com\Tecnick\Pdf\Page\Exception as PageException;
 
 /**
  * Com\Tecnick\Pdf\Page\Box
@@ -24,14 +26,28 @@ use \Com\Tecnick\Pdf\Page\Exception as PageException;
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  */
 abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
 {
     /**
-     * Array of page box names
+     * Unit of measure conversion ratio.
+     *
+     * @var float
+     */
+    protected $kunit = 1.0;
+
+    /**
+     * Color object.
+     *
+     * @var Color
+     */
+    protected $col;
+
+    /**
+     * Array of page box names.
      *
      * @var array
      */
@@ -70,7 +86,7 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
     /**
      * Set page boundaries.
      *
-     * @param array  $dims    Array of page dimensions to modify
+     * @param array  $dims    Array of page dimensions to modify.
      * @param string $type    Box type: MediaBox, CropBox, BleedBox, TrimBox, ArtBox.
      * @param float  $llx     Lower-left x coordinate in user units.
      * @param float  $lly     Lower-left y coordinate in user units.
@@ -87,7 +103,7 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
             $dims = array();
         }
         if (!in_array($type, self::$box)) {
-            throw new PageException('unknown page box type: '.$type);
+            throw new PageException('unknown page box type: ' . $type);
         }
         $dims[$type]['llx'] = $llx;
         $dims[$type]['lly'] = $lly;
@@ -109,12 +125,12 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
     }
 
     /**
-     * Initialize page boxes
+     * Initialize page boxes.
      *
-     * @param float $width  Page width in points
-     * @param float $height Page height in points
+     * @param float $width  Page width in points.
+     * @param float $height Page height in points.
      *
-     * @return array Page boxes
+     * @return array Page boxes.
      */
     public function setPageBoxes($width, $height)
     {
@@ -141,19 +157,19 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
                 continue;
                 // @codeCoverageIgnoreEnd
             }
-            $out .= '/'.$box.' ['.sprintf(
+            $out .= '/' . $box . ' [' . sprintf(
                 '%F %F %F %F',
                 $dims[$box]['llx'],
                 $dims[$box]['lly'],
                 $dims[$box]['urx'],
                 $dims[$box]['ury']
-            ).']'."\n";
+            ) . ']' . "\n";
         }
         return $out;
     }
 
     /**
-     * Returns the PDF command to output the specified page BoxColorInfo
+     * Returns the PDF command to output the specified page BoxColorInfo.
      *
      * @param array $dims Array of page dimensions.
      *
@@ -161,37 +177,37 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
      */
     protected function getBoxColorInfo(array $dims)
     {
-        $out = '/BoxColorInfo <<'."\n";
+        $out = '/BoxColorInfo <<' . "\n";
         foreach (self::$box as $box) {
             if (empty($dims[$box])) {
                 // @codeCoverageIgnoreStart
                 continue;
                 // @codeCoverageIgnoreEnd
             }
-            $out .= '/'.$box.' <<'."\n";
+            $out .= '/' . $box . ' <<' . "\n";
             if (!empty($dims[$box]['bci']['color'])) {
-                $out .= '/C ['.$this->col->getPdfRgbComponents($dims[$box]['bci']['color']).']'."\n";
+                $out .= '/C [' . $this->col->getPdfRgbComponents($dims[$box]['bci']['color']) . ']' . "\n";
             }
             if (!empty($dims[$box]['bci']['width'])) {
-                $out .= '/W '.sprintf('%F', ($dims[$box]['bci']['width'] * $this->kunit))."\n";
+                $out .= '/W ' . sprintf('%F', ($dims[$box]['bci']['width'] * $this->kunit)) . "\n";
             }
             if (!empty($dims[$box]['bci']['style'])) {
                 $mode = strtoupper($dims[$box]['bci']['style'][0]);
                 if ($mode !== 'D') {
                     $mode = 'S';
                 }
-                $out .= '/S /'.$mode."\n";
+                $out .= '/S /' . $mode . "\n";
             }
             if (!empty($dims[$box]['bci']['dash'])) {
                 $out .= '/D [';
                 foreach ($dims[$box]['bci']['dash'] as $dash) {
                     $out .= sprintf(' %F', ((float) $dash * $this->kunit));
                 }
-                $out .= ' ]'."\n";
+                $out .= ' ]' . "\n";
             }
-            $out .= '>>'."\n";
+            $out .= '>>' . "\n";
         }
-        $out = '>>'."\n";
+        $out .= '>>' . "\n";
         return $out;
     }
 }

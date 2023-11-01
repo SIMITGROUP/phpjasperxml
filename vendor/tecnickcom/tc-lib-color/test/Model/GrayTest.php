@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GrayTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Color
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-color
  *
@@ -16,7 +17,7 @@
 namespace Test\Model;
 
 use PHPUnit\Framework\TestCase;
-use \Test\TestUtil;
+use Test\TestUtil;
 
 /**
  * Gray Color class test
@@ -25,7 +26,7 @@ use \Test\TestUtil;
  * @category    Library
  * @package     Color
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-color
  */
@@ -124,13 +125,13 @@ class GrayTest extends TestUtil
     {
         $testObj = $this->getTestObject();
         $res = $testObj->getPdfColor();
-        $this->assertEquals('0.750000 g'."\n", $res);
-        
+        $this->assertEquals('0.750000 g' . "\n", $res);
+
         $res = $testObj->getPdfColor(false);
-        $this->assertEquals('0.750000 g'."\n", $res);
-        
+        $this->assertEquals('0.750000 g' . "\n", $res);
+
         $res = $testObj->getPdfColor(true);
-        $this->assertEquals('0.750000 G'."\n", $res);
+        $this->assertEquals('0.750000 G' . "\n", $res);
     }
 
     public function testToGrayArray()

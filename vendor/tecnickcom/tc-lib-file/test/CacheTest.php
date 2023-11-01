@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CacheTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-filecache
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2016 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-filecache
  */
@@ -40,7 +41,7 @@ class CacheTest extends TestUtil
         $obj = new \Com\Tecnick\File\Cache();
         $this->assertNotEmpty($obj->getFilePrefix());
     }
-    
+
     public function testGetCachePath()
     {
         $testObj = $this->getTestObject();
@@ -55,27 +56,27 @@ class CacheTest extends TestUtil
         $testObj->setCachePath($path);
         $this->assertEquals('/tmp/', $testObj->getCachePath());
     }
-    
+
     public function testGetFilePrefix()
     {
         $testObj = $this->getTestObject();
         $val = $testObj->getFilePrefix();
         $this->assertEquals('_1_2-a-B_c_', $val);
     }
-    
+
     public function testGetNewFileName()
     {
         $testObj = $this->getTestObject();
         $val = $testObj->getNewFileName('tst', '0123');
         $this->bcAssertMatchesRegularExpression('/_1_2-a-B_c_tst_0123_/', $val);
     }
-    
+
     public function testDelete()
     {
         $testObj = $this->getTestObject();
         $idk = 0;
-        for ($idx = 1; $idx <=2; ++$idx) {
-            for ($idy = 1; $idy <=2; ++$idy) {
+        for ($idx = 1; $idx <= 2; ++$idx) {
+            for ($idy = 1; $idy <= 2; ++$idy) {
                 $file[$idk] = $testObj->getNewFileName($idx, $idy);
                 file_put_contents($file[$idk], '');
                 $this->assertTrue(file_exists($file[$idk]));

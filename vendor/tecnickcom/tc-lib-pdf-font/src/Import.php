@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Import.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -15,13 +16,13 @@
 
 namespace Com\Tecnick\Pdf\Font;
 
-use \Com\Tecnick\Pdf\Font\ImportUtil;
-use \Com\Tecnick\File\Byte;
-use \Com\Tecnick\File\Dir;
-use \Com\Tecnick\File\File;
-use \Com\Tecnick\Unicode\Data\Encoding;
-use \Com\Tecnick\Pdf\Font\UniToCid;
-use \Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\Pdf\Font\ImportUtil;
+use Com\Tecnick\File\Byte;
+use Com\Tecnick\File\Dir;
+use Com\Tecnick\File\File;
+use Com\Tecnick\Unicode\Data\Encoding;
+use Com\Tecnick\Pdf\Font\UniToCid;
+use Com\Tecnick\Pdf\Font\Exception as FontException;
 
 /**
  * Com\Tecnick\Pdf\Font\Import
@@ -30,7 +31,7 @@ use \Com\Tecnick\Pdf\Font\Exception as FontException;
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  */
@@ -87,7 +88,7 @@ class Import extends ImportUtil
         $file,
         $output_path = null,
         $type = null,
-        $encoding = null,
+        $encoding = '',
         $flags = 32,
         $platform_id = 3,
         $encoding_id = 1,
@@ -99,17 +100,17 @@ class Import extends ImportUtil
             throw new FontException('the font name is empty');
         }
         $this->fdt['dir'] = $this->findOutputPath($output_path);
-        $this->fdt['datafile'] = $this->fdt['dir'].$this->fdt['file_name'].'.json';
+        $this->fdt['datafile'] = $this->fdt['dir'] . $this->fdt['file_name'] . '.json';
         if (@file_exists($this->fdt['datafile'])) {
-            throw new FontException('this font has been already imported: '.$this->fdt['datafile']);
+            throw new FontException('this font has been already imported: ' . $this->fdt['datafile']);
         }
 
         // get font data
         if (!is_file($file) || ($this->font = @file_get_contents($file)) === false) {
-            throw new FontException('unable to read the input font file: '.$file);
+            throw new FontException('unable to read the input font file: ' . $file);
         }
         $this->fbyte = new Byte($this->font);
-        
+
         $this->fdt['settype'] = $type;
         $this->fdt['type'] = $this->getFontType($type);
         $this->fdt['isUnicode'] = (($this->fdt['type'] == 'TrueTypeUnicode') || ($this->fdt['type'] == 'cidfont0'));
@@ -118,7 +119,7 @@ class Import extends ImportUtil
         $this->fdt['enc'] = $this->getEncodingTable($encoding);
         $this->fdt['diff'] = $this->getEncodingDiff();
         $this->fdt['originalsize'] = strlen($this->font);
-        $this->fdt['ctg'] = $this->fdt['file_name'].'.ctg.z';
+        $this->fdt['ctg'] = $this->fdt['file_name'] . '.ctg.z';
         $this->fdt['platform_id'] = intval($platform_id);
         $this->fdt['encoding_id'] = intval($encoding_id);
         $this->fdt['linked'] = (bool)$linked;
@@ -137,7 +138,7 @@ class Import extends ImportUtil
     /**
      * Get all the extracted font metrics
      *
-     * @return string
+     * @return array
      */
     public function getFontMetrics()
     {
@@ -156,29 +157,28 @@ class Import extends ImportUtil
 
     /**
      * Initialize font flags from font name
-     *
-     * @param int $flags
-     *
-     * return int
      */
     protected function initFlags()
     {
         $filename = strtolower(basename($this->fdt['input_file']));
 
-        if ((strpos($filename, 'mono') !== false)
+        if (
+            (strpos($filename, 'mono') !== false)
             || (strpos($filename, 'courier') !== false)
             || (strpos($filename, 'fixed') !== false)
         ) {
             $this->fdt['Flags'] |= 1;
         }
 
-        if ((strpos($filename, 'symbol') !== false)
+        if (
+            (strpos($filename, 'symbol') !== false)
             || (strpos($filename, 'zapfdingbats') !== false)
         ) {
             $this->fdt['Flags'] |= 4;
         }
 
-        if ((strpos($filename, 'italic') !== false)
+        if (
+            (strpos($filename, 'italic') !== false)
             || (strpos($filename, 'oblique') !== false)
         ) {
             $this->fdt['Flags'] |= 64;
@@ -191,33 +191,33 @@ class Import extends ImportUtil
     protected function saveFontData()
     {
         $pfile = '{'
-            .'"type":"'.$this->fdt['type'].'"'
-            .',"name":"'.$this->fdt['name'].'"'
-            .',"up":'.$this->fdt['underlinePosition']
-            .',"ut":'.$this->fdt['underlineThickness']
-            .',"dw":'.(($this->fdt['MissingWidth'] > 0) ? $this->fdt['MissingWidth'] : $this->fdt['AvgWidth'])
-            .',"diff":"'.$this->fdt['diff'].'"'
-            .',"platform_id":'.$this->fdt['platform_id']
-            .',"encoding_id":'.$this->fdt['encoding_id'];
+            . '"type":"' . $this->fdt['type'] . '"'
+            . ',"name":"' . $this->fdt['name'] . '"'
+            . ',"up":' . $this->fdt['underlinePosition']
+            . ',"ut":' . $this->fdt['underlineThickness']
+            . ',"dw":' . (($this->fdt['MissingWidth'] > 0) ? $this->fdt['MissingWidth'] : $this->fdt['AvgWidth'])
+            . ',"diff":"' . $this->fdt['diff'] . '"'
+            . ',"platform_id":' . $this->fdt['platform_id']
+            . ',"encoding_id":' . $this->fdt['encoding_id'];
 
         if ($this->fdt['type'] == 'Core') {
             // Core
             $pfile .= ',"enc":""';
         } elseif ($this->fdt['type'] == 'Type1') {
             // Type 1
-            $pfile .= ',"enc":"'.$this->fdt['enc'].'"'
-                .',"file":"'.$this->fdt['file'].'"'
-                .',"size1":'.$this->fdt['size1']
-                .',"size2":'.$this->fdt['size2'];
+            $pfile .= ',"enc":"' . $this->fdt['enc'] . '"'
+                . ',"file":"' . $this->fdt['file'] . '"'
+                . ',"size1":' . $this->fdt['size1']
+                . ',"size2":' . $this->fdt['size2'];
         } else {
-            $pfile .= ',"originalsize":'.$this->fdt['originalsize'];
+            $pfile .= ',"originalsize":' . $this->fdt['originalsize'];
             if ($this->fdt['type'] == 'cidfont0') {
-                $pfile .= ','.UniToCid::$type[$this->fdt['settype']];
+                $pfile .= ',' . UniToCid::$type[$this->fdt['settype']];
             } else {
                 // TrueType
-                $pfile .= ',"enc":"'.$this->fdt['enc'].'"'
-                    .',"file":"'.$this->fdt['file'].'"'
-                    .',"ctg":"'.$this->fdt['ctg'].'"';
+                $pfile .= ',"enc":"' . $this->fdt['enc'] . '"'
+                    . ',"file":"' . $this->fdt['file'] . '"'
+                    . ',"ctg":"' . $this->fdt['ctg'] . '"';
                 // create CIDToGIDMap
                 $cidtogidmap = str_pad('', 131072, "\x00"); // (256 * 256 * 2) = 131072
                 foreach ($this->fdt['ctgdata'] as $cid => $gid) {
@@ -225,37 +225,37 @@ class Import extends ImportUtil
                 }
                 // store compressed CIDToGIDMap
                 $file = new File();
-                $fpt = $file->fopenLocal($this->fdt['dir'].$this->fdt['ctg'], 'wb');
+                $fpt = $file->fopenLocal($this->fdt['dir'] . $this->fdt['ctg'], 'wb');
                 fwrite($fpt, gzcompress($cidtogidmap));
                 fclose($fpt);
             }
         }
         if ($this->fdt['isUnicode']) {
-            $pfile .=',"isUnicode":true';
+            $pfile .= ',"isUnicode":true';
         } else {
-            $pfile .=',"isUnicode":false';
+            $pfile .= ',"isUnicode":false';
         }
 
         $pfile .= ',"desc":{'
-            .'"Flags":'.$this->fdt['Flags']
-            .',"FontBBox":"['.$this->fdt['bbox'].']"'
-            .',"ItalicAngle":'.$this->fdt['italicAngle']
-            .',"Ascent":'.$this->fdt['Ascent']
-            .',"Descent":'.$this->fdt['Descent']
-            .',"Leading":'.$this->fdt['Leading']
-            .',"CapHeight":'.$this->fdt['CapHeight']
-            .',"XHeight":'.$this->fdt['XHeight']
-            .',"StemV":'.$this->fdt['StemV']
-            .',"StemH":'.$this->fdt['StemH']
-            .',"AvgWidth":'.$this->fdt['AvgWidth']
-            .',"MaxWidth":'.$this->fdt['MaxWidth']
-            .',"MissingWidth":'.$this->fdt['MissingWidth']
-            .'}';
+            . '"Flags":' . $this->fdt['Flags']
+            . ',"FontBBox":"[' . $this->fdt['bbox'] . ']"'
+            . ',"ItalicAngle":' . $this->fdt['italicAngle']
+            . ',"Ascent":' . $this->fdt['Ascent']
+            . ',"Descent":' . $this->fdt['Descent']
+            . ',"Leading":' . $this->fdt['Leading']
+            . ',"CapHeight":' . $this->fdt['CapHeight']
+            . ',"XHeight":' . $this->fdt['XHeight']
+            . ',"StemV":' . $this->fdt['StemV']
+            . ',"StemH":' . $this->fdt['StemH']
+            . ',"AvgWidth":' . $this->fdt['AvgWidth']
+            . ',"MaxWidth":' . $this->fdt['MaxWidth']
+            . ',"MissingWidth":' . $this->fdt['MissingWidth']
+            . '}';
         if (!empty($this->fdt['cbbox'])) {
-            $pfile .= ',"cbbox":{'.substr($this->fdt['cbbox'], 1).'}';
+            $pfile .= ',"cbbox":{' . substr($this->fdt['cbbox'], 1) . '}';
         }
-        $pfile .= ',"cw":{'.substr($this->fdt['cw'], 1).'}';
-        $pfile .= '}'."\n";
+        $pfile .= ',"cw":{' . substr($this->fdt['cw'], 1) . '}';
+        $pfile .= '}' . "\n";
 
         // store file
         $file = new File();

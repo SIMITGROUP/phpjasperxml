@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BoxTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  */
@@ -32,11 +33,11 @@ class BoxTest extends TestUtil
 {
     protected function getTestObject()
     {
-        $col = new \Com\Tecnick\Color\Pdf;
+        $col = new \Com\Tecnick\Color\Pdf();
         $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(false);
         return new \Com\Tecnick\Pdf\Page\Page('mm', $col, $enc, false, false);
     }
-    
+
     public function testSetBox()
     {
         $testObj = $this->getTestObject();
@@ -102,9 +103,9 @@ class BoxTest extends TestUtil
     public function testSwapCoordinates()
     {
         $testObj = $this->getTestObject();
-        $dims = array('CropBox'=>array('llx'=>2, 'lly'=>4, 'urx'=>6, 'ury'=>8));
+        $dims = array('CropBox' => array('llx' => 2, 'lly' => 4, 'urx' => 6, 'ury' => 8));
         $newpagedim = $testObj->swapCoordinates($dims);
-        $this->assertEquals(array('CropBox'=>array('llx'=>4, 'lly'=>2, 'urx'=>8, 'ury'=>6)), $newpagedim);
+        $this->assertEquals(array('CropBox' => array('llx' => 4, 'lly' => 2, 'urx' => 8, 'ury' => 6)), $newpagedim);
     }
 
     public function testSetPageBoxes()
@@ -120,7 +121,7 @@ class BoxTest extends TestUtil
                 'color' => '#000000',
                 'width' => 0.353,
                 'style' => 'S',
-                'dash' =>array (3),
+                'dash' => array (3),
             )
         );
         $this->bcAssertEqualsWithDelta(

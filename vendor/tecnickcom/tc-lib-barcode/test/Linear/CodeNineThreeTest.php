@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CodeNineThreeTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
@@ -16,7 +17,7 @@
 namespace Test\Linear;
 
 use PHPUnit\Framework\TestCase;
-use \Test\TestUtil;
+use Test\TestUtil;
 
 /**
  * Barcode class test
@@ -25,7 +26,7 @@ use \Test\TestUtil;
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
@@ -33,7 +34,7 @@ class CodeNineThreeTest extends TestUtil
 {
     protected function getTestObject()
     {
-        return new \Com\Tecnick\Barcode\Barcode;
+        return new \Com\Tecnick\Barcode\Barcode();
     }
 
     public function testGetGrid()
@@ -42,16 +43,16 @@ class CodeNineThreeTest extends TestUtil
         $bobj = $testObj->getBarcodeObj('C93', '0123456789');
         $grid = $bobj->getGrid();
         $expected = "101011110100010100101001000101000100101000010100101000100"
-            ."1001001001000101010100001000100101000010101001011001001100101010111101\n";
+            . "1001001001000101010100001000100101000010101001011001001100101010111101\n";
         $this->assertEquals($expected, $grid);
 
-        
+
         $bobj = $testObj->getBarcodeObj('C93', '012345678901234567890123456789');
         $grid = $bobj->getGrid();
         $expected = "10101111010001010010100100010100010010100001010010100010010010010010001010101"
-            ."000010001001010000101010001010010100100010100010010100001010010100010010010010010001"
-            ."010101000010001001010000101010001010010100100010100010010100001010010100010010010010"
-            ."01000101010100001000100101000010101001001001001010001010111101\n";
+            . "000010001001010000101010001010010100100010100010010100001010010100010010010010010001"
+            . "010101000010001001010000101010001010010100100010100010010100001010010100010010010010"
+            . "01000101010100001000100101000010101001001001001010001010111101\n";
         $this->assertEquals($expected, $grid);
     }
 

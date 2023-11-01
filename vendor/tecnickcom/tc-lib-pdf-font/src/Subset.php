@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Subset.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -15,9 +16,9 @@
 
 namespace Com\Tecnick\Pdf\Font;
 
-use \Com\Tecnick\File\Byte;
-use \Com\Tecnick\Pdf\Font\Import\TrueType;
-use \Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\File\Byte;
+use Com\Tecnick\Pdf\Font\Import\TrueType;
+use Com\Tecnick\Pdf\Font\Exception as FontException;
 
 /**
  * Com\Tecnick\Pdf\Font\Subset
@@ -26,7 +27,7 @@ use \Com\Tecnick\Pdf\Font\Exception as FontException;
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  */
@@ -66,6 +67,13 @@ class Subset
      * @var string
      */
     protected $subfont = '';
+
+    /**
+     * Pointer position on the original font data
+     *
+     * @var int
+     */
+    protected $offset = 0;
 
     /**
      * Process TrueType font
@@ -204,7 +212,7 @@ class Subset
                 if ($tag == 'head') {
                     // set the checkSumAdjustment to 0
                     $this->fdt['table'][$tag]['data'] = substr($this->fdt['table'][$tag]['data'], 0, 8)
-                        ."\x0\x0\x0\x0".substr($this->fdt['table'][$tag]['data'], 12);
+                        . "\x0\x0\x0\x0" . substr($this->fdt['table'][$tag]['data'], 12);
                 }
                 $pad = 4 - ($this->fdt['table'][$tag]['length'] % 4);
                 if ($pad != 4) {
@@ -233,7 +241,8 @@ class Subset
         $this->offset = 0;
         $glyf_offset = $this->fdt['table']['glyf']['offset'];
         for ($i = 0; $i < $this->fdt['tot_num_glyphs']; ++$i) {
-            if (isset($this->subglyphs[$i])
+            if (
+                isset($this->subglyphs[$i])
                 && isset($this->fdt['indexToLoc'][$i])
                 && isset($this->fdt['indexToLoc'][($i + 1)])
             ) {
@@ -308,7 +317,7 @@ class Subset
         // set checkSumAdjustment on head table
         $checkSumAdjustment = (0xB1B0AFBA - $this->getTableChecksum($this->subfont, strlen($this->subfont)));
         $this->subfont = substr($this->subfont, 0, $this->fdt['table']['head']['offset'] + 8)
-            .pack('N', $checkSumAdjustment)
-            .substr($this->subfont, $this->fdt['table']['head']['offset'] + 12);
+            . pack('N', $checkSumAdjustment)
+            . substr($this->subfont, $this->fdt['table']['head']['offset'] + 12);
     }
 }

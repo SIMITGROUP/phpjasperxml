@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AES.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfEncrypt
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
@@ -15,8 +16,8 @@
 
 namespace Com\Tecnick\Pdf\Encrypt\Type;
 
-use \Com\Tecnick\Pdf\Encrypt\Exception as EncException;
-use \Com\Tecnick\Pdf\Encrypt\Type\AESnopad;
+use Com\Tecnick\Pdf\Encrypt\Exception as EncException;
+use Com\Tecnick\Pdf\Encrypt\Type\AESnopad;
 
 /**
  * Com\Tecnick\Pdf\Encrypt\Type\AES
@@ -27,7 +28,7 @@ use \Com\Tecnick\Pdf\Encrypt\Type\AESnopad;
  * @category    Library
  * @package     PdfEncrypt
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
  */
@@ -51,11 +52,11 @@ class AES
                 $mode = 'aes-128-cbc';
             }
         } elseif (!in_array($mode, array('aes-128-cbc', 'aes-256-cbc'))) {
-            throw new EncException('unknown chipher: '.$mode);
+            throw new EncException('unknown chipher: ' . $mode);
         }
 
         $ivect = openssl_random_pseudo_bytes(openssl_cipher_iv_length($mode));
         $obj = new AESnopad();
-        return $ivect.$obj->encrypt($data, $key, $ivect, $mode);
+        return $ivect . $obj->encrypt($data, $key, $ivect, $mode);
     }
 }

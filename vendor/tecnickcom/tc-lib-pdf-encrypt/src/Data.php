@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Encrypt.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfEncrypt
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
@@ -24,7 +25,7 @@ namespace Com\Tecnick\Pdf\Encrypt;
  * @category    Library
  * @package     PdfEncrypt
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
  */
@@ -38,7 +39,7 @@ abstract class Data extends \Com\Tecnick\Pdf\Encrypt\Output
      */
     protected static $encpad = "\x28\xBF\x4E\x5E\x4E\x75\x8A\x41\x64\x00\x4E\x56\xFF\xFA\x01\x08\x2E\x2E\x00\xB6\xD0\x68\x3E\x80\x2F\x0C\xA9\xFE\x64\x53\x69\x7A";
     //@codingStandardsIgnoreEnd
-    
+
     /**
      * Map permission modes and bits
      *
@@ -72,7 +73,7 @@ abstract class Data extends \Com\Tecnick\Pdf\Encrypt\Output
                                 // PDF content could be generated. When this is not set, printing is limited to a
                                 // low-level representation of the appearance, possibly of degraded quality.
     );
-    
+
     /**
      * Encryption settings
      *

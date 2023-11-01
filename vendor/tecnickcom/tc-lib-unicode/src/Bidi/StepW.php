@@ -1,4 +1,5 @@
 <?php
+
 /**
  * StepW.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\Unicode\Bidi;
 
-use \Com\Tecnick\Unicode\Data\Constant as UniConstant;
+use Com\Tecnick\Unicode\Data\Constant as UniConstant;
 
 /**
  * Com\Tecnick\Unicode\Bidi\StepW
@@ -24,7 +25,7 @@ use \Com\Tecnick\Unicode\Data\Constant as UniConstant;
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  */
@@ -61,7 +62,8 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
             $jdx = ($idx - 1);
             if ($jdx < 0) {
                 $this->seq['item'][$idx]['type'] = $this->seq['sos'];
-            } elseif (($this->seq['item'][$jdx]['char'] >= UniConstant::LRI)
+            } elseif (
+                ($this->seq['item'][$jdx]['char'] >= UniConstant::LRI)
                 && ($this->seq['item'][$jdx]['char'] <= UniConstant::PDI)
             ) {
                 $this->seq['item'][$idx]['type'] = 'ON';
@@ -116,7 +118,8 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
         if (in_array($this->seq['item'][$idx]['type'], array('ES','CS'))) {
             $bdx = ($idx - 1);
             $fdx = ($idx + 1);
-            if (($bdx >= 0)
+            if (
+                ($bdx >= 0)
                 && ($fdx < $this->seq['length'])
                 && ($this->seq['item'][$bdx]['type'] == $this->seq['item'][$fdx]['type'])
             ) {

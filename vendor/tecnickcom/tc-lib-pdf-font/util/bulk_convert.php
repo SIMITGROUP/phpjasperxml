@@ -7,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2016 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -86,7 +86,7 @@ if (!is_writable($options['outpath'])) {
     exit(2);
 }
 
-$ttfdir = __DIR__.'/vendor/tecnickcom/tc-font-mirror';
+$ttfdir = __DIR__.'/vendor/tecnickcom/tc-font-mirror/';
 if (!is_dir($ttfdir)) {
     fwrite(STDERR, 'ERROR: The '.$ttfdir.' directory is empty, please execute \'make build\' before this command.'."\n\n");
     exit(3);
@@ -108,18 +108,17 @@ $font_url = array(
     'core'     => 'https://partners.adobe.com/public/developer/en/pdf/Core14_AFMs.zip',
     'dejavu'   => 'http://sourceforge.net/projects/dejavu/files/dejavu/2.35/dejavu-fonts-ttf-2.35.zip',
     'freefont' => 'https://ftp.gnu.org/gnu/freefont/freefont-ttf-20120503.zip',
-    'noto'     => 'https://www.google.com/get/noto',
-    'notocjk'  => 'https://www.google.com/get/noto',
     'pdfa'     => 'https://github.com/tecnickcom/tc-font-pdfa',
     'unifont'  => 'http://unifoundry.com/unifont.html',
 );
 
 foreach ($fontdir as $dir) {
-    if (!is_dir($ttfdir.$dir)) {
+	$indir = $ttfdir.$dir;
+    if (!is_dir($indir)) {
         continue;
     }
     // search font files in sub directories
-    $all_files  = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($ttfdir.$dir));
+    $all_files  = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($indir));
     $fonts = iterator_to_array(new RegexIterator($all_files, '/\.ttf$/'));
     $fonts = array_merge($fonts, iterator_to_array(new RegexIterator($all_files, '/\.pfb$/')));
     $fonts = array_merge($fonts, iterator_to_array(new RegexIterator($all_files, '/\.otf$/')));
@@ -135,7 +134,7 @@ foreach ($fontdir as $dir) {
     if (!is_dir($outdir)) {
         mkdir($outdir, 0755, true);
     }
-    copy($ttfdir.$dir.'/LICENSE', $outdir.'LICENSE');
+    copy($indir.'/LICENSE', $outdir.'LICENSE');
 
     // generate a README file
     $readme = '# '.$dir.' font files for tc-lib-pdf-font'."\n\n"

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Import.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfImage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-image
  *
@@ -15,8 +16,8 @@
 
 namespace Com\Tecnick\Pdf\Image;
 
-use \Com\Tecnick\File\File;
-use \Com\Tecnick\Pdf\Image\Exception as ImageException;
+use Com\Tecnick\File\File;
+use Com\Tecnick\Pdf\Image\Exception as ImageException;
 use Com\Tecnick\Pdf\Image\Import\ImageImportInterface;
 
 /**
@@ -26,7 +27,7 @@ use Com\Tecnick\Pdf\Image\Import\ImageImportInterface;
  * @category    Library
  * @package     PdfImage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2016 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-image
  */
@@ -56,8 +57,8 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     protected $cache = array();
 
     /**
-     * Native image types and associated importing class
-     * (image types for which we have an import method)
+     * Native image types and associated importing class.
+     * (Image types for which we have an import method).
      *
      * @var array
      */
@@ -67,7 +68,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     );
 
     /**
-     * Lossless image types
+     * Lossless image types.
      *
      * @var array
      */
@@ -86,7 +87,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     );
 
     /**
-     * Map number of channels with color space name
+     * Map number of channels with color space name.
      *
      * @var array
      */
@@ -97,19 +98,19 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     );
 
     /**
-     * Add a new image
+     * Add a new image.
      *
      * @param string $image    Image file name, URL or a '@' character followed by the image data string.
      *                         To link an image without embedding it on the document, set an asterisk character
      *                         before the URL (i.e.: '*http://www.example.com/image.jpg').
-     * @param int    $width    New width in pixels or null to keep the original value
-     * @param int    $height   New height in pixels or null to keep the original value
-     * @param bool   $ismask   True if the image is a transparency mask
+     * @param int    $width    New width in pixels or null to keep the original value.
+     * @param int    $height   New height in pixels or null to keep the original value.
+     * @param bool   $ismask   True if the image is a transparency mask.
      * @param int    $quality  Quality for JPEG files (0 = max compression; 100 = best quality, bigger file).
      * @param bool   $defprint Indicate if the image is the default for printing when used as alternative image.
      * @param array  $altimgs  Arrays of alternate image keys.
      *
-     * @return int Image ID
+     * @return int Image ID.
      */
     public function add(
         $image,
@@ -120,7 +121,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
         $defprint = false,
         $altimgs = array()
     ) {
-        $data = $this->import($image, $width, $height, $ismask, $quality, $defprint);
+        $data = $this->import($image, $width, $height, $ismask, $quality);
         ++$this->iid;
         $this->image[$this->iid] = array(
             'iid'      => $this->iid,
@@ -134,12 +135,12 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     }
 
     /**
-     * Get the Image key used for caching
+     * Get the Image key used for caching.
      *
-     * @param string $image   Image file name or content
-     * @param int    $width   Width in pixels
-     * @param int    $height  Height in pixels
-     * @param int    $quality Quality for JPEG files
+     * @param string $image   Image file name or content.
+     * @param int    $width   Width in pixels.
+     * @param int    $height  Height in pixels.
+     * @param int    $quality Quality for JPEG files.
      *
      * @return string
      */
@@ -148,7 +149,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
         return strtr(
             rtrim(
                 base64_encode(
-                    pack('H*', md5($image.$width.$height.$quality))
+                    pack('H*', md5($image . $width . $height . $quality))
                 ),
                 '='
             ),
@@ -158,11 +159,11 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     }
 
     /**
-     * Get an imported image by key
+     * Get an imported image by key.
      *
-     * @param string $key Image key
+     * @param string $key Image key.
      *
-     * @return array Image raw data array
+     * @return array Image raw data array.
      */
     public function getImageDataByKey($key)
     {
@@ -173,14 +174,14 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     }
 
     /**
-     * Import the original image raw data
+     * Import the original image raw data.
      *
      * @param string $image    Image file name, URL or a '@' character followed by the image data string.
      *                         To link an image without embedding it on the document, set an asterisk character
      *                         before the URL (i.e.: '*http://www.example.com/image.jpg').
-     * @param int    $width    New width in pixels or null to keep the original value
-     * @param int    $height   New height in pixels or null to keep the original value
-     * @param bool   $ismask   True if the image is a transparency mask
+     * @param int    $width    New width in pixels or null to keep the original value.
+     * @param int    $height   New height in pixels or null to keep the original value.
+     * @param bool   $ismask   True if the image is a transparency mask.
      * @param int    $quality  Quality for JPEG files (0 = max compression; 100 = best quality, bigger file).
      *
      * @return array Image raw data array
@@ -201,6 +202,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
             $width = $data['width'];
         }
         $width = max(0, intval($width));
+
         if ($height === null) {
             $height = $data['height'];
         }
@@ -216,25 +218,26 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
             $data['mask'] = $data;
         } elseif (!empty($data['splitalpha'])) {
             // create 2 separate images: plain + mask
-            $data['plain'] = $this->getResizedRawData($data, $width, $height, false, $quality);
+            $rawdata = $data;
+            $data['plain'] = $this->getResizedRawData($rawdata, $width, $height, false, $quality);
             $data['plain'] = $this->getData($data['plain'], $width, $height, $quality);
-            $data['mask'] = $this->getAlphaChannelRawData($data);
+            $data['mask'] = $this->getAlphaChannelRawData($rawdata);
             $data['mask'] = $this->getData($data['mask'], $width, $height, $quality);
+            $data['mask']['colspace'] = 'DeviceGray';
         }
 
         // store data in cache
         $this->cache[$imgkey] = $data;
-
         return $data;
     }
 
     /**
-     * Extract the relevant data from the image
+     * Extract the relevant data from the image.
      *
-     * @param array  $data    Image raw data
-     * @param int    $width   Width in pixels
-     * @param int    $height  Height in pixels
-     * @param int    $quality Quality for JPEG files
+     * @param array  $data    Image raw data.
+     * @param int    $width   Width in pixels.
+     * @param int    $height  Height in pixels.
+     * @param int    $quality Quality for JPEG files.
      *
      * @return array
      */
@@ -255,24 +258,24 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     }
 
     /**
-     * @param array $data Image raw data
+     * @param array $data Image raw data.
      *
      * @return ImageImportInterface
      */
     private function createImportImage($data)
     {
-        $class = '\\Com\\Tecnick\\Pdf\\Image\\Import\\'.self::$native[$data['type']];
+        $class = '\\Com\\Tecnick\\Pdf\\Image\\Import\\' . self::$native[$data['type']];
         return new $class();
     }
 
     /**
-     * Get the original image raw data
+     * Get the original image raw data.
      *
      * @param string $image Image file name, URL or a '@' character followed by the image data string.
      *                      To link an image without embedding it on the document, set an asterisk character
      *                      before the URL (i.e.: '*http://www.example.com/image.jpg').
      *
-     * @return array Image data array
+     * @return array Image data array.
      */
     protected function getRawData($image)
     {
@@ -300,38 +303,43 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
             'ismask'   => false,         // true if the image is a transparency mask
         );
 
-        if (empty($image)) {
+        if (empty($image) || ((($image[0] === '@') || ($image[0] === '*')) && (strlen($image) === 1))) {
             throw new ImageException('Empty image');
         }
 
         if ($image[0] === '@') { // image from string
             $data['raw'] = substr($image, 1);
-        } else {
-            if ($image[0] === '*') { // not-embedded external URL
-                $data['exturl'] = true;
-                $image = substr($image, 1);
-            }
-            $data['file'] = $image;
-            $fobj = new File();
-            $data['raw'] = $fobj->getFileData($image);
+            return $this->getMetaData($data);
         }
+
+        if ($image[0] === '*') { // not-embedded external URL
+            $data['exturl'] = true;
+            $image = substr($image, 1);
+        }
+
+        $data['file'] = $image;
+        $fobj = new File();
+        $data['raw'] = $fobj->getFileData($image);
 
         return $this->getMetaData($data);
     }
 
     /**
-     * Get the image meta data
+     * Get the image meta data.
      *
-     * @param array $data Image raw data
+     * @param array $data Image raw data.
      *
-     * @return array Image raw data array
+     * @return array Image raw data array.
      */
     protected function getMetaData($data)
     {
         try {
-            $meta = getimagesizefromstring($data['raw']);
+            $meta = @getimagesizefromstring($data['raw']);
         } catch (\Exception $exc) {
-            throw new ImageException('Invalid image format: '.$exc);
+            throw new ImageException('Invalid image format: ' . $exc);
+        }
+        if ($meta === false) {
+             throw new ImageException('Invalid image format');
         }
         $data['width'] = $meta[0];
         $data['height'] = $meta[1];
@@ -341,10 +349,10 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
         if (isset($meta['bits'])) {
             $data['bits'] = intval($meta['bits']);
         }
-        if (isset($meta['channels'])) {
+        if (!empty($meta['channels'])) {
             $data['channels'] = intval($meta['channels']);
         }
-        if (isset(self::$colspacemap[$data['channels']])) {
+        if (!empty(self::$colspacemap[$data['channels']])) {
             $data['colspace'] = self::$colspacemap[$data['channels']];
         }
         return $data;
@@ -352,27 +360,31 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
 
     /**
      * Get the resized image raw data
-     * (always convert the image type to a native format: PNG or JPEG)
+     * (always convert the image type to a native format: PNG or JPEG).
      *
-     * @param array  $data    Image raw data as returned by getImageRawData
-     * @param int    $width   New width in pixels
-     * @param int    $height  New height in pixels
-     * @param bool   $alpha   If true save the alpha channel information, if false merge the alpha channel (PNG mode)
+     * @param array  $data    Image raw data as returned by getImageRawData.
+     * @param int    $width   New width in pixels.
+     * @param int    $height  New height in pixels.
+     * @param bool   $alpha   If true save the alpha channel information, if false merge the alpha channel (PNG mode).
      * @param int    $quality Quality for JPEG files (0 = max compression; 100 = best quality, bigger file).
      *
-     * @return array Image raw data array
+     * @return array Image raw data array.
      */
     protected function getResizedRawData($data, $width, $height, $alpha = true, $quality = 100)
     {
+        if (($width <= 0) || ($height <= 0)) {
+            throw new ImageException('Image width and/or height are empty');
+        }
         $img = imagecreatefromstring($data['raw']);
         $newimg = imagecreatetruecolor($width, $height);
-        imageinterlace($newimg, 0);
+        imageinterlace($newimg, false);
         imagealphablending($newimg, !$alpha);
         imagesavealpha($newimg, $alpha);
         imagecopyresampled($newimg, $img, 0, 0, 0, 0, $width, $height, $data['width'], $data['height']);
         ob_start();
         if ($data['mapto'] == IMAGETYPE_PNG) {
-            if ((($tid = imagecolortransparent($img)) >= 0)
+            if (
+                (($tid = imagecolortransparent($img)) >= 0)
                 && (($palsize = imagecolorstotal($img)) > 0)
                 && ($tid < $palsize)
             ) {
@@ -393,17 +405,17 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     }
 
     /**
-     * Extract the alpha channel as separate image to be used as a mask
+     * Extract the alpha channel as separate image to be used as a mask.
      *
-     * @param array $data Image raw data as returned by getImageRawData
+     * @param array $data Image raw data as returned by getImageRawData.
      *
-     * @return array Image raw data array
+     * @return array Image raw data array.
      */
     protected function getAlphaChannelRawData($data)
     {
         $img = imagecreatefromstring($data['raw']);
         $newimg = imagecreate($data['width'], $data['height']);
-        imageinterlace($newimg, 0);
+        imageinterlace($newimg, false);
         // generate gray scale palette (0 -> 255)
         for ($col = 0; $col < 256; ++$col) {
             ImageColorAllocate($newimg, $col, $col, $col);
@@ -415,16 +427,18 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
                 // get and correct gamma color
                 $color = imagecolorsforindex($img, $colindex);
                 // GD alpha is only 7 bit (0 -> 127); 2.2 is the gamma value
-                $alpha = (pow(((127 - $color['alpha']) / 127), 2.2) * 255);
+                $alpha = (int)(pow(((float)(127 - $color['alpha']) / 127), 2.2) * 255);
                 imagesetpixel($newimg, $xpx, $ypx, $alpha);
             }
         }
         ob_start();
         imagepng($newimg, null, 9, PNG_ALL_FILTERS);
         $data['raw'] = ob_get_clean();
+        $data['channels'] = 1;
         $data['colspace'] = 'DeviceGray';
         $data['exturl'] = false;
         $data['recoded'] = true;
+        $data['ismask'] = true;
         return $this->getMetaData($data);
     }
 }

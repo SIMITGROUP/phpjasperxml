@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Transform.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfGraph
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\Pdf\Graph;
 
-use \Com\Tecnick\Pdf\Graph\Exception as GraphException;
+use Com\Tecnick\Pdf\Graph\Exception as GraphException;
 
 /**
  * Com\Tecnick\Pdf\Graph\Transform
@@ -24,7 +25,7 @@ use \Com\Tecnick\Pdf\Graph\Exception as GraphException;
  * @category    Library
  * @package     PdfGraph
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
  */
@@ -73,9 +74,9 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      */
     public function getStartTransform()
     {
-        $this->saveStyleStaus();
+        $this->saveStyleStatus();
         $this->ctm[++$this->ctmid] = array();
-        return 'q'."\n";
+        return 'q' . "\n";
     }
 
     /**
@@ -91,8 +92,8 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
         }
         unset($this->ctm[$this->ctmid]);
         --$this->ctmid;
-        $this->restoreStyleStaus();
-        return 'Q'."\n";
+        $this->restoreStyleStatus();
+        return 'Q' . "\n";
     }
 
     /**
@@ -105,7 +106,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
     public function getTransformation($ctm)
     {
         $this->ctm[$this->ctmid][] = $ctm;
-        return sprintf('%F %F %F %F %F %F cm'."\n", $ctm[0], $ctm[1], $ctm[2], $ctm[3], $ctm[4], $ctm[5]);
+        return sprintf('%F %F %F %F %F %F cm' . "\n", $ctm[0], $ctm[1], $ctm[2], $ctm[3], $ctm[4], $ctm[5]);
     }
 
     /**
@@ -234,15 +235,15 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
     /**
      * Reflection against a straight line through point (x, y) with the gradient angle (angle).
      *
-     * @param float $angle Gradient angle in degrees of the straight line.
-     * @param float $posx  Abscissa of the mirroring point.
-     * @param float $posy  Ordinate of the mirroring point.
+     * @param float $ang  Gradient angle in degrees of the straight line.
+     * @param float $posx Abscissa of the mirroring point.
+     * @param float $posy Ordinate of the mirroring point.
      *
      * @return string Transformation string
      */
     public function getReflection($ang, $posx, $posy)
     {
-        return $this->getScaling(-1, 1, $posx, $posy).$this->getRotation((-2 * ($ang - 90)), $posx, $posy);
+        return $this->getScaling(-1, 1, $posx, $posy) . $this->getRotation((-2 * ($ang - 90)), $posx, $posy);
     }
 
     /**
@@ -357,5 +358,18 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
             (((float) $tma[0] * (float) $tmb[4]) + ((float) $tma[2] * (float) $tmb[5]) + (float) $tma[4]),
             (((float) $tma[1] * (float) $tmb[4]) + ((float) $tma[3] * (float) $tmb[5]) + (float) $tma[5])
         );
+    }
+
+    /**
+     * Converts the number in degrees to the radian equivalent.
+     * We use this instead of $this->degToRad to avoid precision problems with hhvm.
+     *
+     * @param float $deg Angular value in degrees.
+     *
+     * @return float Angle in radiants
+     */
+    public function degToRad($deg)
+    {
+        return ($deg * self::MPI / 180);
     }
 }

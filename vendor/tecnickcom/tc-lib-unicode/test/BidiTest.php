@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BidiTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  */
@@ -49,7 +50,7 @@ class BidiTest extends TestUtil
         $this->assertEquals(4, $bidi->getNumChars());
     }
 
-    public function inputDataProvider()
+    public static function inputDataProvider()
     {
         return array(
             array('test', null, null, false),
@@ -73,7 +74,7 @@ class BidiTest extends TestUtil
         $this->assertEquals($expected, $bidi->getString());
     }
 
-    public function bidiStrDataProvider()
+    public static function bidiStrDataProvider()
     {
         return array(
             array(
@@ -84,6 +85,16 @@ class BidiTest extends TestUtil
             array(
                 json_decode('"\u202EABC\u202C"'),
                 'CBA'
+            ),
+            array(
+                'left to right',
+                'right to left',
+                'R'
+            ),
+            array(
+                'left to right ',
+                ' right to left',
+                'R'
             ),
             array(
                 json_decode('"smith (fabrikam \u0600\u0601\u0602) \u05de\u05d6\u05dc"'),
@@ -111,8 +122,8 @@ class BidiTest extends TestUtil
             array(
                 json_decode(
                     '"\u0644\u0644\u0647 \u0600\u0601\u0602 \uFB50'
-                    .' \u0651\u064c\u0651\u064d\u0651\u064e\u0651\u064f\u0651\u0650'
-                    .' \u0644\u0622"'
+                    . ' \u0651\u064c\u0651\u064d\u0651\u064e\u0651\u064f\u0651\u0650'
+                    . ' \u0644\u0622"'
                 ),
                 json_decode('"\ufef5 \ufc62\ufc61\ufc60\ufc5f\ufc5e \ufb50 \u0602\u0601\u0600 \ufdf2"'),
             ),
@@ -123,8 +134,8 @@ class BidiTest extends TestUtil
             array( // RLI + PDI
                 json_decode(
                     '"The words '
-                    .'\"\u2067\u05de\u05d6\u05dc [mazel] \u05d8\u05d5\u05d1 [tov]\u2069\"'
-                    .' mean \"Congratulations!\""'
+                    . '\"\u2067\u05de\u05d6\u05dc [mazel] \u05d8\u05d5\u05d1 [tov]\u2069\"'
+                    . ' mean \"Congratulations!\""'
                 ),
                 'The words "⁧[tov] בוט [mazel] לזמ⁩" mean "Congratulations!"',
             ),

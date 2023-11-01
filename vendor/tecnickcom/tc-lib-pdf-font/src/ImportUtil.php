@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ImportUtil.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -15,14 +16,14 @@
 
 namespace Com\Tecnick\Pdf\Font;
 
-use \Com\Tecnick\File\Byte;
-use \Com\Tecnick\File\Dir;
-use \Com\Tecnick\File\File;
-use \Com\Tecnick\Unicode\Data\Encoding;
-use \Com\Tecnick\Pdf\Font\Import\TypeOne;
-use \Com\Tecnick\Pdf\Font\Import\TrueType;
-use \Com\Tecnick\Pdf\Font\UniToCid;
-use \Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\File\Byte;
+use Com\Tecnick\File\Dir;
+use Com\Tecnick\File\File;
+use Com\Tecnick\Unicode\Data\Encoding;
+use Com\Tecnick\Pdf\Font\Import\TypeOne;
+use Com\Tecnick\Pdf\Font\Import\TrueType;
+use Com\Tecnick\Pdf\Font\UniToCid;
+use Com\Tecnick\Pdf\Font\Exception as FontException;
 
 /**
  * Com\Tecnick\Pdf\Font\ImportUtil
@@ -31,7 +32,7 @@ use \Com\Tecnick\Pdf\Font\Exception as FontException;
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  */
@@ -131,20 +132,23 @@ abstract class ImportUtil
         if (in_array($font_type, array('Core', 'Type1', 'TrueType', 'TrueTypeUnicode'))) {
             return $font_type;
         }
-        throw new FontException('unknown or unsupported font type: '.$font_type);
+        throw new FontException('unknown or unsupported font type: ' . $font_type);
     }
 
     /**
      * Get the encoding table
      *
-     * @param string $encoding  Name of the encoding table to use. Leave empty for default mode.
+     * @param string|null $encoding  Name of the encoding table to use. Leave empty for default mode.
      *                          Omit this parameter for TrueType Unicode and symbolic fonts
      *                          like Symbol or ZapfDingBats.
      */
     protected function getEncodingTable($encoding)
     {
-        if (empty($encoding) && ($this->fdt['type'] == 'Type1') && (($this->fdt['Flags'] & 4) == 0)) {
-            return 'cp1252';
+        if (is_null($encoding) || empty($encoding)) {
+            if (($this->fdt['type'] == 'Type1') && (($this->fdt['Flags'] & 4) == 0)) {
+                return 'cp1252';
+            }
+            return '';
         }
         return preg_replace('/[^A-Za-z0-9_\-]/', '', $encoding);
     }
@@ -157,7 +161,8 @@ abstract class ImportUtil
     protected function getEncodingDiff()
     {
         $diff = '';
-        if ((($this->fdt['type'] == 'TrueType') || ($this->fdt['type'] == 'Type1'))
+        if (
+            (($this->fdt['type'] == 'TrueType') || ($this->fdt['type'] == 'Type1'))
             && (!empty($this->fdt['enc'])
             && ($this->fdt['enc'] != 'cp1252')
             && isset(Encoding::$map[$this->fdt['enc']]))
@@ -169,10 +174,10 @@ abstract class ImportUtil
             for ($idx = 32; $idx <= 255; ++$idx) {
                 if ($enc_target[$idx] != $enc_ref[$idx]) {
                     if ($idx != ($last + 1)) {
-                        $diff .= $idx.' ';
+                        $diff .= $idx . ' ';
                     }
                     $last = $idx;
-                    $diff .= '/'.$enc_target[$idx].' ';
+                    $diff .= '/' . $enc_target[$idx] . ' ';
                 }
             }
         }

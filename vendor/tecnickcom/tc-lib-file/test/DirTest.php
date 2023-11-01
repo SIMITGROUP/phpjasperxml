@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DirTest.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-file
  *
@@ -24,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-file
  */
@@ -42,10 +43,10 @@ class DirTest extends TestUtil
     {
         $testObj = $this->getTestObject();
         $dir = $testObj->findParentDir($name);
-        $this->bcAssertMatchesRegularExpression('#'.$expected.'#', $dir);
+        $this->bcAssertMatchesRegularExpression('#' . $expected . '#', $dir);
     }
 
-    public function getAltFilePathsDataProvider()
+    public static function getAltFilePathsDataProvider()
     {
         return array(
             array('', '/src/'),

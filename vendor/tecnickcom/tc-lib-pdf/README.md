@@ -3,14 +3,15 @@
 
 # UNDER DEVELOPMENT (NOT READY)
 
-UPDATE: CURRENTLY ALL THE DEPENDENCY LIBRARIES ARE ALMOST COMPLETE
-BUT THE CORE LIBRARY STILL REQUIRES A SIGNIFICANT AMOUNT OF WORK TO BE COMPLETED.
+UPDATE: CURRENTLY ALL THE DEPENDENCY LIBRARIES COMPLETE.
+THE CORE LIBRARY CONTAINS PRIMITIVE METHODS TO GENERATE A PDF DOC.
+MISSING: advanced text methods, html and css parsing.
 
 [![Latest Stable Version](https://poser.pugx.org/tecnickcom/tc-lib-pdf/version)](https://packagist.org/packages/tecnickcom/tc-lib-pdf)
-[![Master Build Status](https://secure.travis-ci.org/tecnickcom/tc-lib-pdf.png?branch=main)](https://travis-ci.org/tecnickcom/tc-lib-pdf?branch=main)
-[![Master Coverage Status](https://coveralls.io/repos/tecnickcom/tc-lib-pdf/badge.svg?branch=main&service=github)](https://coveralls.io/github/tecnickcom/tc-lib-pdf?branch=main)
+![Build](https://github.com/tecnickcom/tc-lib-pdf/actions/workflows/check.yml/badge.svg)
+[![Coverage](https://codecov.io/gh/tecnickcom/tc-lib-pdf/graph/badge.svg?token=rmAqNKVG1c)](https://codecov.io/gh/tecnickcom/tc-lib-pdf)
 [![License](https://poser.pugx.org/tecnickcom/tc-lib-pdf/license)](https://packagist.org/packages/tecnickcom/tc-lib-pdf)
-[![Total Downloads](https://poser.pugx.org/tecnickcom/tc-lib-pdf/downloads)](https://packagist.org/packages/tecnickcom/tc-lib-pdf)
+[![Downloads](https://poser.pugx.org/tecnickcom/tc-lib-pdf/downloads)](https://packagist.org/packages/tecnickcom/tc-lib-pdf)
 
 [![Donate via PayPal](https://img.shields.io/badge/donate-paypal-87ceeb.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tc-lib-pdf%20project)
 *Please consider supporting this project by making a donation via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tc-lib-pdf%20project)*
@@ -18,7 +19,7 @@ BUT THE CORE LIBRARY STILL REQUIRES A SIGNIFICANT AMOUNT OF WORK TO BE COMPLETED
 * **category**    Library
 * **package**     \Com\Tecnick\Pdf
 * **author**      Nicola Asuni <info@tecnick.com>
-* **copyright**   2002-2021 Nicola Asuni - Tecnick.com LTD
+* **copyright**   2002-2023 Nicola Asuni - Tecnick.com LTD
 * **license**     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
 * **link**        https://tcpdf.org
 * **source**      https://github.com/tecnickcom/tc-lib-pdf
@@ -91,6 +92,12 @@ First, you need to install all development dependencies using [Composer](https:/
 ```bash
 $ curl -sS https://getcomposer.org/installer | php
 $ mv composer.phar /usr/local/bin/composer
+```
+
+You can install the library via composer:
+
+```bash
+composer require tecnickcom/tc-lib-pdf
 ```
 
 This project include a Makefile that allows you to test and build the project with simple commands.

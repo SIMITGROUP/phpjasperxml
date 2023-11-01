@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-file
  *
@@ -15,7 +16,7 @@
 
 namespace Com\Tecnick\File;
 
-use \Com\Tecnick\File\Exception as FileException;
+use Com\Tecnick\File\Exception as FileException;
 
 /**
  * Com\Tecnick\File\File
@@ -26,9 +27,11 @@ use \Com\Tecnick\File\Exception as FileException;
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-file
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class File
 {
@@ -45,13 +48,13 @@ class File
     public function fopenLocal($filename, $mode)
     {
         if (strpos($filename, '://') === false) {
-            $filename = 'file://'.$filename;
+            $filename = 'file://' . $filename;
         } elseif (strpos($filename, 'file://') !== 0) {
             throw new FileException('this is not a local file');
         }
         $handler = @fopen($filename, $mode);
         if ($handler === false) {
-            throw new FileException('unable to open the file: '.$filename);
+            throw new FileException('unable to open the file: ' . $filename);
         }
         return $handler;
     }
@@ -118,7 +121,7 @@ class File
                 return $ret;
             }
         }
-        throw new FileException('unable to read the file: '.$file);
+        throw new FileException('unable to read the file: ' . $file);
     }
 
     /**
@@ -144,11 +147,12 @@ class File
      *
      * @param string $url URL to read.
      *
-     * @return string File content or FALSE in case the file is unreadable or curl is not available
+     * @return string|bool
      */
     public function getUrlData($url)
     {
-        if ((ini_get('allow_url_fopen') && !defined('FORCE_CURL'))
+        if (
+            (ini_get('allow_url_fopen') && !defined('FORCE_CURL'))
             || !function_exists('curl_init')
             || !preg_match('%^(https?|ftp)://%', $url)
         ) {
@@ -168,6 +172,10 @@ class File
         curl_setopt($crs, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($crs, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($crs, CURLOPT_USERAGENT, 'tc-lib-file');
+        curl_setopt($crs, CURLOPT_MAXREDIRS, 5);
+        if (defined('CURLOPT_PROTOCOLS')) {
+            curl_setopt($crs, CURLOPT_PROTOCOLS, CURLPROTO_HTTPS | CURLPROTO_HTTP |  CURLPROTO_FTP | CURLPROTO_FTPS);
+        }
         $ret = curl_exec($crs);
         curl_close($crs);
         return $ret;
@@ -200,7 +208,8 @@ class File
      */
     protected function getAltLocalUrlPath($file)
     {
-        if ((strlen($file) > 1)
+        if (
+            (strlen($file) > 1)
             && ($file[0] === '/')
             && ($file[1] !== '/')
             && !empty($_SERVER['DOCUMENT_ROOT'])
@@ -208,7 +217,7 @@ class File
         ) {
             $findroot = strpos($file, $_SERVER['DOCUMENT_ROOT']);
             if (($findroot === false) || ($findroot > 1)) {
-                $file = htmlspecialchars_decode(urldecode($_SERVER['DOCUMENT_ROOT'].$file));
+                $file = htmlspecialchars_decode(urldecode($_SERVER['DOCUMENT_ROOT'] . $file));
             }
         }
         return $file;
@@ -224,7 +233,7 @@ class File
     protected function getAltMissingUrlProtocol($file)
     {
         if (preg_match('%^//%', $file) && !empty($_SERVER['HTTP_HOST'])) {
-            $file = $this->getDefaultUrlProtocol().':'.str_replace(' ', '%20', $file);
+            $file = $this->getDefaultUrlProtocol() . ':' . str_replace(' ', '%20', $file);
         }
         return htmlspecialchars_decode($file);
     }
@@ -252,7 +261,8 @@ class File
      */
     protected function getAltPathFromUrl($url)
     {
-        if (!preg_match('%^(https?)://%', $url)
+        if (
+            !preg_match('%^(https?)://%', $url)
             || empty($_SERVER['HTTP_HOST'])
             || empty($_SERVER['DOCUMENT_ROOT'])
         ) {
@@ -262,7 +272,7 @@ class File
         if (!empty($urldata['query'])) {
             return $url;
         }
-        $host = $this->getDefaultUrlProtocol().'://'.$_SERVER['HTTP_HOST'];
+        $host = $this->getDefaultUrlProtocol() . '://' . $_SERVER['HTTP_HOST'];
         if (strpos($url, $host) === 0) {
             // convert URL to full server path
             $tmp = str_replace($host, $_SERVER['DOCUMENT_ROOT'], $url);
@@ -280,12 +290,13 @@ class File
      */
     protected function getAltUrlFromPath($file)
     {
-        if (isset($_SERVER['SCRIPT_URI'])
+        if (
+            isset($_SERVER['SCRIPT_URI'])
             && !preg_match('%^(https?|ftp)://%', $file)
             && !preg_match('%^//%', $file)
         ) {
             $urldata = @parse_url($_SERVER['SCRIPT_URI']);
-            return $urldata['scheme'].'://'.$urldata['host'].(($file[0] == '/') ? '' : '/').$file;
+            return $urldata['scheme'] . '://' . $urldata['host'] . (($file[0] == '/') ? '' : '/') . $file;
         }
         return $file;
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OutFont.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -15,9 +16,9 @@
 
 namespace Com\Tecnick\Pdf\Font;
 
-use \Com\Tecnick\Unicode\Data\Identity;
-use \Com\Tecnick\Pdf\Encrypt\Encrypt;
-use \Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\Unicode\Data\Identity;
+use Com\Tecnick\Pdf\Encrypt\Encrypt;
+use Com\Tecnick\Pdf\Font\Exception as FontException;
 
 /**
  * Com\Tecnick\Pdf\Font\OutFont
@@ -26,7 +27,7 @@ use \Com\Tecnick\Pdf\Font\Exception as FontException;
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  */
@@ -64,47 +65,47 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
         $name = $font['name'];
         $longname = $name;
         if (!empty($font['enc'])) {
-            $longname .= '-'.$font['enc'];
+            $longname .= '-' . $font['enc'];
         }
-        
+
         // obj 1
-        $out = $font['n'].' 0 obj'."\n"
-            .'<</Type /Font'
-            .' /Subtype /Type0'
-            .' /BaseFont /'.$longname
-            .' /Name /F'.$font['i'];
+        $out = $font['n'] . ' 0 obj' . "\n"
+            . '<</Type /Font'
+            . ' /Subtype /Type0'
+            . ' /BaseFont /' . $longname
+            . ' /Name /F' . $font['i'];
         if (!empty($font['enc'])) {
-            $out .= ' /Encoding /'.$font['enc'];
+            $out .= ' /Encoding /' . $font['enc'];
         }
-        $out .= ' /DescendantFonts ['.($this->pon + 1).' 0 R]'
-            .' >>'."\n"
-            .'endobj'."\n";
+        $out .= ' /DescendantFonts [' . ($this->pon + 1) . ' 0 R]'
+            . ' >>' . "\n"
+            . 'endobj' . "\n";
 
         // obj 2
-        $out .= (++$this->pon).' 0 obj'."\n"
-            .'<</Type /Font'
-            .' /Subtype /CIDFontType0'
-            .' /BaseFont /'.$name;
-        $cidinfo = '/Registry '.$this->enc->escapeDataString($font['cidinfo']['Registry'], $this->pon)
-            .' /Ordering '.$this->enc->escapeDataString($font['cidinfo']['Ordering'], $this->pon)
-            .' /Supplement '.$font['cidinfo']['Supplement'];
-        $out .= ' /CIDSystemInfo <<'.$cidinfo.'>>'
-            .' /FontDescriptor '.($this->pon + 1).' 0 R'
-            .' /DW '.$font['dw']."\n"
-            .$this->getCharWidths($font, $cidoffset)
-            .' >>'."\n"
-            .'endobj'."\n";
+        $out .= (++$this->pon) . ' 0 obj' . "\n"
+            . '<</Type /Font'
+            . ' /Subtype /CIDFontType0'
+            . ' /BaseFont /' . $name;
+        $cidinfo = '/Registry ' . $this->enc->escapeDataString($font['cidinfo']['Registry'], $this->pon)
+            . ' /Ordering ' . $this->enc->escapeDataString($font['cidinfo']['Ordering'], $this->pon)
+            . ' /Supplement ' . $font['cidinfo']['Supplement'];
+        $out .= ' /CIDSystemInfo <<' . $cidinfo . '>>'
+            . ' /FontDescriptor ' . ($this->pon + 1) . ' 0 R'
+            . ' /DW ' . $font['dw'] . "\n"
+            . $this->getCharWidths($font, $cidoffset)
+            . ' >>' . "\n"
+            . 'endobj' . "\n";
 
         // obj 3
-        $out .= (++$this->pon).' 0 obj'."\n"
-            .'<</Type /FontDescriptor /FontName /'.$name;
+        $out .= (++$this->pon) . ' 0 obj' . "\n"
+            . '<</Type /FontDescriptor /FontName /' . $name;
         foreach ($font['desc'] as $key => $val) {
             if ($key != 'Style') {
                 $out .= $this->getKeyValOut($key, $val);
             }
         }
-        $out .= '>>'."\n"
-            .'endobj'."\n";
+        $out .= '>>' . "\n"
+            . 'endobj' . "\n";
 
         return $out;
     }
@@ -114,8 +115,6 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
      *
      * @param array $font      Font to process
      * @param int   $cidoffset Offset for CID values
-     *
-     * @return array Processed font
      */
     protected function uniToCid(array &$font, $cidoffset)
     {
@@ -141,6 +140,8 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
      * @param array $font Font to process
      *
      * return string
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function getTrueTypeUnicode(array $font)
     {
@@ -149,7 +150,7 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
             // change name for font subsetting
             $subtag = sprintf('%06u', $font['i']);
             $subtag = strtr($subtag, '0123456789', 'ABCDEFGHIJ');
-            $fontname .= $subtag.'+';
+            $fontname .= $subtag . '+';
         }
         $fontname .= $font['name'];
 
@@ -157,63 +158,71 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
         // A composite font composed of other fonts, organized hierarchically
 
         // obj 1
-        $out = $font['n'].' 0 obj'."\n"
-            .'<< /Type /Font'
-            .' /Subtype /Type0'
-            .' /BaseFont /'.$fontname
-            .' /Name /F'.$font['i']
-            .' /Encoding /'.$font['enc']
-            .' /ToUnicode '.($this->pon + 1).' 0 R'
-            .' /DescendantFonts ['.($this->pon + 2).' 0 R]'
-            .' >>'."\n"
-            .'endobj'."\n";
+        $out = $font['n'] . ' 0 obj' . "\n"
+            . '<< /Type /Font'
+            . ' /Subtype /Type0'
+            . ' /BaseFont /' . $fontname
+            . ' /Name /F' . $font['i']
+            . ' /Encoding /' . $font['enc']
+            . ' /ToUnicode ' . ($this->pon + 1) . ' 0 R'
+            . ' /DescendantFonts [' . ($this->pon + 2) . ' 0 R]'
+            . ' >>' . "\n"
+            . 'endobj' . "\n";
 
         // ToUnicode Object
-        $out .= (++$this->pon).' 0 obj'."\n";
-        $stream = $this->enc->encryptString(gzcompress(Identity::CIDHMAP), $this->pon); // ToUnicode map for Identity-H
-        $out .= '<</Filter /FlateDecode /Length '.strlen($stream).'>> stream'."\n"
-            .$stream."\n"
-            .'endstream'."\n"
-            .'endobj'."\n";
+        $out .= (++$this->pon) . ' 0 obj' . "\n"
+            . '<<';
+        $cidhmap = Identity::CIDHMAP;
+        if ($font['compress']) {
+            $out .= '/Filter /FlateDecode';
+            $cidhmap = gzcompress($cidhmap);
+        }
+        $stream = $this->enc->encryptString($cidhmap, $this->pon); // ToUnicode map for Identity-H
+        $out .= '/Length ' . strlen($stream)
+            . '>>'
+            . ' stream' . "\n"
+            . $stream . "\n"
+            . 'endstream' . "\n"
+            . 'endobj' . "\n";
 
         // CIDFontType2
         // A CIDFont whose glyph descriptions are based on TrueType font technology
-        $out .= (++$this->pon).' 0 obj'."\n"
-            .'<< /Type /Font'
-            .' /Subtype /CIDFontType2'
-            .' /BaseFont /'.$fontname;
+        $out .= (++$this->pon) . ' 0 obj' . "\n"
+            . '<< /Type /Font'
+            . ' /Subtype /CIDFontType2'
+            . ' /BaseFont /' . $fontname;
         // A dictionary containing entries that define the character collection of the CIDFont.
-        $cidinfo = '/Registry '.$this->enc->escapeDataString($font['cidinfo']['Registry'], $this->pon)
-            .' /Ordering '.$this->enc->escapeDataString($font['cidinfo']['Ordering'], $this->pon)
-            .' /Supplement '.$font['cidinfo']['Supplement'];
-        $out .= ' /CIDSystemInfo << '.$cidinfo.' >>'
-            .' /FontDescriptor '.($this->pon + 1).' 0 R'
-            .' /DW '.$font['dw']."\n"
-            .$this->getCharWidths($font, 0);
+        $cidinfo = '/Registry ' . $this->enc->escapeDataString($font['cidinfo']['Registry'], $this->pon)
+            . ' /Ordering ' . $this->enc->escapeDataString($font['cidinfo']['Ordering'], $this->pon)
+            . ' /Supplement ' . $font['cidinfo']['Supplement'];
+        $out .= ' /CIDSystemInfo << ' . $cidinfo . ' >>'
+            . ' /FontDescriptor ' . ($this->pon + 1) . ' 0 R'
+            . ' /DW ' . $font['dw'] . "\n"
+            . $this->getCharWidths($font, 0);
         if (!empty($font['ctg'])) {
-            $out .= "\n".'/CIDToGIDMap '.($this->pon + 2).' 0 R';
+            $out .= "\n" . '/CIDToGIDMap ' . ($this->pon + 2) . ' 0 R';
         }
-        $out .= ' >>'."\n"
-            .'endobj'."\n";
+        $out .= ' >>' . "\n"
+            . 'endobj' . "\n";
 
         // Font descriptor
         // A font descriptor describing the CIDFont default metrics other than its glyph widths
-        $out .= (++$this->pon).' 0 obj'."\n"
-            .'<< /Type /FontDescriptor'
-            .' /FontName /'.$fontname;
+        $out .= (++$this->pon) . ' 0 obj' . "\n"
+            . '<< /Type /FontDescriptor'
+            . ' /FontName /' . $fontname;
         foreach ($font['desc'] as $key => $val) {
             $out .= $this->getKeyValOut($key, $val);
         }
 
         if (!empty($font['file_n'])) {
             // A stream containing a TrueType font
-            $out .= ' /FontFile2 '.$font['file_n'].' 0 R';
+            $out .= ' /FontFile2 ' . $font['file_n'] . ' 0 R';
         }
-        $out .= ' >>'."\n"
-            .'endobj'."\n";
+        $out .= ' >>' . "\n"
+            . 'endobj' . "\n";
 
         if (!empty($font['ctg'])) {
-            $out .= (++$this->pon).' 0 obj'."\n";
+            $out .= (++$this->pon) . ' 0 obj' . "\n";
             // Embed CIDToGIDMap
             // A specification of the mapping from CIDs to glyph indices
             // search and get CTG font file to embedd
@@ -221,7 +230,7 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
             // search and get ctg font file to embedd
             $fontfile = $this->getFontFullPath($font['dir'], $ctgfile);
             $stream = $this->enc->encryptString(file_get_contents($fontfile), $this->pon);
-            $out .= '<< /Length '.strlen($stream).'';
+            $out .= '<< /Length ' . strlen($stream) . '';
             if (substr($fontfile, -2) == '.z') { // check file extension
                 // Decompresses data encoded using the public-domain
                 // zlib/deflate compression method, reproducing the
@@ -229,10 +238,10 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
                 $out .= ' /Filter /FlateDecode';
             }
             $out .= ' >>'
-                .' stream'."\n"
-                .$stream."\n"
-                .'endstream'."\n"
-                .'endobj'."\n";
+                . ' stream' . "\n"
+                . $stream . "\n"
+                . 'endstream' . "\n"
+                . 'endobj' . "\n";
         }
 
         return $out;
@@ -247,16 +256,16 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
      */
     protected function getCore(array $font)
     {
-        $out = $font['n'].' 0 obj'."\n"
-            .'<</Type /Font'
-            .' /Subtype /Type1'
-            .' /BaseFont /'.$font['name']
-            .' /Name /F'.$font['i'];
+        $out = $font['n'] . ' 0 obj' . "\n"
+            . '<</Type /Font'
+            . ' /Subtype /Type1'
+            . ' /BaseFont /' . $font['name']
+            . ' /Name /F' . $font['i'];
         if (($font['family'] != 'symbol') && ($font['family'] != 'zapfdingbats')) {
             $out .= ' /Encoding /WinAnsiEncoding';
         }
-        $out .= ' >>'."\n"
-            .'endobj'."\n";
+        $out .= ' >>' . "\n"
+            . 'endobj' . "\n";
         return $out;
     }
 
@@ -270,48 +279,48 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
     protected function getTrueType(array $font)
     {
         // obj 1
-        $out = $font['n'].' 0 obj'."\n"
-            .'<</Type /Font'
-            .' /Subtype /'.$font['type']
-            .' /BaseFont /'.$font['name']
-            .' /Name /F'.$font['i']
-            .' /FirstChar 32 /LastChar 255'
-            .' /Widths '.($this->pon + 1).' 0 R'
-            .' /FontDescriptor '.($this->pon + 2).' 0 R';
+        $out = $font['n'] . ' 0 obj' . "\n"
+            . '<</Type /Font'
+            . ' /Subtype /' . $font['type']
+            . ' /BaseFont /' . $font['name']
+            . ' /Name /F' . $font['i']
+            . ' /FirstChar 32 /LastChar 255'
+            . ' /Widths ' . ($this->pon + 1) . ' 0 R'
+            . ' /FontDescriptor ' . ($this->pon + 2) . ' 0 R';
         if (!empty($font['enc'])) {
             if (isset($font['diff_n'])) {
-                $out .= ' /Encoding '.$font['diff_n'].' 0 R';
+                $out .= ' /Encoding ' . $font['diff_n'] . ' 0 R';
             } else {
                 $out .= ' /Encoding /WinAnsiEncoding';
             }
         }
-        $out .= ' >>'."\n"
-            .'endobj'."\n";
+        $out .= ' >>' . "\n"
+            . 'endobj' . "\n";
 
         // obj 2 - Widths
-        $out .= (++$this->pon).' 0 obj'."\n"
-            .'[';
+        $out .= (++$this->pon) . ' 0 obj' . "\n"
+            . '[';
         for ($idx = 32; $idx < 256; ++$idx) {
             if (isset($font['cw'][$idx])) {
-                $out .= $font['cw'][$idx].' ';
+                $out .= $font['cw'][$idx] . ' ';
             } else {
-                $out .= $font['dw'].' ';
+                $out .= $font['dw'] . ' ';
             }
         }
-        $out .= ']'."\n"
-            .'endobj'."\n";
+        $out .= ']' . "\n"
+            . 'endobj' . "\n";
 
         // obj 3 - Descriptor
-        $out .= (++$this->pon).' 0 obj'."\n"
-            .'<</Type /FontDescriptor /FontName /'.$font['name'];
+        $out .= (++$this->pon) . ' 0 obj' . "\n"
+            . '<</Type /FontDescriptor /FontName /' . $font['name'];
         foreach ($font['desc'] as $fdk => $fdv) {
             $out .= $this->getKeyValOut($fdk, $fdv);
         }
         if (!empty($font['file'])) {
-            $out .= ' /FontFile'.($font['type'] == 'Type1' ? '' : '2').' '.$font['file_n'].' 0 R';
+            $out .= ' /FontFile' . ($font['type'] == 'Type1' ? '' : '2') . ' ' . $font['file_n'] . ' 0 R';
         }
-        $out .= '>>'."\n"
-            .'endobj'."\n";
+        $out .= '>>' . "\n"
+            . 'endobj' . "\n";
 
         return $out;
     }
@@ -319,8 +328,8 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
     /**
      * Returns the formatted key/value PDF string
      *
-     * @param string $key   Key name
-     * @param mixed  $value Value
+     * @param string $key Key name
+     * @param mixed  $val Value
      *
      * @return string
      */
@@ -329,6 +338,6 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
         if (is_float($val)) {
             $val = sprintf('%F', $val);
         }
-        return ' /'.$key.' '.$val.'';
+        return ' /' . $key . ' ' . $val . '';
     }
 }

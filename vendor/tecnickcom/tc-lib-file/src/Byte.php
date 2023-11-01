@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Byte.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-file
  *
@@ -24,7 +25,7 @@ namespace Com\Tecnick\File;
  * @category    Library
  * @package     File
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-file
  */
@@ -133,12 +134,12 @@ class Byte
      *
      * @param int $offset Point from where to read the data.
      *
-     * @return int 16 bit value
+     * @return float
      *
      */
     public function getFixed($offset)
     {
         // mantissa.fraction
-        return (float)($this->getFWord($offset).'.'.$this->getUShort($offset + 2));
+        return (float)($this->getFWord($offset) . '.' . $this->getUShort($offset + 2));
     }
 }

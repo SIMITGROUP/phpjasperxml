@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OutUtil.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -15,8 +16,8 @@
 
 namespace Com\Tecnick\Pdf\Font;
 
-use \Com\Tecnick\File\Dir;
-use \Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\File\Dir;
+use Com\Tecnick\Pdf\Font\Exception as FontException;
 
 /**
  * Com\Tecnick\Pdf\Font\OutUtil
@@ -25,7 +26,7 @@ use \Com\Tecnick\Pdf\Font\Exception as FontException;
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  */
@@ -52,11 +53,11 @@ abstract class OutUtil
             )
         );
         foreach ($dirs as $dir) {
-            if (@is_readable($dir.DIRECTORY_SEPARATOR.$file)) {
-                return $dir.DIRECTORY_SEPARATOR.$file;
+            if (@is_readable($dir . DIRECTORY_SEPARATOR . $file)) {
+                return $dir . DIRECTORY_SEPARATOR . $file;
             }
         }
-        throw new FontException('Unable to locate the file: '.$file);
+        throw new FontException('Unable to locate the file: ' . $file);
     }
 
     /**
@@ -76,13 +77,13 @@ abstract class OutUtil
         foreach ($range as $kdx => $wds) {
             if (count(array_count_values($wds)) == 1) {
                 // interval mode is more compact
-                $wdt .= ' '.$kdx.' '.($kdx + count($wds) - 1).' '.$wds[0];
+                $wdt .= ' ' . $kdx . ' ' . ($kdx + count($wds) - 1) . ' ' . $wds[0];
             } else {
                 // range mode
-                $wdt .= ' '.$kdx.' [ '.implode(' ', $wds).' ]';
+                $wdt .= ' ' . $kdx . ' [ ' . implode(' ', $wds) . ' ]';
             }
         }
-        return '/W ['.$wdt.' ]';
+        return '/W [' . $wdt . ' ]';
     }
 
     /**

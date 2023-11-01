@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Load.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -15,9 +16,9 @@
 
 namespace Com\Tecnick\Pdf\Font;
 
-use \Com\Tecnick\File\Dir;
-use \Com\Tecnick\Pdf\Font\Core;
-use \Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\File\Dir;
+use Com\Tecnick\Pdf\Font\Core;
+use Com\Tecnick\Pdf\Font\Exception as FontException;
 
 /**
  * Com\Tecnick\Pdf\Font\Load
@@ -26,12 +27,58 @@ use \Com\Tecnick\Pdf\Font\Exception as FontException;
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  */
 abstract class Load
 {
+    /**
+     * Font data
+     *
+     * @var array
+     */
+    protected $data = array(
+        'n'           => 0,              // PDF object number
+        'i'           => 0,              // font number
+        'key'         => '',             // font key
+        'ifile'       => '',             // JSON font file
+        'family'      => '',             // font family name
+        'unicode'     => true,           // unicode mode
+        'pdfa'        => false,          // PDF/A mode
+        'style'       => '',             // font style string
+        'fakestyle'   => false,          // emulated style
+        'mode'        => array(
+            'bold'        => false,
+            'italic'      => false,
+            'underline'   => false,
+            'linethrough' => false,
+            'overline'    => false
+        ),
+        'type'        => '',
+        'name'        => '',
+        'desc'        => array(),
+        'up'          => -100,
+        'ut'          => 50,
+        'cw'          => array(),
+        'cbbox'       => array(),
+        'dw'          => 0,
+        'enc'         => '',
+        'cidinfo'     => array(
+            'Registry'    => 'Adobe',
+            'Ordering'    => 'Identity',
+            'Supplement'  => 0,
+            'uni2cid'     => array()
+        ),
+        'file'        => '',             // original font file
+        'dir'         => '',             // font directory
+        'ctg'         => '',             // font CTG file
+        'diff'        => '',             // encoding differences
+        'diff_n'      => 0,              // object ID of the difference object
+        'subset'      => false,          // True if the font is subset
+        'subsetchars' => array(),        // subset characters
+    );
+
     /**
      * Load the font data
      *
@@ -44,7 +91,7 @@ abstract class Load
         $this->checkType();
         $this->setName();
         $this->setDefaultWidth();
-        if (($this->data['type'] == 'Core') || $this->data['fakestyle']) {
+        if ($this->data['fakestyle']) {
             $this->setArtificialStyles();
         }
         $this->setFileData();
@@ -63,17 +110,17 @@ abstract class Load
 
         // read the font definition file
         if (!@is_readable($this->data['ifile'])) {
-            throw new FontException('unable to read file: '.$this->data['ifile']);
+            throw new FontException('unable to read file: ' . $this->data['ifile']);
         }
 
         $fdt = @file_get_contents($this->data['ifile']);
         $fdt = @json_decode($fdt, true);
         if ($fdt === null) {
-            throw new FontException('JSON decoding error ['.json_last_error().']');
+            throw new FontException('JSON decoding error [' . json_last_error() . ']');
         }
 
         if (empty($fdt['type']) || empty($fdt['cw'])) {
-            throw new FontException('fhe font definition file has a bad format: '.$this->data['ifile']);
+            throw new FontException('fhe font definition file has a bad format: ' . $this->data['ifile']);
         }
 
         return $fdt;
@@ -90,20 +137,18 @@ abstract class Load
         $dirs =  array('');
         if (defined('K_PATH_FONTS')) {
             $dirs[] = K_PATH_FONTS;
-            $dirs = array_merge($dirs, glob(K_PATH_FONTS.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR));
+            $dirs = array_merge($dirs, glob(K_PATH_FONTS . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR));
         }
         $parent_font_dir = $dirobj->findParentDir('fonts', __DIR__);
         if (!empty($parent_font_dir)) {
             $dirs[] = $parent_font_dir;
-            $dirs = array_merge($dirs, glob($parent_font_dir.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR));
+            $dirs = array_merge($dirs, glob($parent_font_dir . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR));
         }
         return array_unique($dirs);
     }
 
     /**
      * Load the font data
-     *
-     * @return array Font data
      *
      * @throws FontException in case of error
      */
@@ -113,23 +158,23 @@ abstract class Load
             return;
         }
 
-        $this->data['ifile'] = strtolower($this->data['key']).'.json';
- 
+        $this->data['ifile'] = strtolower($this->data['key']) . '.json';
+
         // directories where to search for the font definition file
         $dirs = $this->findFontDirectories();
 
         // find font definition file names
         $files = array_unique(
             array(
-                strtolower($this->data['key']).'.json',
-                strtolower($this->data['family']).'.json'
+                strtolower($this->data['key']) . '.json',
+                strtolower($this->data['family']) . '.json'
             )
         );
 
         foreach ($files as $file) {
             foreach ($dirs as $dir) {
-                if (@is_readable($dir.DIRECTORY_SEPARATOR.$file)) {
-                    $this->data['ifile'] = $dir.DIRECTORY_SEPARATOR.$file;
+                if (@is_readable($dir . DIRECTORY_SEPARATOR . $file)) {
+                    $this->data['ifile'] = $dir . DIRECTORY_SEPARATOR . $file;
                     $this->data['dir'] = $dir;
                     break 2;
                 }
@@ -164,7 +209,7 @@ abstract class Load
         if (in_array($this->data['type'], array('Core', 'Type1', 'TrueType', 'TrueTypeUnicode', 'cidfont0'))) {
             return;
         }
-        throw new FontException('Unknow font type: '.$this->data['type']);
+        throw new FontException('Unknow font type: ' . $this->data['type']);
     }
 
     /**

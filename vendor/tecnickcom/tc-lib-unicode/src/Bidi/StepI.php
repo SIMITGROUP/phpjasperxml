@@ -1,4 +1,5 @@
 <?php
+
 /**
  * StepI.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  *
@@ -22,7 +23,7 @@ namespace Com\Tecnick\Unicode\Bidi;
  * @category    Library
  * @package     Unicode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode
  */
@@ -48,7 +49,8 @@ class StepI extends \Com\Tecnick\Unicode\Bidi\StepBase
     {
         $odd = ($this->seq['item'][$idx]['level'] % 2);
         if ($odd) {
-            if (($this->seq['item'][$idx]['type'] == 'L')
+            if (
+                ($this->seq['item'][$idx]['type'] == 'L')
                 || ($this->seq['item'][$idx]['type'] == 'EN')
                 || ($this->seq['item'][$idx]['type'] == 'AN')
             ) {
@@ -57,7 +59,8 @@ class StepI extends \Com\Tecnick\Unicode\Bidi\StepBase
         } else {
             if ($this->seq['item'][$idx]['type'] == 'R') {
                 $this->seq['item'][$idx]['level'] += 1;
-            } elseif (($this->seq['item'][$idx]['type'] == 'AN')
+            } elseif (
+                ($this->seq['item'][$idx]['type'] == 'AN')
                 || ($this->seq['item'][$idx]['type'] == 'EN')
             ) {
                 $this->seq['item'][$idx]['level'] += 2;

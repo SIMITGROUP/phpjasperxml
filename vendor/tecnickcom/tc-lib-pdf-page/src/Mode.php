@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Mode.php
  *
@@ -6,7 +7,7 @@
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  *
@@ -22,7 +23,7 @@ namespace Com\Tecnick\Pdf\Page;
  * @category    Library
  * @package     PdfPage
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2015 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-page
  */
@@ -64,7 +65,7 @@ abstract class Mode extends \Com\Tecnick\Pdf\Page\Format
     /**
      * Get the canonical page layout name.
      *
-     * @param string $name Page layout name
+     * @param string $name Page layout name.
      *
      * @return string Canonical page layout name.
      */
@@ -82,7 +83,7 @@ abstract class Mode extends \Com\Tecnick\Pdf\Page\Format
      *
      * @param string $mode A name object specifying how the document should be displayed when opened.
      *
-     * @return string Canonical page display mode
+     * @return string Canonical page display mode.
      */
     public function getDisplay($mode = '')
     {

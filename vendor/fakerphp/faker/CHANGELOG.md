@@ -1,6 +1,58 @@
 # CHANGELOG
 
-## [Unreleased](https://github.com/FakerPHP/Faker/compare/v1.17.0..main)
+## [Unreleased](https://github.com/FakerPHP/Faker/compare/v1.23.0...main)
+
+## [2023-06-12, v1.23.0](https://github.com/FakerPHP/Faker/compare/v1.22.0..v1.23.0)
+
+- Update `randomElements` to return random number of elements when no count is provided (#658)
+
+## [2023-05-14, v1.22.0](https://github.com/FakerPHP/Faker/compare/v1.21.0..v1.22.0)
+
+- Fixed `randomElements()` to accept empty iterator (#605)
+- Added support for passing an `Enum` to `randomElement()` and `randomElements()` (#620)
+- Started rejecting invalid arguments passed to `randomElement()` and `randomElements()` (#642)
+
+## [2022-12-13, v1.21.0](https://github.com/FakerPHP/Faker/compare/v1.20.0..v1.21.0)
+
+- Dropped support for PHP 7.1, 7.2, and 7.3 (#543)
+- Added support for PHP 8.2 (#528)
+
+## [2022-07-20, v1.20.0](https://github.com/FakerPHP/Faker/compare/v1.19.0..v1.20.0)
+
+- Fixed typo in French phone number (#452)
+- Fixed some Hungarian naming bugs (#451)
+- Fixed bug where the NL-BE VAT generation was incorrect (#455)
+- Improve Turkish phone numbers for E164 and added landline support (#460)
+- Add Microsoft Edge User Agent (#464)
+- Added option to set image formats on Faker\Provider\Image (#473)
+- Added support for French color translations (#466)
+- Support filtering timezones by country code (#480)
+- Fixed typo in some greek names (#490)
+- Marked the Faker\Provider\Image as deprecated
+
+## [2022-02-02, v1.19.0](https://github.com/FakerPHP/Faker/compare/v1.18.0..v1.19.0)
+
+- Added color extension to core (#442)
+- Added conflict with `doctrine/persistence` below version `1.4`
+- Fix for support on different Doctrine ORM versions (#414)
+- Fix usage of `Doctrine\Persistence` dependency
+- Fix CZ Person birthNumber docblock return type (#437)
+- Fix is_IS Person docbock types (#439)
+- Fix is_IS Address docbock type (#438)
+- Fix regexify escape backslash in character class (#434)
+- Removed UUID from Generator to be able to extend it (#441)
+
+## [2022-01-23, v1.18.0](https://github.com/FakerPHP/Faker/compare/v1.17.0..v1.18.0)
+
+- Deprecated UUID, use uuid3 to specify version (#427)
+- Reset formatters when adding a new provider (#366)
+- Helper methods to use our custom generators (#155)
+- Set allow-plugins for Composer 2.2 (#405)
+- Fix kk_KZ\Person::individualIdentificationNumber generation (#411)
+- Allow for -> syntax to be used in parsing (#423)
+- Person->name was missing string return type (#424)
+- Generate a valid BE TAX number (#415)
+- Added the UUID extension to Core (#427)
 
 ## [2021-12-05, v1.17.0](https://github.com/FakerPHP/Faker/compare/v1.16.0..v1.17.0)
 
