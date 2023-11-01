@@ -32,6 +32,7 @@ class Pdf_driver extends TCPDF implements ExportInterface
     protected string $groupbandprefix = 'report_group_';
     protected int $printbandcount=0;
     public bool $islastrow = false;
+    protected array $rows = [];
     protected string $balancetext='';
     protected $defaultDetailbeginY=0;
     protected $pageOffSetY=0;
