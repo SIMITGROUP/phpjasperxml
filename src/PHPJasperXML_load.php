@@ -154,7 +154,7 @@ trait PHPJasperXML_load
     /**
      * register different band into band array
      * @param string $bandname
-     * @param array $elements
+     * @param object $elements
      */
     protected function addBand(string $bandname,object $elements,bool $isgroup = false)
     {               

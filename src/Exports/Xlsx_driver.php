@@ -22,9 +22,16 @@ class Xlsx_driver implements ExportInterface
     protected int $x=0;
     protected int $y=0;
     protected int $lastY=0;
+    protected array $groupnames = [];
     protected Cell|null $cell;
     protected Style $cellrangestyle;
-    
+    protected int $columnWidth = 0;
+    protected int $columnCount = 0;
+    public bool $islastrow = false;
+    protected object $parentobj ;
+    protected object $drawtarget ;
+    protected int $currentRowNo = 0;
+    protected array $groups = [];
     protected array $bands=[];
     protected array $elements=[];
     protected array $supportedelements = ['staticText','textField'];
