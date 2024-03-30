@@ -9,7 +9,7 @@ It completely rewrite since version 1.x, if you use version 1.x before please ve
 
 
 # Install
-Latest phpjasperxml require php 7.4, and php extension like php-curl, php-intl, php-simplexml. 
+Latest phpjasperxml require php 7.4-8.2, and php extension like php-curl, php-intl, php-simplexml. 
 ```php
 composer require simitgroup/phpjasperxml
 ```
@@ -250,3 +250,4 @@ Style template is ignore, and not effect element at the moment.
 2. Mysql
 3. PDO (the rest of database)
 4. Array (prepare associate array outside of lib)
+5. mongodb (experimental, use mongodb-ql)

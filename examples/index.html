@@ -4,7 +4,7 @@
         <script>
             function changeformat(){
                 let formatvalue = document.getElementById('selectFormat').value;
-                document.getElementById("iframereport").src=formatvalue;
+                document.getElementById("iframereport").src = "/examples/".formatvalue;
             }
 
         </script>
@@ -23,6 +23,8 @@
             <option value="column_verticalorder.php">3 Columns Verticle Print Order</option>
             <option value="column_horizontalorder.php">3 Column Horizontal Print Order</option>
             <option value="databasesample.php">Use Database (array/mysql/postgresql/pdo)</option>            
+            <option value="json.php">JSON</option>            
+            <option value="mongo1.php">mongodb</option>            
         </select>
         </label>
         <button onclick="changeformat()">Reload</button>

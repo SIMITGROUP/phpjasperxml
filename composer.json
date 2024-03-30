@@ -7,7 +7,9 @@
         "tecnickcom/tc-lib-pdf":"*",
         "tecnickcom/tcpdf": "^6.4",
         "fakerphp/faker": "^1.17",
-        "phpoffice/phpspreadsheet": "^1.20"         
+        "phpoffice/phpspreadsheet": "^1.20",
+        "mongodb/mongodb": "^1.18",
+        "ovidigital/js-object-to-json": "^1.1"         
     },
     "autoload": {
         "psr-4": {
