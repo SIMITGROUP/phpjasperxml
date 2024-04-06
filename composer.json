@@ -1,7 +1,7 @@
 {
     "name": "simitsdk/phpjasperxml",
     "description": "PHP PDF renderer of open source jasper report studio.",
-    "version": "2.1.2",
+    "version": "2.1.4",
     "require": {
         "php": ">=7.4",
         "tecnickcom/tc-lib-pdf":"*",
