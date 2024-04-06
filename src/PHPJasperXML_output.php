@@ -73,16 +73,14 @@ trait PHPJasperXML_output
             
         }
         // echo "export";die;
-        if(!empty($filename))
+        if(empty($filename))
         {
-            // $filename = '/tmp/'.str_replace('.jrxml','.pdf',$this->filename);
-            
-            $this->output->export($filename);
-        }
-        else
-        {
-            // echo 'export';die;
             $this->output->export();
+
+            
+        }
+        else{
+            return $this->output->export($filename);           
         }
         
     }

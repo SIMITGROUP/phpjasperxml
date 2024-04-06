@@ -23,6 +23,12 @@ trait PHPJasperXML_load
     protected array $sortFields=[];
     protected string $path = '';
     protected array $scriptlets=[];
+
+    public function setPath(string $path):self{
+        if(!$path)die('you shouldnt setPath with empty string');
+        $this->path = $path;
+        return $this;
+    }
     /**
      * read jrxml file and load into memeory
      * @param string $filename
@@ -32,7 +38,7 @@ trait PHPJasperXML_load
     {           
         $pathinfo = pathinfo($file);
         $this->filename = $pathinfo['basename'];     
-        $this->path = $pathinfo['dirname'];
+        $this->setPath($pathinfo['dirname']);
         $xml =  file_get_contents($file);                  
         $this->load_xml_string($xml);      
         // print_r($this->bandelements);

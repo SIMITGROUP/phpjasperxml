@@ -243,6 +243,7 @@ trait PHPJasperXML_elements
         // {
         //     $prop['hyperlinkReferenceExpression'] = $this->executeExpression($link);
         // }
+        // echo "$uuid".print_r($prop,true);
         $this->output->draw_textField($uuid,$prop,function(){
             $this->newPage();
         });
@@ -341,6 +342,8 @@ trait PHPJasperXML_elements
             
 
             $connectionExpression =  $this->executeExpression($prop['connectionExpression']);
+            if(empty($$connectionExpression)) $connectionExpression='REPORT_CONNECTION';
+            // echo '$connectionExpression---'.$connectionExpression;die;
             $connection = [];
             if($connectionExpression=='REPORT_CONNECTION')
             {
@@ -370,6 +373,7 @@ trait PHPJasperXML_elements
             }
             
             
+
             $subreport
                 ->setParameter($paras)
                 ->setDataSource($connection)
@@ -495,6 +499,7 @@ trait PHPJasperXML_elements
                 $this->output->setPosition($x,$y,$prop);
                 $methodname = 'draw_'.$prop['elementtype'];
                 call_user_func([$this,$methodname],$uuid,$prop);
+                // echo $methodname."<br/>";
     }
 
     protected function addBorders(array $prop, object $obj): array

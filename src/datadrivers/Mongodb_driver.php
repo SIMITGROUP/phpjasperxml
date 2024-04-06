@@ -24,19 +24,47 @@ class Mongodb_driver implements DataInterface
     public function fetchData(mixed $querypara):array
     {
         $dbname = $this->dbname;
+
         $query = \OviDigital\JsObjectToJson\JsConverter::convertToArray($querypara);
-        $collectionName = $query['collectionName'];
-        $aggregate = $query['aggregate'];
-        // print_r($this->conn->$collectionName);
-        $result = $this->conn->$dbname->$collectionName->aggregate($aggregate);
-        $array = json_decode(json_encode($result->toArray(),true), true);
-        // echo "<pre>".print_r($array,true)."</pre>";
         $newarr=[];
-        for($i=0;$i<count($array);$i++){
-            $l = $array[$i];
-            $tmp = $this->convertObjectToArray($l);
-            array_push($newarr,$tmp);
+        
+        if(isset($query['collectionName'])){            
+            $collectionName = $query['collectionName'];
+            $result = [];
+            $projection = [];
+            $sort = [];
+            $limit = 0;
+            if(isset($query['findFields'])) $projection  = $query['findFields'];
+            if(isset($query['sort'])) $sort  = $query['sort'];
+            if(isset($query['limit'])) $limit  = $query['limit'];
+            
+
+            if(isset($query['findQuery'])){
+                $findquery = $query['findQuery'];
+                $moreoptions =[];
+                if($projection) $moreoptions['projection']=$projection;
+                if($limit) $moreoptions['limit']=$limit;
+                if($sort) $moreoptions['sort']=$sort;                
+                $result = $this->conn->$dbname->$collectionName->find($findquery,$moreoptions);
+            }else if(isset($query['aggregate'])){
+                $aggregate = $query['aggregate'];
+                // print_r($this->conn->$collectionName);
+
+                $result = $this->conn->$dbname->$collectionName->aggregate($aggregate);
+            }
+            
+            $array = json_decode(json_encode($result->toArray(),true), true);
+            // echo "<pre>".print_r($array,true)."</pre>";
+            
+            for($i=0;$i<count($array);$i++){
+                $l = $array[$i];
+                $tmp = $this->convertObjectToArray($l);
+                array_push($newarr,$tmp);
+            }
+
+
         }
+
         return $newarr;
     }
 

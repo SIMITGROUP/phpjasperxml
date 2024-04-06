@@ -251,3 +251,27 @@ Style template is ignore, and not effect element at the moment.
 3. PDO (the rest of database)
 4. Array (prepare associate array outside of lib)
 5. mongodb (experimental, use mongodb-ql)
+
+
+# Mongodb usage
+Mongodb very different with others dbms due to mongodb using hierarchy document structure. PHPJasperXML implement
+similar syntax with jaspersoft `mongodbql`. 
+Refer `mongodbql` [here](https://community.jaspersoft.com/knowledgebase/faq/jaspersoft-mongodb-query-language/)
+
+It only support 2 method of queries, `find` and `aggregate`:
+
+1. Find (findQuery)
+* findQuery : { Details },
+* findFields : { Details },
+* sort : { Details },
+* limit : int Details,
+
+2. Aggregate (aggregate)
+
+* Unsupported function:
+mapReduce
+rowsToProcess
+batchSize
+maxTime
+collation
+

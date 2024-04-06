@@ -21,10 +21,10 @@ trait PHPJasperXML_expression
         // $this->console("expression $expression === $result");
         return $result;
     }
-    protected function executeExpression(string $expression,int $addrowqty=0,string $evaluationTime=''): mixed
+    protected function executeExpression(string $expression,int $addrowqty=0,string $evaluationTime='',$isstring=false): mixed
     {   
         // $this->console( "executeExpression: $expression");
-        $value = $this->parseExpression($expression,$addrowqty,$evaluationTime);
+        $value = $this->parseExpression($expression,$addrowqty,$evaluationTime,true);
 
         //special result, direct return raw value
         if(gettype($value)=='object' || gettype($value)=='array')
@@ -32,11 +32,17 @@ trait PHPJasperXML_expression
             return $value;
         }
         //it consist of string, use concate instead of maths operation
+        // if($isstring){
+
+        // }
+        // $value = str_replace('+',' . ',$value);
+        // 
+        $value = str_replace(["<{{","}}>"],'"',$value);
         if(str_contains($value,'"') || str_contains($value,"'"))
         {
-            $value = str_replace('+',' . ',$value);
+            $findquotepattern = '/\+(?=(?:[^"]*"[^"]*")*[^"]*\Z)/';
+            $value = preg_replace($findquotepattern, '.', $value);
         }
-        
         
         $evalstr = "return $value;";
         // $this->console( $evalstr);
@@ -52,7 +58,7 @@ trait PHPJasperXML_expression
         }
     }
 
-    protected function parseExpression(string $expression,int $addrowqty=0,string $evaluationTime=''): mixed
+    protected function parseExpression(string $expression,int $addrowqty=0,string $evaluationTime='',$specialtag=false): mixed
     {
         $value = $expression;
         $fieldpattern = '/\$F{(.*?)}/';
@@ -64,7 +70,7 @@ trait PHPJasperXML_expression
         preg_match_all($fieldpattern, $value, $matchfield);
         preg_match_all($varpattern, $value, $matchvar);
         preg_match_all($parapattern, $value, $matchpara);
-
+        
         $fieldstrings = $matchfield[0];
         $fieldnames = $matchfield[1];        
         $parastrings = $matchpara[0];
@@ -73,18 +79,18 @@ trait PHPJasperXML_expression
         $varnames = $matchvar[1];    
         // $this->console($expression);
         foreach($fieldnames as $f => $fieldname)
-        {
-            $data = $this->getFieldValue($fieldname,$addrowqty,$evaluationTime);
+        {            
+            $data = $this->getFieldValue($fieldname,$addrowqty,$evaluationTime,$specialtag);
             $value = str_replace($fieldstrings[$f], $data,$value);
         }
         foreach($varnames as $v => $varname)
         {
-            $data = $this->getVariableValue($varname,$evaluationTime);
+            $data = $this->getVariableValue($varname,$evaluationTime,$specialtag);
             $value = str_replace($varstrings[$v], $data,$value);
         }
         foreach($paranames as $p => $paraname)
         {
-            $data = $this->getParameterValue($paraname,$evaluationTime);
+            $data = $this->getParameterValue($paraname,$evaluationTime,$specialtag);
             if(gettype($data)=='array' || gettype($data)=='object')
             {
                 return $data;
@@ -100,26 +106,32 @@ trait PHPJasperXML_expression
         $expression = str_replace('new java.util.Date()','"'.date('Y-m-d H:i:s').'"',$expression);        
         return $expression;
     }
-    protected function getFieldValue(string $name,int $addrowqty=0,string $evaluationTime='')
+    protected function getFieldValue(string $name,int $addrowqty=0,string $evaluationTime='',$specialtag=false)
     {
         $rowno = $this->currentRow+$addrowqty - $this->reducerowno;
         $datatype = $this->fields[$name]['datatype'];
         if(isset($this->rows[$rowno]))
         {
             $row=$this->rows[$rowno] ;
-            $value=$row[$name];
+            if(isset($row[$name])) {
+                $value=$row[$name];
+            }
+            else {
+                echo "field not exist :".$name."<br/>";
+                die;
+            }
         }
         else
         {
             $value=null;
         }
                 
-        $value = $this->escapeIfRequire($value,$datatype);
+        $value = $this->escapeIfRequire($value,$datatype,$specialtag);
         return $value;
     }
 
 
-    protected function getParameterValue(string $key,string $evaluationTime='')
+    protected function getParameterValue(string $key,string $evaluationTime='',$specialtag=false)
     {
         $value=null;
         if(!isset($this->parameters[$key]))
@@ -155,12 +167,12 @@ trait PHPJasperXML_expression
             $value = $this->parameters[$key]['value'];
         } 
         $datatype = $this->parameters[$key]['datatype']??'string';
-        $value = $this->escapeIfRequire($value,$datatype);
+        $value = $this->escapeIfRequire($value,$datatype,$specialtag);
         return $value ; 
     }
 
 
-    protected function getVariableValue($key,string $evaluationTime='')
+    protected function getVariableValue($key,string $evaluationTime='',$specialtag=false)
     {        
         // echo "\n getVariableValue $key: \n";
         $datatype = "number";//by default all datatype is number, unless variable class defined
@@ -226,7 +238,7 @@ trait PHPJasperXML_expression
 
                 
                 // echo "\nvar $key type = $datatype, data = $data \n";
-                $result = $this->escapeIfRequire($data,$datatype);
+                $result = $this->escapeIfRequire($data,$datatype,$specialtag);
             break;
         }
         return $result ;
@@ -238,8 +250,10 @@ trait PHPJasperXML_expression
      * @param mixed $datatype string, number, boolean or null
      * @return mixed $data string or number value;
      */
-    public function escapeIfRequire(mixed $value,mixed $datatype): mixed
+    public function escapeIfRequire(mixed $value,mixed $datatype,$specialtag): mixed
     {
+        $opentag = $specialtag ? '<{{' : '"';
+        $closetag = $specialtag ? '}}>' : '"';
         if(gettype($datatype)=='NULL')
         {
             $datatype = 'string';
@@ -265,7 +279,7 @@ trait PHPJasperXML_expression
                 }
                 $data = addslashes($value);
                 $data = str_replace('$','\$',$data);
-                $data = '"'.$data.'"';
+                $data = $opentag.$data.$closetag;
             break;
         }
         return (string) $data;
