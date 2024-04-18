@@ -438,10 +438,12 @@ trait PHPJasperXML_elements
         
         return $prop;
     }
-    public function draw_componentElement(string $uuid,array $prop)
+    public function draw_componentElement(string $uuid,array $prop,int $x,int $y)
     {
         if(isset($prop['barcodetype']) && isset($prop['codeExpression']))
         {
+            $prop['x']=$x - $prop['width']/2;
+            $prop['y']=$y - $prop['height']/2;
             $prop['codeExpression'] = $this->executeExpression($prop['codeExpression']);
             $this->output->draw_barcode($uuid,$prop);
         }
@@ -484,7 +486,7 @@ trait PHPJasperXML_elements
     /**************************************************************************************/
 
     protected function drawElement(string $uuid,array $prop,int $offsetx,int $offsety)
-    {
+    {   
                 // $prop = $this->prop($obj->reportElement);
                 $x = $prop['x']+$offsetx;
                 $y = $prop['y']+$offsety;//$this->currentY;
@@ -498,7 +500,7 @@ trait PHPJasperXML_elements
                 }
                 $this->output->setPosition($x,$y,$prop);
                 $methodname = 'draw_'.$prop['elementtype'];
-                call_user_func([$this,$methodname],$uuid,$prop);
+                call_user_func([$this,$methodname],$uuid,$prop,$x,$y);
                 // echo $methodname."<br/>";
     }
 

@@ -107,13 +107,11 @@ class Mongodb_driver implements DataInterface
         else
         {
             $cn = new Client($connectionString);
-            // $cn = new MongoDB\Driver\Manager($connectionString);
-            // $cnstring = sprintf("host=%s user=%s password=%s dbname=%s options='--client_encoding=UTF8 '",$host,$user,$pass,$name);        
-            // $cn = pg_connect($cnstring,PGSQL_CONNECT_FORCE_NEW);        
-            // $apiVersion = new ServerApi(ServerApi::V1);
-
-            // $cn = new MongoDB\Client($connectionString, [], ['serverApi' => $apiVersion]);
-
+            try{
+                $cn->listDatabases();
+            }catch(Exception $e){
+                die($e->getMessage());
+            }
         }
         
         return $cn;

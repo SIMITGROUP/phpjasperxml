@@ -117,8 +117,7 @@ trait PHPJasperXML_expression
                 $value=$row[$name];
             }
             else {
-                echo "field not exist :".$name."<br/>";
-                die;
+                $value=null;
             }
         }
         else
