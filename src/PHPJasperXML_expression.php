@@ -25,7 +25,8 @@ trait PHPJasperXML_expression
     {   
         // $this->console( "executeExpression: $expression");
         $value = $this->parseExpression($expression,$addrowqty,$evaluationTime,true);
-
+        // $this->console( "after parse expressiom: $value");
+        // $this->console( gettype($value));
         //special result, direct return raw value
         if(gettype($value)=='object' || gettype($value)=='array')
         {
@@ -81,6 +82,7 @@ trait PHPJasperXML_expression
         foreach($fieldnames as $f => $fieldname)
         {            
             $data = $this->getFieldValue($fieldname,$addrowqty,$evaluationTime,$specialtag);
+            if(!in_array(gettype($data),['array','object']))
             $value = str_replace($fieldstrings[$f], $data,$value);
         }
         foreach($varnames as $v => $varname)
@@ -124,8 +126,12 @@ trait PHPJasperXML_expression
         {
             $value=null;
         }
-                
-        $value = $this->escapeIfRequire($value,$datatype,$specialtag);
+             
+        
+        if(!in_array(gettype($value),['array','object'])){
+            $value = $this->escapeIfRequire($value,$datatype,$specialtag);
+        }
+        
         return $value;
     }
 

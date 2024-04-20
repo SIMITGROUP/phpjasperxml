@@ -322,16 +322,33 @@ trait PHPJasperXML_elements
     }
     public function draw_subreport(string $uuid,array $prop)
     {
+        
         // echo "draw_subreport<hr>";
         if($this->output->supportSubReport())
         {
+            // print_r($prop);
+            // echo "draw subreport";die;
 
             
-            $subreport = new PHPJasperXML();        
-            $subreportExpression = $this->executeExpression($prop['subreportExpression']);        
+            $subreport = new PHPJasperXML();       
+            
+
+            
+
+            
+
+            if($this->left($prop['subreportExpression'],5)=='<?xml'){
+                $subreportExpression = $prop['subreportExpression'];
+                
+            }else{
+                $subreportExpression = $this->executeExpression($prop['subreportExpression']);        
+            }
+
+
             if($this->left($subreportExpression,5)=='<?xml')
-            {
+            {                
                 $subreport->load_xml_string($subreportExpression);
+                
             }
             else
             {
@@ -341,10 +358,13 @@ trait PHPJasperXML_elements
             }
             
 
+            
             $connectionExpression =  $this->executeExpression($prop['connectionExpression']);
-            if(empty($$connectionExpression)) $connectionExpression='REPORT_CONNECTION';
+            if(empty($connectionExpression)) $connectionExpression='REPORT_CONNECTION';
+            
             // echo '$connectionExpression---'.$connectionExpression;die;
             $connection = [];
+            
             if($connectionExpression=='REPORT_CONNECTION')
             {
                 $connection = $this->connectionsetting;
@@ -367,13 +387,19 @@ trait PHPJasperXML_elements
             }
             
             $paras = [];
-            foreach($prop['paras'] as $pname=>$pexpression)
+            // print_r($prop['paras']);die;
+            foreach($prop['paras'] as $pname=>$psetting)
             {
+                $pexpression = '';
+                if(!empty($psetting['defaultValueExpression'])){
+                    $pexpression = $psetting['defaultValueExpression'];
+                }
+                
+                // echo "<p>$pname: $pexpression</p>";
+                
                 $paras[$pname]=$this->executeExpression($pexpression);
             }
             
-            
-
             $subreport
                 ->setParameter($paras)
                 ->setDataSource($connection)
@@ -383,11 +409,13 @@ trait PHPJasperXML_elements
     }
     protected function element_componentElement(array $prop, SimpleXMLElement $obj): array
     {        
+        
         $subtype='';
         $childtypes = ['jr','c','sc','cvc'];
         foreach($childtypes as $childtype)
         {
             $children = $obj->children($childtype,true);            
+            
             foreach($children as $k=>$v)
             {
                 $subtype=$k;
@@ -395,8 +423,56 @@ trait PHPJasperXML_elements
                 
                 switch($k)
                 {   
-                    case 'list':
                     case 'table':
+                        $tableprops = $obj->children('jr',true);
+                        
+                        $table =  $obj->children();
+                        $columncount =  count($tableprops->table->{'column'});
+                        $bands = $tableprops->table->{'column'}[0];
+                        
+                        $dataset = (string)$tableprops->children('',true)->datasetRun['subDataset'];
+                        
+                        $bandsSettings=[];
+                        foreach($bands as $bandname=>$band){
+                            $bandprops = $band->attributes();
+                            // print_r();
+                            $bandsSettings[$bandname]=[
+                                'height'=>(int)$bandprops['height'],
+                                'style'=>(string)$bandprops['style'],
+                                'rowSpan'=>(string)$bandprops['rowSpan'],
+                                'colscontent'=>[]
+                            ];
+                        }
+                        $x=0;
+                        
+                        for($i=0;$i<$columncount;$i++){
+                            $column = $tableprops->table->{'column'}[$i];
+                            $width = $column->attributes()['width'];
+                            
+                            foreach($bandsSettings as $bandname=>$bandsetting){
+                                
+                                $obj = $column->{$bandname}->children();
+                                $xml='';
+                                if(!empty($obj->staticText)){
+                                    $obj->staticText->reportElement->attributes()['x']=$x;
+                                    $xml = $obj->asXML();
+                                }
+                                else if(!empty($obj->textField)){                                    
+                                    $obj->textField->reportElement->attributes()['x']=$x;                                    
+                                    $xml = $obj->asXML();                                
+                                }                                
+                                array_push($bandsSettings[$bandname]['colscontent'],$xml);                                                                
+                            }  
+                            $x+=$width;
+                        }                        
+                        $results = $this->getTableToSubReportTemplate($dataset,$bandsSettings);
+                       $prop['subreportExpression']=$results[0];
+                    //    die;
+                        $prop['paras']=$results[1];
+                        $prop['connectionExpression']='';
+                    break;
+                    case 'list':
+                    
                     case 'map':
                     case 'spiderChart':
                     case 'customvisualization':
@@ -447,8 +523,14 @@ trait PHPJasperXML_elements
             $prop['codeExpression'] = $this->executeExpression($prop['codeExpression']);
             $this->output->draw_barcode($uuid,$prop);
         }
+        else if ($prop['subtype']=='table'){
+
+            // $prop['x']=$x;
+            $prop['y']=$y;
+            $this->draw_subreport( $uuid,$prop);            
+        }
         else
-        {
+        {            
             $this->output->draw_unsupportedElement($uuid,$prop);
         }
         
@@ -517,5 +599,68 @@ trait PHPJasperXML_elements
         return $prop;
     }
 
-    
+    protected function getTableToSubReportTemplate(string $dataset, $setting){        
+        $ds = $this->subdatasets[$dataset];        
+        $querystring = $ds['querystring'];
+        $fieldstr = '';
+        $parameterstr = '';
+        $variablestr = '';        
+        foreach($ds['fields'] as $name=>$fs){
+            $fieldstr.="\n".'<field name="'.$name.'" class="'.$fs['class'].'"></field>';
+        }
+        foreach($ds['variables'] as $name=>$vs){
+            // <variable name="total" class="java.math.BigDecimal" calculation="Sum">
+            //     <variableExpression><![CDATA[$F{paymentMethods_amount}]]></variableExpression>
+            //     <initialValueExpression><![CDATA[0]]></initialValueExpression>
+            // </variable>
+            $calstr='';
+            $initvalstr='';
+            if(!empty($vs['calculation'])) {
+                $calstr = 'calculation="'.$vs['calculation'].'"';
+            }
+            if(!empty($vs['initialValueExpression'])){
+                 $initvalstr = '<initialValueExpression><![CDATA['.
+                    $vs['initialValueExpression'].']]></initialValueExpression>';
+            }
+
+            $variablestr.="\n".'<variable name="'.$name.'" class="'.$vs['class'].'" '.$calstr.'>'.
+                '<variableExpression><![CDATA['.$vs['variableExpression'].']]></variableExpression>'.
+                $initvalstr.'</variable>';
+        }
+        
+        foreach($ds['parameters'] as $name=>$fs){
+            $defstr = '';
+            if($fs['defaultValueExpression']){
+                $defstr= '<defaultValueExpression><![CDATA['.$fs['defaultValueExpression'].']]></defaultValueExpression>';
+            }            
+            $parameterstr.="\n".'<parameter name="'.$name.'" class="'.$fs['class'].'">'. $defstr.'</parameter>';
+        }
+        $bandMaps = [
+            "tableHeader"=>'pageHeader',
+            "columnHeader"=>'columnHeader',
+            "detailCell"=>'detail',
+            "columnFooter"=>'summary',
+            "tableFooter"=>'pageFooter'
+        ];
+        $bandformat = '<@bandName><band height="@bandHeight" splitType="Stretch">
+        @bandContent</band></@bandName>';
+        $strbands ='';
+        foreach($bandMaps as $k=>$bandseting){
+            if(!empty($setting[$k]) && $setting[$k]['height']>=1){
+            
+                $content = trim(implode("\n",$setting[$k]['colscontent'])," \n\r\t\v\0");                
+                $height = strlen($content)==0 ? 0 :$setting[$k]['height'];
+                $band = str_replace('@bandName',$bandseting, $bandformat) ;                
+                $band = str_replace('@bandHeight',$height,$band) ;
+                $band = str_replace('@bandContent',$content,$band) ;
+                $strbands .= $band;                
+            }
+        }
+        $template = '<?xml version="1.0" encoding="UTF-8"?>
+        <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="blank" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9f6a266d-cca1-4166-b5db-0716a8ffcc1b">
+            <queryString><![CDATA['. $querystring. ']]></queryString>
+            '. $parameterstr . $fieldstr. $variablestr. $strbands. '
+        </jasperReport>';        
+    return [$template,$ds['parameters']];
+   }
 }

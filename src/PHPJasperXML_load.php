@@ -108,7 +108,7 @@ trait PHPJasperXML_load
                 case 'queryString':
                     $this->setQueryString($out);
                     break;
-                case "subDataset":
+                case "subDataset":                    
                     $this->addSubDataSets($name,$out);
                     break;
                 case 'group':                                        
@@ -235,9 +235,105 @@ trait PHPJasperXML_load
         $this->groupcount++;
     }
 
-    protected function addSubDataSets(string $name, string $sql)
-    {        
-        $this->subdatasets[$name]=$sql;
+    protected function addSubDataSets(string $dsname, mixed $setting)
+    {                
+        // $parameters =[];
+        $querystring = '';
+        $valuesetting = [
+            'parameters'=>[],
+            'fields'=>[],
+            'variables'=>[]
+        ]; 
+        // $fields = [];
+        // $variables = [];
+        $i=0;
+        foreach($setting->children() as $k=>$child){
+            $i++;
+            
+            switch($k){
+                case 'property': 
+                    //ignore at this moment
+                break;
+                case 'parameter':   
+                case 'field':   
+                case 'variable':   
+    
+                    $attr = $child->attributes();
+                    $name = (string)$attr['name'];
+                    
+                    $class = (string)$attr['class'];                    
+                    $tmp=['class'=>$class];
+                    $attributename = $k.'s';                                        
+                    if($k=='parameter'){
+                        $defaultvalue = $child->defaultValueExpression ? (string)$child->defaultValueExpression :'';                    
+                        $tmp["defaultValueExpression"]=$defaultvalue;
+                    }else if($k=='variable'){
+                        if(!empty($attr['calculation'])){
+                            $tmp['calculation'] = (string)$attr['calculation'];
+                        }
+                        if(empty($child->variableExpression)){
+                            die('undefine variable expression for subdataset');
+                        }else{
+                            $tmp['variableExpression'] = $child->variableExpression;                     
+                        }
+                        if(!empty($child->initialValueExpression)){
+                            $tmp['initialValueExpression']=(string)$child->initialValueExpression;
+                        }
+                    }
+                    
+                    $valuesetting[$attributename][$name]=$tmp;
+                                          
+                break;
+                // case 'variable':
+                //     $attr = $child->attributes();
+                //     $name = (string)$attr['name'];
+                //     $class = (string)$attr['class'];
+                //     $calculation = (string)$attr['calculation'];
+                //     $variableExpression = $child->variableExpression;
+                //     $initialValueExpression = $child->initialValueExpression;
+
+                    // $attributename = $k.'s';                                        
+                    // foreach($out as $key=>$value)
+                    // {
+                    //     $setting[$key]=(string)$value;
+                    // }
+                    // $setting['datatype']=$this->getDataType($setting);
+                    
+                    // if($k=='variable')
+                    // {
+                    //     // print_r($setting);
+                    //     if(empty($setting['variableExpression']))
+                    //     {
+                    //         die("variable $name undefined expression");
+                    //     }
+                    //     $setting['value']=null;
+                    // }
+                    // else if($k=='parameter')
+                    // {
+                    //     $setting['value']=null;
+                    // }
+                    // $this->$attributename[$name]=$setting;      
+                // break;
+                case 'queryString':
+                    $querystring = (string) $setting->queryString;
+                break;
+                // case 'field':
+                //     $attr = $child->attributes();
+                //     $name = (string)$attr['name'];
+                //     $class = (string)$attr['class'];                    
+                //     $fields[$name]=[
+                //         "class"=>$class
+                //     ];          
+                // break;
+                default:
+                    // echo "do nothing";
+                break;
+            }
+        }
+
+        $valuesetting["querystring"]=$querystring;
+        $this->subdatasets[$dsname] = $valuesetting;        
+        // print_r($this->subdatasets[$name]);die;
     }
   
     
@@ -350,6 +446,7 @@ trait PHPJasperXML_load
     protected function getDataType(array $setting): string
     {
         $type='';
+        // echo $setting['class']."<br/>";
         switch($setting['class'])
         {
             case 'java.lang.Boolean':
@@ -363,9 +460,11 @@ trait PHPJasperXML_load
             case 'java.math.BigDecimal':
                 $type='number';
             break;
+            case 'java.util.List':
             case 'java.sql.Connection':
                 $type='array';
             break;
+            
             case 'java.sql.Timestamp':
             case 'java.lang.String':
             default:

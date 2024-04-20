@@ -54,13 +54,14 @@ class Mongodb_driver implements DataInterface
             }
             
             $array = json_decode(json_encode($result->toArray(),true), true);
+            $newarr = $array;
             // echo "<pre>".print_r($array,true)."</pre>";
             
-            for($i=0;$i<count($array);$i++){
-                $l = $array[$i];
-                $tmp = $this->convertObjectToArray($l);
-                array_push($newarr,$tmp);
-            }
+            // for($i=0;$i<count($array);$i++){
+            //     $l = $array[$i];
+            //     $tmp = $this->convertObjectToArray($l);
+            //     array_push($newarr,$tmp);
+            // }
 
 
         }

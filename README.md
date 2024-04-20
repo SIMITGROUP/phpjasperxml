@@ -6,7 +6,8 @@ The goal of this project is to allow php developer design reasonable good printa
 It completely rewrite since version 1.x, if you use version 1.x before please verify your output carefully since it is more compatible to jasper studio, but may not work perfectly at last version.
 
 
-
+# Change Log
+Track change log since 2.1.0 [here](./changelog.md)
 
 # Install
 Latest phpjasperxml require php 7.4-8.2, and php extension like php-curl, php-intl, php-simplexml. 
@@ -82,7 +83,7 @@ subreport | :white_check_mark: | :exclamation: support basic fixed height sub re
 frame | :white_check_mark: | 
 chart | :x: | 
 spiderchart | :x: | 
-table | :x: |  
+table | :white_check_mark: |  it rely on additional datasource, at background it run as subreport.
 list | :x: | 
 generic | :x: | 
 custom visualzation | :x: | 
