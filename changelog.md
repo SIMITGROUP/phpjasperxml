@@ -9,6 +9,9 @@
 4. added ->debugsql(true)
 5. more reliable algorithm to parse `expression`
 
+## 2.1.7
+- fix subdata set map parameter wrongly, while render table
+
 ## 2.1.6
 - added experimental support on table element (render as sub report)
 - modify mongodb driver to avoid split nested object become flat fields

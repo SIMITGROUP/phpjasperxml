@@ -347,6 +347,7 @@ trait PHPJasperXML_elements
 
             if($this->left($subreportExpression,5)=='<?xml')
             {                
+                // echo "load subreport";die;
                 $subreport->load_xml_string($subreportExpression);
                 
             }
@@ -387,19 +388,20 @@ trait PHPJasperXML_elements
             }
             
             $paras = [];
+            
             // print_r($prop['paras']);die;
             foreach($prop['paras'] as $pname=>$psetting)
             {
                 $pexpression = '';
-                if(!empty($psetting['defaultValueExpression'])){
+                if(!empty($prop['datasetParameters'][$pname])){
+                    $pexpression = $prop['datasetParameters'][$pname];
+                }
+                else if(!empty($psetting['defaultValueExpression'])){
                     $pexpression = $psetting['defaultValueExpression'];
                 }
-                
-                // echo "<p>$pname: $pexpression</p>";
-                
+                                
                 $paras[$pname]=$this->executeExpression($pexpression);
             }
-            
             $subreport
                 ->setParameter($paras)
                 ->setDataSource($connection)
@@ -429,9 +431,14 @@ trait PHPJasperXML_elements
                         $table =  $obj->children();
                         $columncount =  count($tableprops->table->{'column'});
                         $bands = $tableprops->table->{'column'}[0];
-                        
-                        $dataset = (string)$tableprops->children('',true)->datasetRun['subDataset'];
-                        
+                        $datasetRun = $tableprops->children('',true)->datasetRun;
+                        $dataset = (string)$datasetRun['subDataset'];
+                        $datasetParameters = [];
+                        foreach($datasetRun->children()->datasetParameter as $p=>$pobj){
+                            $pname = (string)$pobj['name'];
+                            $datasetParameters[$pname]=(string)$pobj->datasetParameterExpression;
+                        }
+
                         $bandsSettings=[];
                         foreach($bands as $bandname=>$band){
                             $bandprops = $band->attributes();
@@ -439,7 +446,7 @@ trait PHPJasperXML_elements
                             $bandsSettings[$bandname]=[
                                 'height'=>(int)$bandprops['height'],
                                 'style'=>(string)$bandprops['style'],
-                                'rowSpan'=>(string)$bandprops['rowSpan'],
+                                'rowSpan'=>(string)$bandprops['rowSpan'],                                
                                 'colscontent'=>[]
                             ];
                         }
@@ -468,7 +475,8 @@ trait PHPJasperXML_elements
                         $results = $this->getTableToSubReportTemplate($dataset,$bandsSettings);
                        $prop['subreportExpression']=$results[0];
                     //    die;
-                        $prop['paras']=$results[1];
+                        $prop['paras']=$results[1]; //parameter used to draw at subreport jrxml
+                        $prop['datasetParameters']=$datasetParameters; //parameter maping from main report
                         $prop['connectionExpression']='';
                     break;
                     case 'list':
@@ -660,7 +668,8 @@ trait PHPJasperXML_elements
         <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="blank" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9f6a266d-cca1-4166-b5db-0716a8ffcc1b">
             <queryString><![CDATA['. $querystring. ']]></queryString>
             '. $parameterstr . $fieldstr. $variablestr. $strbands. '
-        </jasperReport>';        
+        </jasperReport>';  
+        // echo "<textarea cols=80 rows=60>".$template."</textarea>";      die;
     return [$template,$ds['parameters']];
    }
 }
