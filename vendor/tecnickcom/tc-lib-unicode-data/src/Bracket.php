@@ -7,7 +7,7 @@
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  *
@@ -23,18 +23,18 @@ namespace Com\Tecnick\Unicode\Data;
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  */
 class Bracket
 {
     /**
-     * Bracket unicode characters (open bracket code => close bracket code)
+     * Bracket unicode characters (open bracket code => close bracket code).
      *
-     * @var array
+     * @var array<int, int>
      */
-    public static $open = array(
+    public const OPEN = [
         0x0028 => 0x0029, // PARENTHESIS
         0x005B => 0x005D, // SQUARE BRACKET
         0x007B => 0x007D, // CURLY BRACKET
@@ -94,15 +94,15 @@ class Bracket
         0xFF3B => 0xFF3D, // FULLWIDTH SQUARE BRACKET
         0xFF5B => 0xFF5D, // FULLWIDTH CURLY BRACKET
         0xFF5F => 0xFF60, // FULLWIDTH WHITE PARENTHESIS
-        0xFF62 => 0xFF63  // HALFWIDTH CORNER BRACKET
-    );
+        0xFF62 => 0xFF63,  // HALFWIDTH CORNER BRACKET
+    ];
 
     /**
-     * Bracket unicode characters (close bracket code => open bracket code)
+     * Bracket unicode characters (close bracket code => open bracket code).
      *
-     * @var array
+     * @var array<int, int>
      */
-    public static $close = array(
+    public const CLOSE = [
         0x0029 => 0x0028, // PARENTHESIS
         0x005D => 0x005B, // SQUARE BRACKET
         0x007D => 0x007B, // CURLY BRACKET
@@ -162,6 +162,6 @@ class Bracket
         0xFF3D => 0xFF3B, // FULLWIDTH SQUARE BRACKET
         0xFF5D => 0xFF5B, // FULLWIDTH CURLY BRACKET
         0xFF60 => 0xFF5F, // FULLWIDTH WHITE PARENTHESIS
-        0xFF63 => 0xFF62  // HALFWIDTH CORNER BRACKET
-    );
+        0xFF63 => 0xFF62,  // HALFWIDTH CORNER BRACKET
+    ];
 }

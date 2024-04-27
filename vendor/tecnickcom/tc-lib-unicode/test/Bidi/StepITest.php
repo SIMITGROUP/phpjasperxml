@@ -3,112 +3,302 @@
 /**
  * StepITest.php
  *
- * @since       2011-05-23
- * @category    Library
- * @package     Unicode
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-unicode
+ * @since     2011-05-23
+ * @category  Library
+ * @package   Unicode
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-unicode
  *
  * This file is part of tc-lib-unicode software library.
  */
 
 namespace Test\Bidi;
 
+use Com\Tecnick\Unicode\Bidi\StepI;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Bidi Test
  *
- * @since       2011-05-23
- * @category    Library
- * @package     Unicode
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-unicode
+ * @since     2011-05-23
+ * @category  Library
+ * @package   Unicode
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-unicode
  */
 class StepITest extends TestCase
 {
     /**
      * @dataProvider stepIDataProvider
+     *
+     * @param array{
+     *        'e': int,
+     *        'edir': string,
+     *        'end': int,
+     *        'eos': string,
+     *        'length': int,
+     *        'maxlevel': int,
+     *        'sos': string,
+     *        'start': int,
+     *        'item': array<int, array{
+     *            'char': int,
+     *            'i': int,
+     *            'level': int,
+     *            'otype': string,
+     *            'pdimatch': int,
+     *            'pos': int,
+     *            'type': string,
+     *            'x': int,
+     *          }>,
+     *        } $seq     Isolated Sequence array
      */
-    public function testStepI($seq, $expected)
+    public function testStepI(array $seq, mixed $expected): void
     {
-        $stepi = new \Com\Tecnick\Unicode\Bidi\StepI($seq);
+        $stepi = new StepI($seq);
         $this->assertEquals($expected, $stepi->getSequence());
     }
 
-    public static function stepIDataProvider()
+    /**
+     * @return array<int,  array<int, array{
+     *        'e': int,
+     *        'edir': string,
+     *        'end': int,
+     *        'eos': string,
+     *        'length': int,
+     *        'maxlevel': int,
+     *        'sos': string,
+     *        'start': int,
+     *        'item': array<int, array{
+     *            'char': int,
+     *            'i': int,
+     *            'level': int,
+     *            'otype': string,
+     *            'pdimatch': int,
+     *            'pos': int,
+     *            'type': string,
+     *            'x': int,
+     *          }>,
+     *        }>>
+     */
+    public static function stepIDataProvider(): array
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'e' => 0,
                     'edir' => 'L',
-                    'start' => 0,
                     'end' => 3,
-                    'length' => 4,
-                    'sos' => 'L',
                     'eos' => 'L',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 65,   'level' => 0, 'type' => 'L',  'otype' => 'L'),
-                        array('pos' => 1, 'char' => 8207, 'level' => 0, 'type' => 'R',  'otype' => 'R'),
-                        array('pos' => 2, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                        array('pos' => 3, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'length' => 4,
+                    'maxlevel' => 0,
+                    'sos' => 'L',
+                    'start' => 0,
+                    'item' => [
+                        [
+                            'char' => 65,
+                            'i' => -1,
+                            'level' => 0,
+                            'otype' => 'L',
+                            'pos' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 8207,
+                            'i' => -1,
+                            'level' => 0,
+                            'otype' => 'R',
+                            'pos' => 1,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 1632,
+                            'i' => -1,
+                            'level' => 0,
+                            'otype' => 'AN',
+                            'pos' => 2,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 1776,
+                            'i' => -1,
+                            'level' => 0,
+                            'otype' => 'EN',
+                            'pos' => 3,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'x' => 0,
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'L',
-                    'start' => 0,
                     'end' => 3,
-                    'length' => 4,
-                    'sos' => 'L',
                     'eos' => 'L',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 65, 'level' => 0, 'type' => 'L', 'otype' => 'L'),
-                        array('pos' => 1, 'char' => 8207, 'level' => 1, 'type' => 'R', 'otype' => 'R'),
-                        array('pos' => 2, 'char' => 1632, 'level' => 2, 'type' => 'AN', 'otype' => 'AN'),
-                        array('pos' => 3, 'char' => 1776, 'level' => 2, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
+                    'length' => 4,
                     'maxlevel' => 2,
-                )
-            ),
-            array(
-                array(
+                    'sos' => 'L',
+                    'start' => 0,
+                    'item' => [
+                        [
+                            'char' => 65,
+                            'i' => -1,
+                            'level' => 0,
+                            'otype' => 'L',
+                            'pos' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 8207,
+                            'i' => -1,
+                            'level' => 1,
+                            'otype' => 'R',
+                            'pos' => 1,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 1632,
+                            'i' => -1,
+                            'level' => 2,
+                            'otype' => 'AN',
+                            'pos' => 2,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 1776,
+                            'i' => -1,
+                            'level' => 2,
+                            'otype' => 'EN',
+                            'pos' => 3,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'x' => 0,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 1,
                     'edir' => 'R',
-                    'start' => 0,
                     'end' => 3,
-                    'length' => 4,
-                    'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 65,   'level' => 1, 'type' => 'L',  'otype' => 'L'),
-                        array('pos' => 1, 'char' => 8207, 'level' => 1, 'type' => 'R',  'otype' => 'R'),
-                        array('pos' => 2, 'char' => 1632, 'level' => 1, 'type' => 'AN', 'otype' => 'AN'),
-                        array('pos' => 3, 'char' => 1776, 'level' => 1, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'length' => 4,
+                    'maxlevel' => 0,
+                    'sos' => 'R',
+                    'start' => 0,
+                    'item' => [
+                        [
+                            'char' => 65,
+                            'i' => -1,
+                            'level' => 1,
+                            'otype' => 'L',
+                            'pos' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 8207,
+                            'i' => -1,
+                            'level' => 1,
+                            'otype' => 'R',
+                            'pos' => 1,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 1632,
+                            'i' => -1,
+                            'level' => 1,
+                            'otype' => 'AN',
+                            'pos' => 2,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 1776,
+                            'i' => -1,
+                            'level' => 1,
+                            'otype' => 'EN',
+                            'pos' => 3,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'x' => 0,
+                        ],
+                    ],
+                ],
+                [
                     'e' => 1,
                     'edir' => 'R',
-                    'start' => 0,
                     'end' => 3,
-                    'length' => 4,
-                    'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 65, 'level' => 2, 'type' => 'L', 'otype' => 'L'),
-                        array('pos' => 1, 'char' => 8207, 'level' => 1, 'type' => 'R', 'otype' => 'R'),
-                        array('pos' => 2, 'char' => 1632, 'level' => 2, 'type' => 'AN', 'otype' => 'AN'),
-                        array('pos' => 3, 'char' => 1776, 'level' => 2, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
+                    'length' => 4,
                     'maxlevel' => 2,
-                )
-            ),
-        );
+                    'sos' => 'R',
+                    'start' => 0,
+                    'item' => [
+                        [
+                            'char' => 65,
+                            'i' => -1,
+                            'level' => 2,
+                            'otype' => 'L',
+                            'pos' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 8207,
+                            'i' => -1,
+                            'level' => 1,
+                            'otype' => 'R',
+                            'pos' => 1,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 1632,
+                            'i' => -1,
+                            'level' => 2,
+                            'otype' => 'AN',
+                            'pos' => 2,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'x' => 0,
+                        ],
+                        [
+                            'char' => 1776,
+                            'i' => -1,
+                            'level' => 2,
+                            'otype' => 'EN',
+                            'pos' => 3,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'x' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 }

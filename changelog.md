@@ -9,6 +9,13 @@
 4. added ->debugsql(true)
 5. more reliable algorithm to parse `expression`
 
+## 2.1.8
+- added ->debugData(true) to verify data loaded
+- wont cause error for some unsupport component like charts or list
+- better algorithm to avoid error come from string '+' 
+- reduce dependend on latest mongodb ^1.18, use ^1.17 instead
+
+
 ## 2.1.7
 - fix subdata set map parameter wrongly, while render table
 

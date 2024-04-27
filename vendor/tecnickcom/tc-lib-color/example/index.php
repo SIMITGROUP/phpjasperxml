@@ -2,26 +2,26 @@
 /**
  * index.php
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * This file is part of tc-lib-color software library.
  */
 
 // autoloader when using Composer
-require ('../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // autoloader when using RPM or DEB package installation
 //require ('/usr/share/php/Com/Tecnick/Color/autoload.php');
 
-$colobj = new \Com\Tecnick\Color\Web;
+$colobj = new \Com\Tecnick\Color\Web();
 
-$colmap = $colobj->getMap();
+$colmap = $colobj::WEBHEX;
 
 $tablerows = '';
 $invtablerows = '';
@@ -30,28 +30,26 @@ foreach ($colmap as $name => $hex) {
     $hslcolor = new \Com\Tecnick\Color\Model\Hsl($rgbcolor->toHslArray());
     $comp = $rgbcolor->getNormalizedArray(255);
     // web colors
-    $tablerows .= '<tr>'
-        .'<td style="background-color:'.$rgbcolor->getCssColor().';">&nbsp;</td>'
-        .'<td>'.$name.'</td>'
-        .'<td>'.$rgbcolor->getRgbHexColor().'</td>'
-        .'<td style="text-align:right;">'.$comp['R'].'</td>'
-        .'<td style="text-align:right;">'.$comp['G'].'</td>'
-        .'<td style="text-align:right;">'.$comp['B'].'</td>'
-        .'<td>'.$rgbcolor->getCssColor().'</td>'
-        .'<td>'.$hslcolor->getCssColor().'</td>'
-        .'<td>'.$rgbcolor->getJsPdfColor().'</td>'
-        .'</tr>'."\n";
+    $tablerows .= '<tr><td style="background-color:' . $rgbcolor->getCssColor() . ';">&nbsp;</td>'
+        . '<td>' . $name . '</td>'
+        . '<td>' . $rgbcolor->getRgbHexColor() . '</td>'
+        . '<td style="text-align:right;">' . $comp['R'] . '</td>'
+        . '<td style="text-align:right;">' . $comp['G'] . '</td>'
+        . '<td style="text-align:right;">' . $comp['B'] . '</td>'
+        . '<td>' . $rgbcolor->getCssColor() . '</td>'
+        . '<td>' . $hslcolor->getCssColor() . '</td>'
+        . '<td>' . $rgbcolor->getJsPdfColor() . '</td>'
+        . '</tr>' . "\n";
     // normalised inverted web colors
     $invcolor = clone $rgbcolor;
     $invcolor->invertColor();
     $invcolname = $colobj->getClosestWebColor($invcolor->toRgbArray());
     $invrgbcolor = $colobj->getRgbObjFromName($invcolname);
-    $invtablerows .= '<tr>'
-        .'<td style="text-align:right;">'.$name.'</td>'
-        .'<td style="background-color:'.$rgbcolor->getCssColor().';">&nbsp;</td>'
-        .'<td style="background-color:'.$invrgbcolor->getCssColor().';">&nbsp;</td>'
-        .'<td>'.$invcolname.'</td>'
-        .'</tr>'."\n";
+    $invtablerows .= '<tr><td style="text-align:right;">' . $name . '</td>'
+        . '<td style="background-color:' . $rgbcolor->getCssColor() . ';">&nbsp;</td>'
+        . '<td style="background-color:' . $invrgbcolor->getCssColor() . ';">&nbsp;</td>'
+        . '<td>' . $invcolname . '</td>'
+        . '</tr>' . "\n";
 }
 
 echo "
@@ -87,7 +85,7 @@ echo "
                 </tr>
             </thead>
             <tbody>
-".$tablerows."
+" . $tablerows . "
             </tbody>
         </table>
         <h2>Normalized Inverted Web Colors Table</h2>
@@ -105,7 +103,7 @@ echo "
                 </tr>
             </thead>
             <tbody>
-".$invtablerows."
+" . $invtablerows . "
             </tbody>
         </table>
     </body>

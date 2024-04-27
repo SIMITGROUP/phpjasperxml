@@ -16,7 +16,7 @@ URL:       https://github.com/%{gh_owner}/%{gh_project}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires:  php(language) >= 5.4.0
+Requires:  php(language) >= 8.0.0
 
 Provides:  php-composer(%{c_vendor}/%{gh_project}) = %{version}
 Provides:  php-%{gh_project} = %{version}
@@ -42,7 +42,7 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_configpath}*
 
 %changelog
-* Thu Jul 02 2015 Nicola Asuni <info@tecnick.com> 1.1.0-1
+* Thu Jul 02 2024 Nicola Asuni <info@tecnick.com> 1.1.0-1
 - Changed package name, add provides section
-* Thu May 14 2015 Nicola Asuni <info@tecnick.com> 1.0.0-1
+* Thu May 14 2024 Nicola Asuni <info@tecnick.com> 1.0.0-1
 - Initial Commit

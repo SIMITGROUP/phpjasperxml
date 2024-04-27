@@ -7,7 +7,7 @@
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  *
@@ -23,7 +23,7 @@ namespace Com\Tecnick\Unicode\Data;
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  */
@@ -32,11 +32,11 @@ class Mirror
     /**
      * Mirror unicode characters.
      * For information on bidi mirroring, see UAX #9:
-     * Bidirectional Algorithm, at http://www.unicode.org/unicode/reports/tr9/
+     * Bidirectional Algorithm, at http://www.unicode.org/unicode/reports/tr9/.
      *
-     * @var array
+     * @var array<int, int>
      */
-    public static $uni = array(
+    public const UNI = [
         0x0028 => 0x0029,
         0x0029 => 0x0028,
         0x003C => 0x003E,
@@ -388,6 +388,6 @@ class Mirror
         0xFF5F => 0xFF60,
         0xFF60 => 0xFF5F,
         0xFF62 => 0xFF63,
-        0xFF63 => 0xFF62
-    );
+        0xFF63 => 0xFF62,
+    ];
 }

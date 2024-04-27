@@ -3,96 +3,100 @@
 /**
  * CacheTest.php
  *
- * @since       2011-05-23
- * @category    Library
- * @package     File
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-filecache
+ * @since     2011-05-23
+ * @category  Library
+ * @package   File
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-filecache
  *
  * This file is part of tc-lib-pdf-filecache software library.
  */
 
 namespace Test;
 
-use PHPUnit\Framework\TestCase;
-
 /**
  * Unit Test
  *
- * @since       2011-05-23
- * @category    Library
- * @package     File
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-filecache
+ * @since     2011-05-23
+ * @category  Library
+ * @package   File
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-filecache
  */
 class CacheTest extends TestUtil
 {
-    protected function getTestObject()
+    protected function getTestObject(): \Com\Tecnick\File\Cache
     {
         return new \Com\Tecnick\File\Cache('1_2-a+B/c');
     }
 
-    public function testAutoPrefix()
+    public function testAutoPrefix(): void
     {
-        $obj = new \Com\Tecnick\File\Cache();
-        $this->assertNotEmpty($obj->getFilePrefix());
+        $cache = new \Com\Tecnick\File\Cache();
+        $this->assertNotEmpty($cache->getFilePrefix());
     }
 
-    public function testGetCachePath()
+    public function testGetCachePath(): void
     {
-        $testObj = $this->getTestObject();
-        $val = $testObj->getCachePath();
-        $this->assertEquals('/', $val[0]);
-        $this->assertEquals('/', substr($val, -1));
+        $cache = $this->getTestObject();
+        $cachePath = $cache->getCachePath();
+        $this->assertEquals('/', $cachePath[0]);
+        $this->assertEquals('/', substr($cachePath, -1));
 
-        $testObj->setCachePath();
-        $this->assertEquals($val, $testObj->getCachePath());
+        $cache->setCachePath();
+        $this->assertEquals($cachePath, $cache->getCachePath());
 
         $path = '/tmp';
-        $testObj->setCachePath($path);
-        $this->assertEquals('/tmp/', $testObj->getCachePath());
+        $cache->setCachePath($path);
+        $this->assertEquals('/tmp/', $cache->getCachePath());
     }
 
-    public function testGetFilePrefix()
+    public function testGetFilePrefix(): void
     {
-        $testObj = $this->getTestObject();
-        $val = $testObj->getFilePrefix();
-        $this->assertEquals('_1_2-a-B_c_', $val);
+        $cache = $this->getTestObject();
+        $filePrefix = $cache->getFilePrefix();
+        $this->assertEquals('_1_2-a-B_c_', $filePrefix);
     }
 
-    public function testGetNewFileName()
+    public function testGetNewFileName(): void
     {
-        $testObj = $this->getTestObject();
-        $val = $testObj->getNewFileName('tst', '0123');
+        $cache = $this->getTestObject();
+        $val = $cache->getNewFileName('tst', '0123');
+        $this->assertNotFalse($val);
         $this->bcAssertMatchesRegularExpression('/_1_2-a-B_c_tst_0123_/', $val);
     }
 
-    public function testDelete()
+    public function testDelete(): void
     {
-        $testObj = $this->getTestObject();
+        $cache = $this->getTestObject();
         $idk = 0;
         for ($idx = 1; $idx <= 2; ++$idx) {
             for ($idy = 1; $idy <= 2; ++$idy) {
-                $file[$idk] = $testObj->getNewFileName($idx, $idy);
+                $file[$idk] = $cache->getNewFileName((string) $idx, (string) $idy);
+                $this->assertNotFalse($file[$idk]);
                 file_put_contents($file[$idk], '');
                 $this->assertTrue(file_exists($file[$idk]));
                 ++$idk;
             }
         }
 
-        $testObj->delete('2', '1');
+        $cache->delete('2', '1');
+        $this->assertNotFalse($file[2]);
         $this->assertFalse(file_exists($file[2]));
 
-        $testObj->delete('1');
+        $cache->delete('1');
+        $this->assertNotFalse($file[0]);
         $this->assertFalse(file_exists($file[0]));
+        $this->assertNotFalse($file[1]);
         $this->assertFalse(file_exists($file[1]));
+        $this->assertNotFalse($file[3]);
         $this->assertTrue(file_exists($file[3]));
 
-        $testObj->delete();
+        $cache->delete();
         $this->assertFalse(file_exists($file[3]));
     }
 }

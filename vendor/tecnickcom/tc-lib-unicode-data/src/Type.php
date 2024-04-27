@@ -7,7 +7,7 @@
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  *
@@ -23,7 +23,7 @@ namespace Com\Tecnick\Unicode\Data;
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  *
@@ -34,47 +34,47 @@ class Type
     /**
      * Array of Strong bidirectional character types.
      *
-     * @var array
+     * @var array<string, string>
      */
-    public static $strong = array(
-        'L'  => 'L',   // Left-to-Right
-        'R'  => 'R',   // Right-to-Left
-        'AL' => 'AL'   // Right-to-Left Arabic
-    );
+    public const STRONG = [
+        'L' => 'L',   // Left-to-Right
+        'R' => 'R',   // Right-to-Left
+        'AL' => 'AL',   // Right-to-Left Arabic
+    ];
 
     /**
      * Array of Weak bidirectional character types.
      *
-     * @var array
+     * @var array<string, string>
      */
-    public static $weak = array(
-        'EN'  => 'EN',  // European Number
-        'ES'  => 'ES',  // European Number Separator
-        'ET'  => 'ET',  // European Number Terminator
-        'AN'  => 'AN',  // Arabic Number
-        'CS'  => 'CS',  // Common Number Separator
+    public const WEAK = [
+        'EN' => 'EN',  // European Number
+        'ES' => 'ES',  // European Number Separator
+        'ET' => 'ET',  // European Number Terminator
+        'AN' => 'AN',  // Arabic Number
+        'CS' => 'CS',  // Common Number Separator
         'NSM' => 'NSM', // Nonspacing Mark
-        'BN'  => 'BN'   // Boundary Neutral
-    );
+        'BN' => 'BN',   // Boundary Neutral
+    ];
 
     /**
      * Array of Neutral bidirectional character types.
      *
-     * @var array
+     * @var array<string, string>
      */
-    public static $neutral = array(
-        'B'  => 'B',   // Paragraph Separator
-        'S'  => 'S',   // Segment Separator
-        'WS' => 'WS',  // Whitespace
-        'ON' => 'ON'   // Other Neutrals
-    );
+    public const NEUTRAL = [
+        'B' => 'B',   // Paragraph Separator
+        'S' => 'S',   // Segment Separator
+        'WS' => 'WS', // Whitespace
+        'ON' => 'ON', // Other Neutrals
+    ];
 
     /**
-     * Array of Explicit formatting codes
+     * Array of Explicit formatting codes.
      *
-     * @var array
+     * @var array<string, int>
      */
-    public static $explicit_formatting = array(
+    public const EXPLICIT_FORMATTING = [
         'LRE' => 8234, // Left-to-Right Embedding
         'LRO' => 8237, // Left-to-Right Override
         'RLE' => 8235, // Right-to-Left Embedding
@@ -83,15 +83,15 @@ class Type
         'LRI' => 8294, // Left-to-Right Isolate
         'RLI' => 8295, // Right-to-Left Isolate
         'FSI' => 8296, // First Strong Isolate
-        'PDI' => 8297  // Pop Directional Isolate
-    );
+        'PDI' => 8297,  // Pop Directional Isolate
+    ];
 
     /**
      * Array of Unicode types.
      *
-     * @var array
+     * @var array<int, string>
      */
-    public static $uni = array(
+    public const UNI = [
         0 => 'BN',
         1 => 'BN',
         2 => 'BN',
@@ -17809,8 +17809,8 @@ class Type
         917998 => 'NSM',
         917999 => 'NSM',
         983040 => 'L',
-        1048573 => 'L',
-        1048576 => 'L',
-        1114109 => 'L'
-    );
+        1_048_573 => 'L',
+        1_048_576 => 'L',
+        1_114_109 => 'L',
+    ];
 }

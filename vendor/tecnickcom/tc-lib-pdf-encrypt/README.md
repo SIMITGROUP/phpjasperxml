@@ -13,7 +13,7 @@
 * **category**    Library
 * **package**     \Com\Tecnick\Pdf\Encrypt
 * **author**      Nicola Asuni <info@tecnick.com>
-* **copyright**   2011-2023 Nicola Asuni - Tecnick.com LTD
+* **copyright**   2011-2024 Nicola Asuni - Tecnick.com LTD
 * **license**     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
 * **link**        https://github.com/tecnickcom/tc-lib-pdf-encrypt
 * **SRC DOC**     https://tcpdf.org/docs/srcdoc/tc-lib-pdf-encrypt
@@ -103,7 +103,7 @@ All artifacts are generated in the target directory.
 
 Examples are located in the `example` directory.
 
-Start a development server (requires PHP 5.4) using the command:
+Start a development server (requires PHP 8.0+) using the command:
 
 ```
 make server
@@ -119,7 +119,7 @@ Create a composer.json in your projects root-directory:
 ```json
 {
     "require": {
-        "tecnickcom/tc-lib-pdf-encrypt": "^1.6"
+        "tecnickcom/tc-lib-pdf-encrypt": "^2.0"
     }
 }
 ```
@@ -127,7 +127,7 @@ Create a composer.json in your projects root-directory:
 Or add to an existing project with: 
 
 ```bash
-composer require tecnickcom/tc-lib-pdf-encrypt ^1.6
+composer require tecnickcom/tc-lib-pdf-encrypt ^2.0
 ```
 
 ## Packaging

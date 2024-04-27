@@ -16,16 +16,16 @@ URL:       https://github.com/%{gh_owner}/%{gh_project}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires:  php(language) >= 5.4.0
+Requires:  php(language) >= 8.0.0
 Requires:  php-json
 Requires:  php-pcre
 Requires:  php-zlib
 Requires:  php-composer(%{c_vendor}/tc-lib-file) < 2.0.0
-Requires:  php-composer(%{c_vendor}/tc-lib-file) >= 1.7.38
+Requires:  php-composer(%{c_vendor}/tc-lib-file) >= 2.0.11
 Requires:  php-composer(%{c_vendor}/tc-lib-unicode-data) < 2.0.0
-Requires:  php-composer(%{c_vendor}/tc-lib-unicode-data) >= 1.7.32
+Requires:  php-composer(%{c_vendor}/tc-lib-unicode-data) >= 2.0.11
 Requires:  php-composer(%{c_vendor}/tc-lib-pdf-encrypt) < 2.0.0
-Requires:  php-composer(%{c_vendor}/tc-lib-pdf-encrypt) >= 1.6.34
+Requires:  php-composer(%{c_vendor}/tc-lib-pdf-encrypt) >= 2.1.2
 Requires:  php-composer(%{c_vendor}/tc-lib-pdf-font-data-core) < 2.0.0
 Requires:  php-composer(%{c_vendor}/tc-lib-pdf-font-data-core) >= 1.8.7
 
@@ -53,5 +53,5 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_configpath}*
 
 %changelog
-* Mon Aug 10 2015 Nicola Asuni <info@tecnick.com> 1.0.0-1
+* Mon Aug 10 2024 Nicola Asuni <info@tecnick.com> 1.0.0-1
 - Initial Commit

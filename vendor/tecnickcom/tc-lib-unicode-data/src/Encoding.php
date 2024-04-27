@@ -7,7 +7,7 @@
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  *
@@ -23,7 +23,7 @@ namespace Com\Tecnick\Unicode\Data;
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  *
@@ -34,11 +34,11 @@ class Encoding
     /**
      * Font Encoding Maps.
      *
-     * @var array
+     * @var array<string, array<int, string>>
      */
-    public static $map = array(
+    public const MAP = [
         // encoding map for: cp874
-        'cp874' => array(
+        'cp874' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -294,11 +294,10 @@ class Encoding
             252 => '.notdef',
             253 => '.notdef',
             254 => '.notdef',
-            255 => '.notdef'
-        ),
-
+            255 => '.notdef',
+        ],
         // encoding map for: cp1250
-        'cp1250' => array(
+        'cp1250' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -554,11 +553,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'yacute',
             254 => 'tcommaaccent',
-            255 => 'dotaccent'
-        ),
-
+            255 => 'dotaccent',
+        ],
         // encoding map for: cp1251
-        'cp1251' => array(
+        'cp1251' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -814,11 +812,10 @@ class Encoding
             252 => 'afii10094',
             253 => 'afii10095',
             254 => 'afii10096',
-            255 => 'afii10097'
-        ),
-
+            255 => 'afii10097',
+        ],
         // encoding map for: cp1252
-        'cp1252' => array(
+        'cp1252' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -1074,11 +1071,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'yacute',
             254 => 'thorn',
-            255 => 'ydieresis'
-        ),
-
+            255 => 'ydieresis',
+        ],
         // encoding map for: cp1253
-        'cp1253' => array(
+        'cp1253' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -1334,11 +1330,10 @@ class Encoding
             252 => 'omicrontonos',
             253 => 'upsilontonos',
             254 => 'omegatonos',
-            255 => '.notdef'
-        ),
-
+            255 => '.notdef',
+        ],
         // encoding map for: cp1254
-        'cp1254' => array(
+        'cp1254' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -1594,11 +1589,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'dotlessi',
             254 => 'scedilla',
-            255 => 'ydieresis'
-        ),
-
+            255 => 'ydieresis',
+        ],
         // encoding map for: cp1255
-        'cp1255' => array(
+        'cp1255' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -1854,11 +1848,10 @@ class Encoding
             252 => '.notdef',
             253 => 'afii299',
             254 => 'afii300',
-            255 => '.notdef'
-        ),
-
+            255 => '.notdef',
+        ],
         // encoding map for: cp1256
-        'cp1256' => array(
+        'cp1256' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -2114,11 +2107,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'afii299',
             254 => 'afii300',
-            255 => 'afii57519'
-        ),
-
+            255 => 'afii57519',
+        ],
         // encoding map for: cp1257
-        'cp1257' => array(
+        'cp1257' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -2374,11 +2366,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'zdotaccent',
             254 => 'zcaron',
-            255 => 'dotaccent'
-        ),
-
+            255 => 'dotaccent',
+        ],
         // encoding map for: cp1258
-        'cp1258' => array(
+        'cp1258' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -2634,11 +2625,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'uhorn',
             254 => 'dong',
-            255 => 'ydieresis'
-        ),
-
+            255 => 'ydieresis',
+        ],
         // encoding map for: iso-8859-1
-        'iso-8859-1' => array(
+        'iso-8859-1' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -2894,11 +2884,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'yacute',
             254 => 'thorn',
-            255 => 'ydieresis'
-        ),
-
+            255 => 'ydieresis',
+        ],
         // encoding map for: iso-8859-2
-        'iso-8859-2' => array(
+        'iso-8859-2' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -3154,11 +3143,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'yacute',
             254 => 'tcommaaccent',
-            255 => 'dotaccent'
-        ),
-
+            255 => 'dotaccent',
+        ],
         // encoding map for: iso-8859-4
-        'iso-8859-4' => array(
+        'iso-8859-4' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -3414,11 +3402,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'utilde',
             254 => 'umacron',
-            255 => 'dotaccent'
-        ),
-
+            255 => 'dotaccent',
+        ],
         // encoding map for: iso-8859-5
-        'iso-8859-5' => array(
+        'iso-8859-5' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -3674,11 +3661,10 @@ class Encoding
             252 => 'afii10109',
             253 => 'section',
             254 => 'afii10110',
-            255 => 'afii10193'
-        ),
-
+            255 => 'afii10193',
+        ],
         // encoding map for: iso-8859-7
-        'iso-8859-7' => array(
+        'iso-8859-7' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -3934,11 +3920,10 @@ class Encoding
             252 => 'omicrontonos',
             253 => 'upsilontonos',
             254 => 'omegatonos',
-            255 => '.notdef'
-        ),
-
+            255 => '.notdef',
+        ],
         // encoding map for: iso-8859-9
-        'iso-8859-9' => array(
+        'iso-8859-9' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -4194,11 +4179,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'dotlessi',
             254 => 'scedilla',
-            255 => 'ydieresis'
-        ),
-
+            255 => 'ydieresis',
+        ],
         // encoding map for: iso-8859-11
-        'iso-8859-11' => array(
+        'iso-8859-11' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -4454,11 +4438,10 @@ class Encoding
             252 => '.notdef',
             253 => '.notdef',
             254 => '.notdef',
-            255 => '.notdef'
-        ),
-
+            255 => '.notdef',
+        ],
         // encoding map for: iso-8859-15
-        'iso-8859-15' => array(
+        'iso-8859-15' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -4714,11 +4697,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'yacute',
             254 => 'thorn',
-            255 => 'ydieresis'
-        ),
-
+            255 => 'ydieresis',
+        ],
         // encoding map for: iso-8859-16
-        'iso-8859-16' => array(
+        'iso-8859-16' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -4974,11 +4956,10 @@ class Encoding
             252 => 'udieresis',
             253 => 'eogonek',
             254 => 'tcommaaccent',
-            255 => 'ydieresis'
-        ),
-
+            255 => 'ydieresis',
+        ],
         // encoding map for: koi8-r
-        'koi8-r' => array(
+        'koi8-r' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -5234,11 +5215,10 @@ class Encoding
             252 => 'afii10047',
             253 => 'afii10043',
             254 => 'afii10041',
-            255 => 'afii10044'
-        ),
-
+            255 => 'afii10044',
+        ],
         // encoding map for: koi8-u
-        'koi8-u' => array(
+        'koi8-u' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -5494,11 +5474,10 @@ class Encoding
             252 => 'afii10047',
             253 => 'afii10043',
             254 => 'afii10041',
-            255 => 'afii10044'
-        ),
-
+            255 => 'afii10044',
+        ],
         // encoding map for: symbol
-        'symbol' => array(
+        'symbol' => [
             0 => '.notdef',
             1 => '.notdef',
             2 => '.notdef',
@@ -5757,7 +5736,7 @@ class Encoding
             255 => '.notdef',
             1226 => 'registered',
             1227 => 'copyright',
-            1228 => 'trademark'
-        )
-    );
+            1228 => 'trademark',
+        ],
+    ];
 }

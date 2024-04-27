@@ -7,7 +7,7 @@
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  *
@@ -23,7 +23,7 @@ namespace Com\Tecnick\Unicode\Data;
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  */
@@ -32,7 +32,7 @@ class Identity
     /**
      * ToUnicode map for Identity-H stream
      */
-    const CIDHMAP = <<<EOD
+    public const CIDHMAP = <<<EOD
 /CIDInit /ProcSet findresource begin
 12 dict begin
 begincmap

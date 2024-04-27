@@ -10,6 +10,6 @@ Vcs-Git: https://github.com/~#VENDOR#~/~#PROJECT#~.git
 Package: ~#PKGNAME#~
 Provides: php-~#PROJECT#~
 Architecture: all
-Depends: php (>= 5.4.0), php-date, openssl, ${misc:Depends}
+Depends: php (>= 8.0.0), php-date, openssl, ${misc:Depends}
 Description: PHP PDF Encrypt Library
  PHP library to encrypt data for PDF.

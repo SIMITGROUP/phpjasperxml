@@ -23,13 +23,10 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php-version: ["7.2", "7.3", "7.4", "8.0", "8.1", "8.2"]
+                php-version: ["8.0", "8.1", "8.2", "8.3"]
                 experimental: [false]
                 os: [ubuntu-latest]
-                coverage-extension: [pcov]
-                include:
-                    - { php-version: '5.6', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
-                    - { php-version: '7.1', experimental: false, os: ubuntu-latest, coverage-extension: 'xdebug' }
+                coverage-extension: [xdebug]
         steps:
             - uses: actions/checkout@v4
             - name: Use php ${{ matrix.php-version }}
@@ -37,14 +34,14 @@ jobs:
               with:
                   php-version: ${{ matrix.php-version }}
                   coverage: ${{ matrix.coverage-extension }}
-                  extensions: bcmath, curl, date, gd, hash, imagick, json, mbstring, openssl, pcre, zlib
+                  extensions: xdebug, bcmath, curl, date, gd, hash, imagick, json, mbstring, openssl, pcre, zlib
                   ini-values: display_errors=on, error_reporting=-1, zend.assertions=1
             - name: List php modules
               run: php -m
             - name: List php modules using "no php ini" mode
               run: php -m -n
             - name: Cache module
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: ~/.composer/cache/
                   key: composer-cache

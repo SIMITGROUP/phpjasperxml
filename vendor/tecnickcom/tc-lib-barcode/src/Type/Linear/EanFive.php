@@ -7,7 +7,7 @@
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2010-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2010-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
@@ -15,8 +15,6 @@
  */
 
 namespace Com\Tecnick\Barcode\Type\Linear;
-
-use Com\Tecnick\Barcode\Exception as BarcodeException;
 
 /**
  * Com\Tecnick\Barcode\Type\Linear\EanFive;
@@ -28,7 +26,7 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2010-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2010-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
@@ -39,32 +37,30 @@ class EanFive extends \Com\Tecnick\Barcode\Type\Linear\EanTwo
      *
      * @var string
      */
-    protected $format = 'EAN5';
+    protected const FORMAT = 'EAN5';
 
     /**
      * Fixed code length
-     *
-     * @var int
      */
-    protected $code_length = 5;
+    protected int $code_length = 5;
 
     /**
      * Map parities
      *
-     * @var array
+     * @var array<int|string, array<string>>
      */
-    protected $parities = array(
-        '0' => array('B','B','A','A','A'),
-        '1' => array('B','A','B','A','A'),
-        '2' => array('B','A','A','B','A'),
-        '3' => array('B','A','A','A','B'),
-        '4' => array('A','B','B','A','A'),
-        '5' => array('A','A','B','B','A'),
-        '6' => array('A','A','A','B','B'),
-        '7' => array('A','B','A','B','A'),
-        '8' => array('A','B','A','A','B'),
-        '9' => array('A','A','B','A','B')
-    );
+    protected const PARITIES = [
+        '0' => ['B', 'B', 'A', 'A', 'A'],
+        '1' => ['B', 'A', 'B', 'A', 'A'],
+        '2' => ['B', 'A', 'A', 'B', 'A'],
+        '3' => ['B', 'A', 'A', 'A', 'B'],
+        '4' => ['A', 'B', 'B', 'A', 'A'],
+        '5' => ['A', 'A', 'B', 'B', 'A'],
+        '6' => ['A', 'A', 'A', 'B', 'B'],
+        '7' => ['A', 'B', 'A', 'B', 'A'],
+        '8' => ['A', 'B', 'A', 'A', 'B'],
+        '9' => ['A', 'A', 'B', 'A', 'B'],
+    ];
 
     /**
      * Calculate checksum
@@ -73,9 +69,9 @@ class EanFive extends \Com\Tecnick\Barcode\Type\Linear\EanTwo
      *
      * @return int char checksum.
      */
-    protected function getChecksum($code)
+    protected function getChecksum(string $code): int
     {
-        return (((3 * (intval($code[0]) + intval($code[2]) + intval($code[4])))
-            + (9 * (intval($code[1]) + intval($code[3])))) % 10);
+        return (((3 * ((int) $code[0] + (int) $code[2] + (int) $code[4]))
+            + (9 * ((int) $code[1] + (int) $code[3]))) % 10);
     }
 }

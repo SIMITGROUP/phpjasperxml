@@ -7,7 +7,7 @@
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2010-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2010-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
@@ -28,7 +28,7 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2010-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2010-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
@@ -39,14 +39,14 @@ class InterleavedTwoOfFiveCheck extends \Com\Tecnick\Barcode\Type\Linear\Standar
      *
      * @var string
      */
-    protected $format = 'I25+';
+    protected const FORMAT = 'I25+';
 
     /**
      * Map characters to barcodes
      *
-     * @var array
+     * @var array<int|string, string>
      */
-    protected $chbar = array(
+    protected const CHBAR = [
         '0' => '11221',
         '1' => '21112',
         '2' => '12112',
@@ -58,13 +58,13 @@ class InterleavedTwoOfFiveCheck extends \Com\Tecnick\Barcode\Type\Linear\Standar
         '8' => '21121',
         '9' => '12121',
         'A' => '11',
-        'Z' => '21'
-    );
+        'Z' => '21',
+    ];
 
     /**
      * Format code
      */
-    protected function formatCode()
+    protected function formatCode(): void
     {
         $this->extcode = $this->code . $this->getChecksum($this->code);
     }
@@ -74,40 +74,45 @@ class InterleavedTwoOfFiveCheck extends \Com\Tecnick\Barcode\Type\Linear\Standar
      *
      * @throws BarcodeException in case of error
      */
-    protected function setBars()
+    protected function setBars(): void
     {
-        $this->formatCode();
-        if ((strlen($this->extcode) % 2) != 0) {
+        $this::FORMATCode();
+        if (strlen($this->extcode) % 2 != 0) {
             // add leading zero if code-length is odd
             $this->extcode = '0' . $this->extcode;
         }
+
         // add start and stop codes
         $this->extcode = 'AA' . strtolower($this->extcode) . 'ZA';
         $this->ncols = 0;
         $this->nrows = 1;
-        $this->bars = array();
+        $this->bars = [];
         $clen = strlen($this->extcode);
-        for ($idx = 0; $idx < $clen; $idx = ($idx + 2)) {
+        for ($idx = 0; $idx < $clen; $idx += 2) {
             $char_bar = $this->extcode[$idx];
             $char_space = $this->extcode[($idx + 1)];
-            if ((!isset($this->chbar[$char_bar])) || (!isset($this->chbar[$char_space]))) {
+            if ((! isset($this::CHBAR[$char_bar])) || (! isset($this::CHBAR[$char_space]))) {
                 throw new BarcodeException('Invalid character sequence: ' . $char_bar . $char_space);
             }
+
             // create a bar-space sequence
             $seq = '';
-            $chrlen = strlen($this->chbar[$char_bar]);
+            $chrlen = strlen($this::CHBAR[$char_bar]);
             for ($pos = 0; $pos < $chrlen; ++$pos) {
-                $seq .= $this->chbar[$char_bar][$pos] . $this->chbar[$char_space][$pos];
+                $seq .= $this::CHBAR[$char_bar][$pos] . $this::CHBAR[$char_space][$pos];
             }
+
             $seqlen = strlen($seq);
             for ($pos = 0; $pos < $seqlen; ++$pos) {
-                $bar_width = intval($seq[$pos]);
+                $bar_width = (int) $seq[$pos];
                 if ((($pos % 2) == 0) && ($bar_width > 0)) {
-                    $this->bars[] = array($this->ncols, 0, $bar_width, 1);
+                    $this->bars[] = [$this->ncols, 0, $bar_width, 1];
                 }
+
                 $this->ncols += $bar_width;
             }
         }
+
         --$this->ncols;
     }
 }

@@ -16,9 +16,9 @@ URL:       https://github.com/%{gh_owner}/%{gh_project}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires:  php(language) >= 5.4.0
+Requires:  php(language) >= 8.0.0
 Requires:  php-composer(%{c_vendor}/tc-lib-unicode-data) < 2.0.0
-Requires:  php-composer(%{c_vendor}/tc-lib-unicode-data) >= 1.7.33
+Requires:  php-composer(%{c_vendor}/tc-lib-unicode-data) >= 2.0.11
 Requires:  php-pcre
 Requires:  php-mbstring
 
@@ -46,5 +46,5 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_configpath}*
 
 %changelog
-* Tue Jul 21 2015 Nicola Asuni <info@tecnick.com> 1.0.0-1
+* Tue Jul 21 2024 Nicola Asuni <info@tecnick.com> 1.0.0-1
 - Initial Commit

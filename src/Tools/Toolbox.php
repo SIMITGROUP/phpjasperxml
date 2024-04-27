@@ -70,4 +70,25 @@ trait Toolbox
         die;        
     }
 
+    public function javaToPhpStringConcateExpression(string $expression):string{
+        $pattern = '/"(.*?)"/';
+        //str_replace("+"," . ",$obj->textFieldExpression);  
+        preg_match_all($pattern, $expression, $matchfield);
+
+        $fieldstrings = $matchfield[0];
+        $fieldnames = $matchfield[1];        
+
+        
+        foreach($fieldstrings as $findex => $str)
+        {            
+            $tmpexpression = str_replace($str,"<<{'.$findex.'}>>",$expression);
+            $tmpexpression = str_replace("+",' . ',$tmpexpression);
+            $expression = $tmpexpression = str_replace("<<{'.$findex.'}>>",$str,$tmpexpression);
+        }
+
+
+
+        return $expression;
+    }
+
 }

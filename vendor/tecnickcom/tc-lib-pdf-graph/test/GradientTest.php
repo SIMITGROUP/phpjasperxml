@@ -3,35 +3,33 @@
 /**
  * GradientTest.php
  *
- * @since       2011-05-23
- * @category    Library
- * @package     PdfGraph
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
+ * @since     2011-05-23
+ * @category  Library
+ * @package   PdfGraph
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  *
  * This file is part of tc-lib-pdf-graph software library.
  */
 
 namespace Test;
 
-use PHPUnit\Framework\TestCase;
-
 /**
  * Gradient Test
  *
- * @since       2011-05-23
- * @category    Library
- * @package     PdfGraph
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
+ * @since     2011-05-23
+ * @category  Library
+ * @package   PdfGraph
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  */
 class GradientTest extends TestUtil
 {
-    protected function getTestObject()
+    protected function getTestObject(): \Com\Tecnick\Pdf\Graph\Draw
     {
         return new \Com\Tecnick\Pdf\Graph\Draw(
             0.75,
@@ -43,53 +41,53 @@ class GradientTest extends TestUtil
         );
     }
 
-    public function testGetClippingRect()
+    public function testGetClippingRect(): void
     {
-        $testObj = $this->getTestObject();
+        $draw = $this->getTestObject();
         $this->assertEquals(
             '2.250000 71.250000 5.250000 -8.250000 re W n' . "\n",
-            $testObj->getClippingRect(3, 5, 7, 11)
+            $draw->getClippingRect(3, 5, 7, 11)
         );
     }
 
-    public function testGetGradientTransform()
+    public function testGetGradientTransform(): void
     {
-        $testObj = $this->getTestObject();
+        $draw = $this->getTestObject();
         $this->assertEquals(
             '5.250000 0.000000 0.000000 8.250000 2.250000 63.000000 cm' . "\n",
-            $testObj->getGradientTransform(3, 5, 7, 11)
+            $draw->getGradientTransform(3, 5, 7, 11)
         );
     }
 
-    public function testGetLinearGradient()
+    public function testGetLinearGradient(): void
     {
-        $testObj = $this->getTestObject();
+        $draw = $this->getTestObject();
         $this->assertEquals(
             'q' . "\n"
             . '2.250000 71.250000 5.250000 -8.250000 re W n' . "\n"
             . '5.250000 0.000000 0.000000 8.250000 2.250000 63.000000 cm' . "\n"
             . '/Sh1 sh' . "\n"
             . 'Q' . "\n",
-            $testObj->getLinearGradient(3, 5, 7, 11, 'red', 'green', array(1,2,3,4))
+            $draw->getLinearGradient(3, 5, 7, 11, 'red', 'green', [1, 2, 3, 4])
         );
     }
 
-    public function testGetRadialGradient()
+    public function testGetRadialGradient(): void
     {
-        $testObj = $this->getTestObject();
+        $draw = $this->getTestObject();
         $this->assertEquals(
             'q' . "\n"
             . '2.250000 71.250000 5.250000 -8.250000 re W n' . "\n"
             . '5.250000 0.000000 0.000000 8.250000 2.250000 63.000000 cm' . "\n"
             . '/Sh1 sh' . "\n"
             . 'Q' . "\n",
-            $testObj->getRadialGradient(3, 5, 7, 11, 'red', 'green', array(0.6,0.5,0.4,0.3,1))
+            $draw->getRadialGradient(3, 5, 7, 11, 'red', 'green', [0.6, 0.5, 0.4, 0.3, 1])
         );
     }
 
-    public function testGetGradientPDFA()
+    public function testGetGradientPDFA(): void
     {
-        $obj = new \Com\Tecnick\Pdf\Graph\Draw(
+        $draw = new \Com\Tecnick\Pdf\Graph\Draw(
             0.75,
             80,
             100,
@@ -99,79 +97,107 @@ class GradientTest extends TestUtil
         );
         $this->assertEquals(
             '',
-            $obj->getGradient(2, array(), array(), '', false)
+            $draw->getGradient(2, [], [], '', false)
         );
     }
 
-    public function testGetGradient()
+    public function testGetGradient(): void
     {
-        $testObj = $this->getTestObject();
-        $stops = array(
-            array('color' => 'red', 'exponent' => 1, 'opacity' => 0.5),
-            array('color' => 'blue', 'offset' => 0.2, 'exponent' => 1, 'opacity' => 0.6),
-            array('color' => '#98fb98', 'exponent' => 1, 'opacity' => 0.7),
-            array('color' => 'rgb(64,128,191)', 'offset' => 0.8, 'exponent' => 1, 'opacity' => 0.8),
-            array('color' => 'skyblue', 'exponent' => 1, 'opacity' => 0.9),
-        );
+        $draw = $this->getTestObject();
+        $stops = [
+            [
+                'color' => 'red',
+                'exponent' => 1.0,
+                'offset' => 0.0,
+                'opacity' => 0.5,
+            ],
+            [
+                'color' => 'blue',
+                'exponent' => 1.0,
+                'offset' => 0.2,
+                'opacity' => 0.6,
+            ],
+            [
+                'color' => '#98fb98',
+                'exponent' => 1.0,
+                'offset' => 0.47,
+                'opacity' => 0.7,
+            ],
+            [
+                'color' => 'rgb(64,128,191)',
+                'exponent' => 1.0,
+                'offset' => 0.8,
+                'opacity' => 0.8,
+            ],
+            [
+                'color' => 'skyblue',
+                'exponent' => 1.0,
+                'offset' => 1.0,
+                'opacity' => 0.9,
+            ],
+        ];
         $this->assertEquals(
             '/TGS1 gs' . "\n"
             . '/Sh1 sh' . "\n",
-            $testObj->getGradient(2, array(0,0,1,0), $stops, '', false)
+            $draw->getGradient(2, [0, 0, 1, 0], $stops, '', false)
         );
 
-        $exp = array (
-            1 => array (
+        $exp = [
+            1 => [
                 'type' => 2,
-                'coords' => array (
+                'coords' => [
                     0 => 0,
                     1 => 0,
                     2 => 1,
                     3 => 0,
-                ),
+                ],
                 'antialias' => false,
-                'colors' => array (
-                    0 => array (
+                'colors' => [
+                    0 => [
                         'color' => 'red',
                         'exponent' => 1,
-                        'opacity' => 0.5,
                         'offset' => 0,
-                    ),
-                    1 => array (
+                        'opacity' => 0.5,
+                    ],
+                    1 => [
                         'color' => 'blue',
                         'exponent' => 1,
-                        'opacity' => 0.60,
                         'offset' => 0.20,
-                    ),
-                    2 => array (
+                        'opacity' => 0.60,
+                    ],
+                    2 => [
                         'color' => '#98fb98',
                         'exponent' => 1,
-                        'opacity' => 0.70,
                         'offset' => 0.47,
-                    ),
-                    3 => array (
+                        'opacity' => 0.70,
+                    ],
+                    3 => [
                         'color' => 'rgb(64,128,191)',
                         'exponent' => 1,
-                        'opacity' => 0.80,
                         'offset' => 0.80,
-                    ),
-                    4 => array (
+                        'opacity' => 0.80,
+                    ],
+                    4 => [
                         'color' => 'skyblue',
                         'exponent' => 1,
-                        'opacity' => 0.90,
                         'offset' => 1,
-                    ),
-                ),
+                        'opacity' => 0.90,
+                    ],
+                ],
                 'transparency' => true,
                 'background' => null,
                 'colspace' => 'DeviceCMYK',
-            ),
-        );
-        $this->bcAssertEqualsWithDelta($exp, $testObj->getGradientsArray());
+                'id' => 0,
+                'pattern' => 0,
+                'stream' => '',
+            ],
+        ];
+        $this->bcAssertEqualsWithDelta($exp, $draw->getGradientsArray());
     }
 
-    public function testGetCoonsPatchMeshPDFA()
+    public function testGetCoonsPatchMeshPDFA(): void
     {
-        $obj = new \Com\Tecnick\Pdf\Graph\Draw(
+        $draw = new \Com\Tecnick\Pdf\Graph\Draw(
             0.75,
             80,
             100,
@@ -181,26 +207,26 @@ class GradientTest extends TestUtil
         );
         $this->assertEquals(
             '',
-            $obj->getCoonsPatchMesh(3, 5, 7, 11)
+            $draw->getCoonsPatchMesh(3, 5, 7, 11)
         );
     }
 
-    public function testGetCoonsPatchMesh()
+    public function testGetCoonsPatchMesh(): void
     {
-        $testObj = $this->getTestObject();
+        $draw = $this->getTestObject();
         $this->assertEquals(
             'q' . "\n"
             . '2.250000 71.250000 5.250000 -8.250000 re W n' . "\n"
             . '5.250000 0.000000 0.000000 8.250000 2.250000 63.000000 cm' . "\n"
             . '/Sh1 sh' . "\n"
             . 'Q' . "\n",
-            $testObj->getCoonsPatchMesh(3, 5, 7, 11)
+            $draw->getCoonsPatchMesh(3, 5, 7, 11)
         );
 
-        $patch_array = array (
-            0 => array (
+        $patch_array = [
+            0 => [
                 'f' => 0,
-                'points' => array (
+                'points' => [
                     0 => 0.0,
                     1 => 0.0,
                     2 => 0.33,
@@ -225,33 +251,33 @@ class GradientTest extends TestUtil
                     21 => 0.67,
                     22 => 0.0,
                     23 => 0.33,
-                ),
-                'colors' => array (
-                    0 => array (
+                ],
+                'colors' => [
+                    0 => [
                         'red' => 255,
                         'green' => 255,
                         'blue' => 0,
-                    ),
-                    1 => array (
+                    ],
+                    1 => [
                         'red' => 0,
                         'green' => 0,
                         'blue' => 255,
-                    ),
-                    2 => array (
+                    ],
+                    2 => [
                         'red' => 0,
                         'green' => 255,
                         'blue' => 0,
-                    ),
-                    3 => array (
+                    ],
+                    3 => [
                         'red' => 255,
                         'green' => 0,
                         'blue' => 0,
-                    ),
-                ),
-            ),
-            1 => array (
+                    ],
+                ],
+            ],
+            1 => [
                 'f' => 2,
-                'points' => array (
+                'points' => [
                     0 => 0.0,
                     1 => 1.33,
                     2 => 0.0,
@@ -268,23 +294,23 @@ class GradientTest extends TestUtil
                     13 => 1.67,
                     14 => 1.5,
                     15 => 1.33,
-                ),
-                'colors' => array (
-                    0 => array (
+                ],
+                'colors' => [
+                    0 => [
                         'red' => 0,
                         'green' => 0,
                         'blue' => 0,
-                    ),
-                    1 => array (
+                    ],
+                    1 => [
                         'red' => 255,
                         'green' => 0,
                         'blue' => 255,
-                    ),
-                ),
-            ),
-            2 => array (
+                    ],
+                ],
+            ],
+            2 => [
                 'f' => 3,
-                'points' => array (
+                'points' => [
                     0 => 1.33,
                     1 => 0.80,
                     2 => 1.67,
@@ -301,23 +327,23 @@ class GradientTest extends TestUtil
                     13 => 2.0,
                     14 => 1.33,
                     15 => 2.0,
-                ),
-                'colors' => array (
-                    0 => array (
+                ],
+                'colors' => [
+                    0 => [
                         'red' => 0,
                         'green' => 255,
                         'blue' => 255,
-                    ),
-                    1 => array (
+                    ],
+                    1 => [
                         'red' => 0,
                         'green' => 0,
                         'blue' => 0,
-                    ),
-                ),
-            ),
-            3 => array (
+                    ],
+                ],
+            ],
+            3 => [
                 'f' => 1,
-                'points' => array (
+                'points' => [
                     0 => 2.0,
                     1 => 0.67,
                     2 => 2.0,
@@ -334,21 +360,21 @@ class GradientTest extends TestUtil
                     13 => 0.33,
                     14 => 0.80,
                     15 => 0.67,
-                ),
-                'colors' => array (
-                    0 => array (
+                ],
+                'colors' => [
+                    0 => [
                         'red' => 0,
                         'green' => 0,
                         'blue' => 0,
-                    ),
-                    1 => array (
+                    ],
+                    1 => [
                         'red' => 0,
                         'green' => 0,
                         'blue' => 255,
-                    ),
-                ),
-            ),
-        );
+                    ],
+                ],
+            ],
+        ];
 
         $this->assertEquals(
             'q' . "\n"
@@ -356,14 +382,14 @@ class GradientTest extends TestUtil
             . '142.500000 0.000000 0.000000 150.000000 7.500000 -108.750000 cm' . "\n"
             . '/Sh2 sh' . "\n"
             . 'Q' . "\n",
-            $testObj->getCoonsPatchMesh(10, 45, 190, 200, '', '', '', '', $patch_array, 0, 2)
+            $draw->getCoonsPatchMesh(10, 45, 190, 200, $patch_array, 0, 2)
         );
     }
 
-    public function testGetColorRegistrationBar()
+    public function testGetColorRegistrationBar(): void
     {
-        $testObj = $this->getTestObject();
-        $res = $testObj->getColorRegistrationBar(50, 70, 40, 40);
+        $draw = $this->getTestObject();
+        $res = $draw->getColorRegistrationBar(50, 70, 40, 40);
         $this->assertEquals(
             'q' . "\n"
             . '37.500000 22.500000 30.000000 -3.750000 re W n' . "\n"
@@ -408,7 +434,7 @@ class GradientTest extends TestUtil
             $res
         );
 
-        $res = $testObj->getColorRegistrationBar(50, 70, 40, 40, true);
+        $res = $draw->getColorRegistrationBar(50, 70, 40, 40, true);
         $this->assertEquals(
             'q' . "\n"
             . '37.500000 22.500000 3.750000 -30.000000 re W n' . "\n"
@@ -453,25 +479,25 @@ class GradientTest extends TestUtil
             $res
         );
 
-        $res = $testObj->getColorRegistrationBar(
+        $res = $draw->getColorRegistrationBar(
             50,
             70,
             40,
             40,
             true,
-            array(
-                '',
-                'g(50%)',
-                'rgb(50%,50%,50%)',
-                'cmyk(50%,50%,50,50%)',
-                array('rgb(100%,0%,0%)'),
-                array('red', 'white'),
-                array('black', 'black'),
-                array('g(11%)', 'g(11%)'),
-                array('rgb(30%,50%,70%)', 'rgb(170%,150%,130%)'),
-                array('cmyk(10%,20%,30,40%)', 'cmyk(100%,90%,80,70%)'),
-                array(),
-            )
+            [
+                [''],
+                ['g(50%)'],
+                ['rgb(50%,50%,50%)'],
+                ['cmyk(50%,50%,50,50%)'],
+                ['rgb(100%,0%,0%)'],
+                ['red', 'white'],
+                ['black', 'black'],
+                ['g(11%)', 'g(11%)'],
+                ['rgb(30%,50%,70%)', 'rgb(170%,150%,130%)'],
+                ['cmyk(10%,20%,30,40%)', 'cmyk(100%,90%,80,70%)'],
+                [],
+            ]
         );
 
         $this->assertEquals(
@@ -523,24 +549,24 @@ class GradientTest extends TestUtil
             $res
         );
 
-        $res = $testObj->getColorRegistrationBar(
+        $res = $draw->getColorRegistrationBar(
             50,
             70,
             40,
             40,
             false,
-            array()
+            []
         );
         $this->assertEquals('', $res);
     }
 
-    public function testGetCropMark()
+    public function testGetCropMark(): void
     {
-        $testObj = $this->getTestObject();
-        $res = $testObj->getCropMark(3, 5, 7, 11, '');
+        $draw = $this->getTestObject();
+        $res = $draw->getCropMark(3, 5, 7, 11, '');
         $this->assertEquals('', $res);
 
-        $res = $testObj->getCropMark(3, 5, 7, 11, 'TBLR');
+        $res = $draw->getCropMark(3, 5, 7, 11, 'TBLR');
         $this->assertEquals(
             'q' . "\n"
             . '2.250000 79.500000 m' . "\n"
@@ -559,13 +585,14 @@ class GradientTest extends TestUtil
             $res
         );
 
-        $style = array(
+        $style = [
             'lineWidth' => 0.3,
             'lineColor' => 'black',
-            'lineCap'   => 'butt',
-            'lineJoin'  => 'miter',
-        );
-        $res = $testObj->getCropMark(3, 5, 7, 11, 'TBLR', $style);
+            'lineCap' => 'butt',
+            'lineJoin' => 'miter',
+        ];
+
+        $res = $draw->getCropMark(3, 5, 7, 11, 'TBLR', $style);
         $this->assertEquals(
             'q' . "\n"
             . '0.225000 w' . "\n"
@@ -589,32 +616,32 @@ class GradientTest extends TestUtil
         );
     }
 
-    public function testGetOverprint()
+    public function testGetOverprint(): void
     {
-        $testObj = $this->getTestObject();
-        $res = $testObj->getOverprint();
+        $draw = $this->getTestObject();
+        $res = $draw->getOverprint();
         $this->assertEquals(
             '/GS1 gs' . "\n",
             $res
         );
 
-        $res = $testObj->getOverprint(false, true, 1);
+        $res = $draw->getOverprint(false, true, 1);
         $this->assertEquals(
             '/GS2 gs' . "\n",
             $res
         );
     }
 
-    public function testGetAlpha()
+    public function testGetAlpha(): void
     {
-        $testObj = $this->getTestObject();
-        $res = $testObj->getAlpha();
+        $draw = $this->getTestObject();
+        $res = $draw->getAlpha();
         $this->assertEquals(
             '/GS1 gs' . "\n",
             $res
         );
 
-        $res = $testObj->getAlpha(0.5, '/Missing', 0.4, true);
+        $res = $draw->getAlpha(0.5, '/Missing', 0.4, true);
         $this->assertEquals(
             '/GS2 gs' . "\n",
             $res

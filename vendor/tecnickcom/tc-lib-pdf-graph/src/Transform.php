@@ -3,13 +3,13 @@
 /**
  * Transform.php
  *
- * @since       2011-05-23
- * @category    Library
- * @package     PdfGraph
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
+ * @since     2011-05-23
+ * @category  Library
+ * @package   PdfGraph
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  *
  * This file is part of tc-lib-pdf-graph software library.
  */
@@ -21,47 +21,43 @@ use Com\Tecnick\Pdf\Graph\Exception as GraphException;
 /**
  * Com\Tecnick\Pdf\Graph\Transform
  *
- * @since       2011-05-23
- * @category    Library
- * @package     PdfGraph
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
+ * @since     2011-05-23
+ * @category  Library
+ * @package   PdfGraph
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  */
 abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
 {
     /**
+     * Current ID for transformation matrix.
+     */
+    protected int $ctmid = -1;
+
+    /**
      * Array (stack) of Current Transformation Matrix (CTM),
      * which maps user space coordinates used within a PDF content stream into output device coordinates.
      *
-     * @var array
+     * @var array<int, array<int, array<float>>>
      */
-    protected $ctm = array();
-
-    /**
-     * Current ID for transformation matrix.
-     *
-     * @var int
-     */
-    protected $ctmid = -1;
+    protected array $ctm = [];
 
     /**
      * Returns the transformation stack.
      *
-     * @return array
+     * @return array<int, array<int, array<float>>>
      */
-    public function getTransformStack()
+    public function getTransformStack(): array
     {
         return $this->ctm;
     }
 
     /**
      * Returns the transformation stack index.
-     *
-     * @return int
      */
-    public function getTransformIndex()
+    public function getTransformIndex(): int
     {
         return $this->ctmid;
     }
@@ -69,27 +65,24 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
     /**
      * Starts a 2D transformation saving current graphic state.
      * This function must be called before calling transformation methods
-     *
-     * @return string
      */
-    public function getStartTransform()
+    public function getStartTransform(): string
     {
         $this->saveStyleStatus();
-        $this->ctm[++$this->ctmid] = array();
+        $this->ctm[++$this->ctmid] = [];
         return 'q' . "\n";
     }
 
     /**
      * Stops a 2D tranformation restoring previous graphic state.
      * This function must be called after calling transformation methods.
-     *
-     * @return string
      */
-    public function getStopTransform()
+    public function getStopTransform(): string
     {
-        if (!isset($this->ctm[$this->ctmid])) {
+        if (! isset($this->ctm[$this->ctmid])) {
             return '';
         }
+
         unset($this->ctm[$this->ctmid]);
         --$this->ctmid;
         $this->restoreStyleStatus();
@@ -99,11 +92,9 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
     /**
      * Get the tranformation matrix (CTM) PDF string
      *
-     * @param array $ctm Transformation matrix array.
-     *
-     * @return string
+     * @param array<float> $ctm Transformation matrix array.
      */
-    public function getTransformation($ctm)
+    public function getTransformation(array $ctm): string
     {
         $this->ctm[$this->ctmid][] = $ctm;
         return sprintf('%F %F %F %F %F %F cm' . "\n", $ctm[0], $ctm[1], $ctm[2], $ctm[3], $ctm[4], $ctm[5]);
@@ -119,14 +110,15 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getScaling($skx, $sky, $posx, $posy)
+    public function getScaling(float $skx, float $sky, float $posx, float $posy): string
     {
         if (($skx == 0) || ($sky == 0)) {
             throw new GraphException('Scaling factors must be different than zero');
         }
+
         $posy = (($this->pageh - $posy) * $this->kunit);
-        $posx = ($posx * $this->kunit);
-        $ctm = array($skx, 0, 0, $sky, ($posx * (1 - $skx)), ($posy * (1 - $sky)));
+        $posx *= $this->kunit;
+        $ctm = [$skx, 0, 0, $sky, ($posx * (1 - $skx)), ($posy * (1 - $sky))];
         return $this->getTransformation($ctm);
     }
 
@@ -139,7 +131,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getHorizScaling($skx, $posx, $posy)
+    public function getHorizScaling(float $skx, float $posx, float $posy): string
     {
         return $this->getScaling($skx, 1, $posx, $posy);
     }
@@ -153,7 +145,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getVertScaling($sky, $posx, $posy)
+    public function getVertScaling(float $sky, float $posx, float $posy): string
     {
         return $this->getScaling(1, $sky, $posx, $posy);
     }
@@ -167,7 +159,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getPropScaling($skf, $posx, $posy)
+    public function getPropScaling(float $skf, float $posx, float $posy): string
     {
         return $this->getScaling($skf, $skf, $posx, $posy);
     }
@@ -176,16 +168,16 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      * Rotation.
      *
      * @param float $angle Angle in degrees for counter-clockwise rotation.
-     * @param float $posx Abscissa of the rotation center.
-     * @param float $posy Ordinate of the rotation center.
+     * @param float $posx  Abscissa of the rotation center.
+     * @param float $posy  Ordinate of the rotation center.
      *
      * @return string Transformation string
      */
-    public function getRotation($angle, $posx, $posy)
+    public function getRotation(float $angle, float $posx, float $posy): string
     {
         $posy = (($this->pageh - $posy) * $this->kunit);
-        $posx = ($posx * $this->kunit);
-        $ctm = array();
+        $posx *= $this->kunit;
+        $ctm = [];
         $ctm[0] = cos($this->degToRad($angle));
         $ctm[1] = sin($this->degToRad($angle));
         $ctm[2] = -$ctm[1];
@@ -202,7 +194,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getHorizMirroring($posx)
+    public function getHorizMirroring(float $posx): string
     {
         return $this->getScaling(-1, 1, $posx, 0);
     }
@@ -214,7 +206,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getVertMirroring($posy)
+    public function getVertMirroring(float $posy): string
     {
         return $this->getScaling(1, -1, 0, $posy);
     }
@@ -227,7 +219,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getPointMirroring($posx, $posy)
+    public function getPointMirroring(float $posx, float $posy): string
     {
         return $this->getScaling(-1, -1, $posx, $posy);
     }
@@ -241,7 +233,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getReflection($ang, $posx, $posy)
+    public function getReflection(float $ang, float $posx, float $posy): string
     {
         return $this->getScaling(-1, 1, $posx, $posy) . $this->getRotation((-2 * ($ang - 90)), $posx, $posy);
     }
@@ -254,10 +246,10 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getTranslation($trx, $try)
+    public function getTranslation(float $trx, float $try): string
     {
         //calculate elements of transformation matrix
-        $ctm = array(1, 0, 0, 1, ($trx * $this->kunit), (-$try * $this->kunit));
+        $ctm = [1, 0, 0, 1, ($trx * $this->kunit), (-$try * $this->kunit)];
         return $this->getTransformation($ctm);
     }
 
@@ -268,7 +260,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getHorizTranslation($trx)
+    public function getHorizTranslation(float $trx): string
     {
         return $this->getTranslation($trx, 0);
     }
@@ -280,7 +272,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getVertTranslation($try)
+    public function getVertTranslation(float $try): string
     {
         return $this->getTranslation(0, $try);
     }
@@ -295,14 +287,15 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getSkewing($angx, $angy, $posx, $posy)
+    public function getSkewing(float $angx, float $angy, float $posx, float $posy): string
     {
         if (($angx <= -90) || ($angx >= 90) || ($angy <= -90) || ($angy >= 90)) {
             throw new GraphException('Angle values must be beweeen -90 and +90 degrees.');
         }
+
         $posy = (($this->pageh - $posy) * $this->kunit);
-        $posx = ($posx * $this->kunit);
-        $ctm = array();
+        $posx *= $this->kunit;
+        $ctm = [];
         $ctm[0] = 1;
         $ctm[1] = tan($this->degToRad($angy));
         $ctm[2] = tan($this->degToRad($angx));
@@ -321,7 +314,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getHorizSkewing($angx, $posx, $posy)
+    public function getHorizSkewing(float $angx, float $posx, float $posy): string
     {
         return $this->getSkewing($angx, 0, $posx, $posy);
     }
@@ -335,7 +328,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return string Transformation string
      */
-    public function getVertSkewing($angy, $posx, $posy)
+    public function getVertSkewing(float $angy, float $posx, float $posy): string
     {
         return $this->getSkewing(0, $angy, $posx, $posy);
     }
@@ -343,21 +336,21 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
     /**
      * Get the product of two Tranformation Matrix.
      *
-     * @param array $tma First  Tranformation Matrix.
-     * @param array $tmb Second Tranformation Matrix.
+     * @param array<float> $tma First  Tranformation Matrix.
+     * @param array<float> $tmb Second Tranformation Matrix.
      *
-     * @return array CTM Transformation Matrix.
+     * @return array<float> CTM Transformation Matrix.
      */
-    public function getCtmProduct($tma, $tmb)
+    public function getCtmProduct(array $tma, array $tmb): array
     {
-        return array(
-            (((float) $tma[0] * (float) $tmb[0]) + ((float) $tma[2] * (float) $tmb[1])),
-            (((float) $tma[1] * (float) $tmb[0]) + ((float) $tma[3] * (float) $tmb[1])),
-            (((float) $tma[0] * (float) $tmb[2]) + ((float) $tma[2] * (float) $tmb[3])),
-            (((float) $tma[1] * (float) $tmb[2]) + ((float) $tma[3] * (float) $tmb[3])),
-            (((float) $tma[0] * (float) $tmb[4]) + ((float) $tma[2] * (float) $tmb[5]) + (float) $tma[4]),
-            (((float) $tma[1] * (float) $tmb[4]) + ((float) $tma[3] * (float) $tmb[5]) + (float) $tma[5])
-        );
+        return [
+            (($tma[0] * $tmb[0]) + ($tma[2] * $tmb[1])),
+            (($tma[1] * $tmb[0]) + ($tma[3] * $tmb[1])),
+            (($tma[0] * $tmb[2]) + ($tma[2] * $tmb[3])),
+            (($tma[1] * $tmb[2]) + ($tma[3] * $tmb[3])),
+            (($tma[0] * $tmb[4]) + ($tma[2] * $tmb[5]) + $tma[4]),
+            (($tma[1] * $tmb[4]) + ($tma[3] * $tmb[5]) + $tma[5]),
+        ];
     }
 
     /**
@@ -368,7 +361,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @return float Angle in radiants
      */
-    public function degToRad($deg)
+    public function degToRad(float $deg): float
     {
         return ($deg * self::MPI / 180);
     }

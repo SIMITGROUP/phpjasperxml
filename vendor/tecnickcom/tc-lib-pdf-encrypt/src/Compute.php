@@ -3,13 +3,13 @@
 /**
  * Compute.php
  *
- * @since       2008-01-02
- * @category    Library
- * @package     PdfEncrypt
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
+ * @since     2008-01-02
+ * @category  Library
+ * @package   PdfEncrypt
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
  * This file is part of tc-lib-pdf-encrypt software library.
  */
@@ -23,38 +23,41 @@ use Com\Tecnick\Pdf\Encrypt\Exception as EncException;
  *
  * PHP class to generate encryption data
  *
- * @since       2008-01-02
- * @category    Library
- * @package     PdfEncrypt
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-encrypt
+ * @since     2008-01-02
+ * @category  Library
+ * @package   PdfEncrypt
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
 {
     /**
      * Encrypt data using the specified encrypt type.
      *
-     * @param int|string $type   Encrypt type.
-     * @param string $data   Data string to encrypt.
-     * @param string $key    Encryption key.
-     * @param int    $objnum Object number.
-     *
-     * @return string Encrypted data string.
+     * @param int|string|false $type   Encrypt type.
+     * @param string     $data   Data string to encrypt.
+     * @param string     $key    Encryption key.
+     * @param int        $objnum Object number.
      */
-    public function encrypt($type, $data = '', $key = null, $objnum = null)
-    {
+    public function encrypt(
+        int|string|false $type,
+        string $data = '',
+        string $key = '',
+        int $objnum = 0,
+    ): string {
         if (empty($this->encryptdata['encrypted']) || ($type === false)) {
             return $data;
         }
 
-        if (!isset(self::$encmap[$type])) {
+        if (! isset(self::ENCMAP[$type])) {
             throw new EncException('unknown encryption type: ' . $type);
         }
 
-        if (($key === null) && ($type == $this->encryptdata['mode'])) {
-            $key = '';
+        if (($key == '') && ($type == $this->encryptdata['mode'])) {
             if ($this->encryptdata['mode'] < 3) {
                 $key = $this->getObjectKey($objnum);
             } elseif ($this->encryptdata['mode'] == 3) {
@@ -62,7 +65,7 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
             }
         }
 
-        $class = '\\Com\\Tecnick\\Pdf\\Encrypt\\Type\\' . self::$encmap[$type];
+        $class = '\\Com\\Tecnick\\Pdf\\Encrypt\\Type\\' . self::ENCMAP[$type];
         $obj = new $class();
         return $obj->encrypt($data, $key);
     }
@@ -72,70 +75,69 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
      * This is used for all strings and streams without crypt filter specifier.
      *
      * @param int $objnum Object number.
-     *
-     * @return string
      */
-    public function getObjectKey($objnum)
+    public function getObjectKey(int $objnum): string
     {
         $objkey = $this->encryptdata['key'] . pack('VXxx', $objnum);
         if ($this->encryptdata['mode'] == 2) {
             // AES-128 padding
             $objkey .= "\x73\x41\x6C\x54"; // sAlT
         }
+
         $objkey = substr($this->encrypt('MD5-16', $objkey, 'H*'), 0, (($this->encryptdata['Length'] / 8) + 5));
-        $objkey = substr($objkey, 0, 16);
-        return $objkey;
+        return substr($objkey, 0, 16);
     }
 
     /**
      * Convert encryption P value to a string of bytes, low-order byte first.
      *
-     * @param string $protection 32bit encryption permission value (P value).
-     *
-     * @return string
+     * @param int $protection 32bit encryption permission value (P value).
      */
-    public function getEncPermissionsString($protection)
+    public function getEncPermissionsString(int $protection): string
     {
         $binprot = sprintf('%032b', $protection);
-        return chr(bindec(substr($binprot, 24, 8)))
-            . chr(bindec(substr($binprot, 16, 8)))
-            . chr(bindec(substr($binprot, 8, 8)))
-            . chr(bindec(substr($binprot, 0, 8)));
+        return chr((int) bindec(substr($binprot, 24, 8)))
+            . chr((int) bindec(substr($binprot, 16, 8)))
+            . chr((int) bindec(substr($binprot, 8, 8)))
+            . chr((int) bindec(substr($binprot, 0, 8)));
     }
 
     /**
      * Return the permission code used on encryption (P value).
      *
-     * @param array $permissions The set of permissions (specify the ones you want to block).
-     * @param $mode (int) encryption strength: 0 = RC4 40 bit; 1 = RC4 128 bit; 2 = AES 128 bit; 3 = AES 256 bit.
-     *
-     * @return int
+     * @param array<string> $permissions The set of permissions (specify the ones you want to block).
+     * @param int   $mode        Encryption strength: 0 = RC4 40 bit; 1 = RC4 128 bit; 2 = AES 128 bit; 3 = AES 256 bit.
      */
-    public function getUserPermissionCode($permissions, $mode = 0)
-    {
-        $protection = 2147422012; // 32 bit: (01111111 11111111 00001111 00111100)
+    public function getUserPermissionCode(
+        array $permissions,
+        int $mode = 0,
+    ): int {
+        $protection = 2_147_422_012; // 32 bit: (01111111 11111111 00001111 00111100)
         foreach ($permissions as $permission) {
-            if (isset(self::$permbits[$permission])) {
-                if (($mode > 0) || (self::$permbits[$permission] <= 32)) {
-                    // set only valid permissions
-                    if (self::$permbits[$permission] == 2) {
-                        // the logic for bit 2 is inverted (cleared by default)
-                        $protection += self::$permbits[$permission];
-                    } else {
-                        $protection -= self::$permbits[$permission];
-                    }
-                }
+            if (! isset(self::PERMBITS[$permission])) {
+                continue;
+            }
+
+            if ($mode <= 0 && self::PERMBITS[$permission] > 32) {
+                continue;
+            }
+
+            // set only valid permissions
+            if (self::PERMBITS[$permission] == 2) {
+                // the logic for bit 2 is inverted (cleared by default)
+                $protection += self::PERMBITS[$permission];
+            } else {
+                $protection -= self::PERMBITS[$permission];
             }
         }
+
         return $protection;
     }
 
     /**
      * Compute UE value
-     *
-     * @return string UE value
      */
-    protected function getUEValue()
+    protected function getUEValue(): string
     {
         $hashkey = hash('sha256', $this->encryptdata['user_password'] . $this->encryptdata['UKS'], true);
         return $this->encrypt('AESnopad', $this->encryptdata['key'], $hashkey);
@@ -143,9 +145,8 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
 
     /**
      * Compute OE value
-     * @return string OE value
      */
-    protected function getOEValue()
+    protected function getOEValue(): string
     {
         $hashkey = hash(
             'sha256',
@@ -157,16 +158,15 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
 
     /**
      * Compute U value
-     *
-     * @return string U value
      */
-    protected function getUvalue()
+    protected function getUvalue(): string
     {
         if ($this->encryptdata['mode'] == 0) { // RC4-40
-            return $this->encrypt('RC4', self::$encpad, $this->encryptdata['key']);
+            return $this->encrypt('RC4', self::ENCPAD, $this->encryptdata['key']);
         }
+
         if ($this->encryptdata['mode'] < 3) { // RC4-128, AES-128
-            $tmp = $this->encrypt('MD5-16', self::$encpad . $this->encryptdata['fileid'], 'H*');
+            $tmp = $this->encrypt('MD5-16', self::ENCPAD . $this->encryptdata['fileid'], 'H*');
             $enc = $this->encrypt('RC4', $tmp, $this->encryptdata['key']);
             $len = strlen($tmp);
             for ($idx = 1; $idx <= 19; ++$idx) {
@@ -174,11 +174,14 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
                 for ($jdx = 0; $jdx < $len; ++$jdx) {
                     $ekey .= chr(ord($this->encryptdata['key'][$jdx]) ^ $idx);
                 }
+
                 $enc = $this->encrypt('RC4', $enc, $ekey);
             }
+
             $enc .= str_repeat("\x00", 16);
             return substr($enc, 0, 32);
         }
+
         // AES-256 ($this->encryptdata['mode'] = 3)
         $seed = $this->encrypt('MD5-16', $this->encrypt('seed'), 'H*');
         // User Validation Salt
@@ -191,10 +194,8 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
 
     /**
      * Compute O value
-     *
-     * @return string O value
      */
-    protected function getOValue()
+    protected function getOValue(): string
     {
         if ($this->encryptdata['mode'] < 3) { // RC4-40, RC4-128, AES-128
             $tmp = $this->encrypt('MD5-16', $this->encryptdata['owner_password'], 'H*');
@@ -203,6 +204,7 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
                     $tmp = $this->encrypt('MD5-16', $tmp, 'H*');
                 }
             }
+
             $owner_key = substr($tmp, 0, ($this->encryptdata['Length'] / 8));
             $enc = $this->encrypt('RC4', $this->encryptdata['user_password'], $owner_key);
             if ($this->encryptdata['mode'] > 0) {
@@ -212,11 +214,14 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
                     for ($jdx = 0; $jdx < $len; ++$jdx) {
                         $ekey .= chr(ord($owner_key[$jdx]) ^ $idx);
                     }
+
                     $enc = $this->encrypt('RC4', $enc, $ekey);
                 }
             }
+
             return $enc;
         }
+
         // AES-256 ($this->encryptdata['mode'] = 3)
         $seed = $this->encrypt('MD5-16', $this->encrypt('seed'), 'H*');
         // Owner Validation Salt
@@ -233,7 +238,7 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
     /**
      * Compute encryption key
      */
-    protected function generateEncryptionKey()
+    protected function generateEncryptionKey(): void
     {
         if ($this->encryptdata['pubkey']) {
             $this->generatePublicEncryptionKey();
@@ -245,7 +250,7 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
     /**
      * Compute standard encryption key
      */
-    protected function generateStandardEncryptionKey()
+    protected function generateStandardEncryptionKey(): void
     {
         $keybytelen = ($this->encryptdata['Length'] / 8);
         if ($this->encryptdata['mode'] == 3) { // AES-256
@@ -268,8 +273,8 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
             $this->encryptdata['perms'] = $this->encrypt('AESnopad', $perms, $this->encryptdata['key']);
         } else { // RC4-40, RC4-128, AES-128
             // Pad passwords
-            $this->encryptdata['user_password'] = substr($this->encryptdata['user_password'] . self::$encpad, 0, 32);
-            $this->encryptdata['owner_password'] = substr($this->encryptdata['owner_password'] . self::$encpad, 0, 32);
+            $this->encryptdata['user_password'] = substr($this->encryptdata['user_password'] . self::ENCPAD, 0, 32);
+            $this->encryptdata['owner_password'] = substr($this->encryptdata['owner_password'] . self::ENCPAD, 0, 32);
             $this->encryptdata['O'] = $this->getOValue();
             // get default permissions (reverse byte order)
             $permissions = $this->getEncPermissionsString($this->encryptdata['protection']);
@@ -287,6 +292,7 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
                     $tmp = $this->encrypt('MD5-16', substr($tmp, 0, $keybytelen), 'H*');
                 }
             }
+
             $this->encryptdata['key'] = substr($tmp, 0, $keybytelen);
             $this->encryptdata['U'] = $this->getUValue();
             $this->encryptdata['P'] = $this->encryptdata['protection'];
@@ -295,52 +301,70 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
 
     /**
      * Compute public encryption key
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function generatePublicEncryptionKey()
+    protected function generatePublicEncryptionKey(): void
     {
         $keybytelen = ($this->encryptdata['Length'] / 8);
         // random 20-byte seed
         $seed = sha1($this->encrypt('seed'), true);
         $recipient_bytes = '';
-        foreach ($this->encryptdata['pubkeys'] as $pubkey) {
+        $pubkeys = $this->encryptdata['pubkeys'] ?? throw new EncException('Missing pubkeys');
+        foreach ($pubkeys as $pubkey) {
             // for each public certificate
             if (isset($pubkey['p'])) {
                 $pkprotection = $this->getUserPermissionCode($pubkey['p'], $this->encryptdata['mode']);
             } else {
                 $pkprotection = $this->encryptdata['protection'];
             }
+
             // get default permissions (reverse byte order)
             $pkpermissions = $this->getEncPermissionsString($pkprotection);
             // envelope data
             $envelope = $seed . $pkpermissions;
+
             // write the envelope data to a temporary file
             $tempkeyfile = tempnam(
                 sys_get_temp_dir(),
                 '__tcpdf_key_' . md5($this->encryptdata['fileid'] . $envelope) . '_'
             );
-            if (file_put_contents($tempkeyfile, $envelope) === false) {
-                // @codeCoverageIgnoreStart
-                throw new EncException('Unable to create temporary key file: ' . $tempkeyfile);
-                // @codeCoverageIgnoreEnd
+            if ($tempkeyfile === false) {
+                throw new EncException('Unable to generate temporary key file name');
             }
+
+            if (file_put_contents($tempkeyfile, $envelope) === false) {
+                throw new EncException('Unable to create temporary key file: ' . $tempkeyfile);
+            }
+
             $tempencfile = tempnam(
                 sys_get_temp_dir(),
                 '__tcpdf_enc_' . md5($this->encryptdata['fileid'] . $envelope) . '_'
             );
+            if ($tempencfile === false) {
+                throw new EncException('Unable to generate temporary key file name');
+            }
 
-            if (!function_exists('openssl_pkcs7_encrypt')) {
-                // @codeCoverageIgnoreStart
+            if (! function_exists('openssl_pkcs7_encrypt')) {
                 throw new EncException(
                     'Unable to encrypt the file: ' . $tempkeyfile . "\n"
                     . 'Public-Key Security requires openssl_pkcs7_encrypt.'
                 );
-                // @codeCoverageIgnoreEnd
-            } elseif (
-                !openssl_pkcs7_encrypt(
+            }
+
+            $pkey = file_get_contents($pubkey['c']);
+            if ($pkey === false) {
+                throw new EncException('Unable to read public key file: ' . $pubkey['c']);
+            }
+
+            if (
+                ! openssl_pkcs7_encrypt(
                     $tempkeyfile,
                     $tempencfile,
-                    file_get_contents($pubkey['c']),
-                    array(),
+                    $pkey,
+                    [],
                     PKCS7_BINARY
                 )
             ) {
@@ -352,21 +376,43 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
 
             // read encryption signature
             $signature = file_get_contents($tempencfile);
+            if ($signature === false) {
+                throw new EncException('Unable to read signature file: ' . $tempencfile);
+            }
+
+            $sigcontentpos = strpos($signature, 'Content-Disposition');
+            if ($sigcontentpos === false) {
+                throw new EncException('Unable to find signature content');
+            }
+
             // extract signature
-            $signature = substr($signature, strpos($signature, 'Content-Disposition'));
+            $signature = substr($signature, $sigcontentpos);
+
             $tmparr = explode("\n\n", $signature);
             $signature = trim($tmparr[1]);
             unset($tmparr);
             // decode signature
             $signature = base64_decode($signature);
+            if ($signature === false) {
+                throw new EncException('Unable to decode signature: ' . $tempencfile);
+            }
+
+            $sigarr = unpack('H*', $signature);
+            if ($sigarr === false) {
+                throw new EncException('Unable to unpack signature: ' . $tempencfile);
+            }
+
             // convert signature to hex
-            $hexsignature = current(unpack('H*', $signature));
+            $hexsignature = current($sigarr);
+
             // store signature on recipients array
             $this->encryptdata['Recipients'][] = $hexsignature;
+
             // The bytes of each item in the Recipients array of PKCS#7 objects
             // in the order in which they appear in the array
             $recipient_bytes .= $signature;
         }
+
         // calculate encryption key
         if ($this->encryptdata['mode'] == 3) { // AES-256
             $this->encryptdata['key'] = substr(hash('sha256', $seed . $recipient_bytes, true), 0, $keybytelen);

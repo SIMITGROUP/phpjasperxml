@@ -16,9 +16,9 @@ URL:       https://github.com/%{gh_owner}/%{gh_project}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires:  php(language) >= 5.6.0
+Requires:  php(language) >= 8.0.0
 Requires:  php-composer(%{c_vendor}/tc-lib-color) < 2.0.0
-Requires:  php-composer(%{c_vendor}/tc-lib-color) >= 1.14.39
+Requires:  php-composer(%{c_vendor}/tc-lib-color) >= 2.0.8
 Requires:  php-bcmath
 Requires:  php-date
 Requires:  php-gd
@@ -35,7 +35,7 @@ Standard 2 of 5, Interleaved 2 of 5, CODE 128 A/B/C,
 UPC-E, MSI, POSTNET, PLANET, RMS4CC (Royal Mail 4-state Customer Code),
 CBC (Customer Bar Code), KIX (Klant index - Customer index),
 Intelligent Mail Barcode, Onecode, USPS-B-3200, CODABAR, CODE 11,
-PHARMACODE, PHARMACODE TWO-TRACKS, Datamatrix ECC200, QR-Code, PDF417.
+PHARMACODE, PHARMACODE TWO-TRACKS, AZTEC, Datamatrix ECC200, QR-Code, PDF417.
 
 Optional dependency: php-pecl-imagick
 
@@ -57,7 +57,7 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_configpath}*
 
 %changelog
-* Thu Jul 02 2015 Nicola Asuni <info@tecnick.com> 1.2.0-1
+* Thu Jul 02 2024 Nicola Asuni <info@tecnick.com> 1.2.0-1
 - Changed package name, add provides section
-* Tue Feb 24 2015 Nicola Asuni <info@tecnick.com> 1.0.0-1
+* Tue Feb 24 2024 Nicola Asuni <info@tecnick.com> 1.0.0-1
 - Initial Commit

@@ -7,7 +7,7 @@
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  *
@@ -25,24 +25,24 @@ use PHPUnit\Framework\TestCase;
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  */
 class ArabicTest extends TestCase
 {
-    public function testDiacritic()
+    public function testDiacritic(): void
     {
-        $this->assertEquals(5, count(\Com\Tecnick\Unicode\Data\Arabic::$diacritic));
+        $this->assertEquals(5, count(\Com\Tecnick\Unicode\Data\Arabic::DIACRITIC));
     }
 
-    public function testlaa()
+    public function testlaa(): void
     {
-        $this->assertEquals(4, count(\Com\Tecnick\Unicode\Data\Arabic::$laa));
+        $this->assertEquals(4, count(\Com\Tecnick\Unicode\Data\Arabic::LAA));
     }
 
-    public function testSubstitute()
+    public function testSubstitute(): void
     {
-        $this->assertEquals(76, count(\Com\Tecnick\Unicode\Data\Arabic::$substitute));
+        $this->assertEquals(76, count(\Com\Tecnick\Unicode\Data\Arabic::SUBSTITUTE));
     }
 }

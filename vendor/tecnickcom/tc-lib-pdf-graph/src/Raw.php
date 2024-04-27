@@ -3,31 +3,29 @@
 /**
  * Raw.php
  *
- * @since       2011-05-23
- * @category    Library
- * @package     PdfGraph
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
+ * @since     2011-05-23
+ * @category  Library
+ * @package   PdfGraph
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  *
  * This file is part of tc-lib-pdf-graph software library.
  */
 
 namespace Com\Tecnick\Pdf\Graph;
 
-use Com\Tecnick\Pdf\Graph\Exception as GraphException;
-
 /**
  * Com\Tecnick\Pdf\Graph\Raw
  *
- * @since       2011-05-23
- * @category    Library
- * @package     PdfGraph
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
+ * @since     2011-05-23
+ * @category  Library
+ * @package   PdfGraph
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  */
 abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
 {
@@ -40,7 +38,7 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
      *
      * @return string PDF command
      */
-    public function getRawPoint($posx, $posy)
+    public function getRawPoint(float $posx, float $posy): string
     {
         return sprintf(
             '%F %F m' . "\n",
@@ -58,7 +56,7 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
      *
      * @return string PDF command
      */
-    public function getRawLine($posx, $posy)
+    public function getRawLine(float $posx, float $posy): string
     {
         return sprintf(
             '%F %F l' . "\n",
@@ -78,7 +76,7 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
      *
      * @return string PDF command
      */
-    public function getRawRect($posx, $posy, $width, $height)
+    public function getRawRect(float $posx, float $posy, float $width, float $height): string
     {
         return sprintf(
             '%F %F %F %F re' . "\n",
@@ -104,8 +102,14 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
      *
      * @return string PDF command
      */
-    public function getRawCurve($posx1, $posy1, $posx2, $posy2, $posx3, $posy3)
-    {
+    public function getRawCurve(
+        float $posx1,
+        float $posy1,
+        float $posx2,
+        float $posy2,
+        float $posx3,
+        float $posy3
+    ): string {
         return sprintf(
             '%F %F %F %F %F %F c' . "\n",
             ($posx1 * $this->kunit),
@@ -130,7 +134,7 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
      *
      * @return string PDF command
      */
-    public function getRawCurveV($posx2, $posy2, $posx3, $posy3)
+    public function getRawCurveV(float $posx2, float $posy2, float $posx3, float $posy3): string
     {
         return sprintf(
             '%F %F %F %F v' . "\n",
@@ -154,7 +158,7 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
      *
      * @return string PDF command
      */
-    public function getRawCurveY($posx1, $posy1, $posx3, $posy3)
+    public function getRawCurveY(float $posx1, float $posy1, float $posx3, float $posy3): string
     {
         return sprintf(
             '%F %F %F %F y' . "\n",
@@ -175,24 +179,33 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
      * @param bool  $ccw If true draws in counter-clockwise direction.
      * @param bool  $svg If true the angles are in svg mode (already calculated).
      */
-    protected function setRawEllipticalArcAngles(&$ags, &$agf, $rdv, $rdh, $ccw, $svg)
-    {
-        $ags = $this->degToRad((float) $ags);
-        $agf = $this->degToRad((float) $agf);
-        if (!$svg) {
+    protected function setRawEllipticalArcAngles(
+        float &$ags,
+        float &$agf,
+        float $rdv,
+        float $rdh,
+        bool $ccw,
+        bool $svg
+    ): void {
+        $ags = $this->degToRad($ags);
+        $agf = $this->degToRad($agf);
+        if (! $svg) {
             $ags = atan2((sin($ags) / $rdv), (cos($ags) / $rdh));
             $agf = atan2((sin($agf) / $rdv), (cos($agf) / $rdh));
         }
+
         if ($ags < 0) {
             $ags += (2 * self::MPI);
         }
+
         if ($agf < 0) {
             $agf += (2 * self::MPI);
         }
+
         if ($ccw && ($ags > $agf)) {
             // reverse rotation
             $ags -= (2 * self::MPI);
-        } elseif (!$ccw && ($ags < $agf)) {
+        } elseif (! $ccw && ($ags < $agf)) {
             // reverse rotation
             $agf -= (2 * self::MPI);
         }
@@ -202,49 +215,52 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
      * Append an elliptical arc to the current path.
      * An ellipse is formed from n Bezier curves.
      *
-     * @param float $posxc      Abscissa of center point.
-     * @param float $posyc      Ordinate of center point.
-     * @param float $rdh        Horizontal radius.
-     * @param float $rdv        Vertical radius (if = 0 then it is a circle).
-     * @param float $posxang    Angle between the X-axis and the major axis of the ellipse.
-     * @param float $angs       Angle in degrees at which starting drawing.
-     * @param float $angf       Angle in degrees at which stop drawing.
-     * @param bool  $pie        If true do not mark the border point (used to draw pie sectors).
-     * @param int   $ncv        Number of curves used to draw a 90 degrees portion of ellipse.
-     * @param bool  $startpoint If true output a starting point.
-     * @param bool  $ccw        If true draws in counter-clockwise direction.
-     * @param bool  $svg        If true the angles are in svg mode (already calculated).
-     * @param array $bbox       If provided, it will be filled with the bounding box coordinates
-     *                          (x min, y min, x max, y max).
+     * @param float      $posxc      Abscissa of center point.
+     * @param float      $posyc      Ordinate of center point.
+     * @param float      $rdh        Horizontal radius.
+     * @param float      $rdv        Vertical radius (if = 0 then it is a circle).
+     * @param float      $posxang    Angle between the X-axis and the major axis of the ellipse.
+     * @param float      $angs       Angle in degrees at which starting drawing.
+     * @param float      $angf       Angle in degrees at which stop drawing.
+     * @param bool       $pie        If true do not mark the border point (used to draw pie sectors).
+     * @param float      $ncv        Number of curves used to draw a 90 degrees portion of ellipse.
+     * @param bool       $startpoint If true output a starting point.
+     * @param bool       $ccw        If true draws in counter-clockwise direction.
+     * @param bool       $svg        If true the angles are in svg mode (already calculated).
+     * @param array<int> $bbox       If provided, it will be filled with the bounding box coordinates
+     *                               (x min, y min, x max, y max).
      *
      * @return string PDF command
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function getRawEllipticalArc(
-        $posxc,
-        $posyc,
-        $rdh,
-        $rdv,
-        $posxang = 0,
-        $angs = 0,
-        $angf = 360,
-        $pie = false,
-        $ncv = 2,
-        $startpoint = true,
-        $ccw = true,
-        $svg = false,
-        &$bbox = array()
-    ) {
+        float $posxc,
+        float $posyc,
+        float $rdh,
+        float $rdv,
+        float $posxang = 0.0,
+        float $angs = 0.0,
+        float $angf = 360.0,
+        bool $pie = false,
+        float $ncv = 2,
+        bool $startpoint = true,
+        bool $ccw = true,
+        bool $svg = false,
+        array &$bbox = []
+    ): string {
         $out = '';
         if (($rdh <= 0) || ($rdv < 0)) {
             return '';
         }
-        $bbox = array(PHP_INT_MAX, PHP_INT_MAX, 0, 0);
+
+        $bbox = [PHP_INT_MAX, PHP_INT_MAX, 0, 0];
         if ($pie) {
             $out .= $this->getRawPoint($posxc, $posyc); // center of the arc
         }
-        $posxang = $this->degToRad((float) $posxang);
+
+        $posxang = $this->degToRad($posxang);
         $ags = $angs;
         $agf = $angf;
         $this->setRawEllipticalArcAngles($ags, $agf, $rdv, $rdh, $ccw, $svg);
@@ -256,7 +272,7 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
         $posx0 = $posxc; // X center point in PDF coordinates
         $posy0 = ($this->pageh - $posyc); // Y center point in PDF coordinates
         $ang = $ags; // starting angle
-        $alpha = sin($arcang) * ((sqrt(4 + (3 * pow(tan(($arcang) / 2), 2))) - 1) / 3);
+        $alpha = sin($arcang) * ((sqrt(4 + (3 * tan(($arcang) / 2) ** 2)) - 1) / 3);
         $cos_xang = cos($posxang);
         $sin_xang = sin($posxang);
         $cos_ang = cos($ang);
@@ -272,12 +288,14 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
         } elseif ($startpoint) {
             $out .= $this->getRawPoint($px1, ($this->pageh - $py1)); // arc starting point
         }
+
         // draw arcs
         for ($idx = 1; $idx <= $ncv; ++$idx) {
             $ang = $ags + ($idx * $arcang); // starting angle
             if ($idx == $ncv) {
                 $ang = $agf;
             }
+
             $cos_ang = cos($ang);
             $sin_ang = sin($ang);
             // second arc point
@@ -295,23 +313,30 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
             $cy3 = ($this->pageh - $py2);
             $out .= $this->getRawCurve($cx1, $cy1, $cx2, $cy2, $cx3, $cy3);
             // get bounding box coordinates
-            $bbox = array(
+            $bbox = [
                 min($bbox[0], $cx1, $cx2, $cx3),
                 min($bbox[1], $cy1, $cy2, $cy3),
                 max($bbox[2], $cx1, $cx2, $cx3),
                 max($bbox[3], $cy1, $cy2, $cy3),
-            );
+            ];
             // move to next point
             $px1 = $px2;
             $py1 = $py2;
             $qx1 = $qx2;
             $qy1 = $qy2;
         }
+
         if ($pie) {
             $out .= $this->getRawLine($posxc, $posyc);
             // get bounding box coordinates
-            $bbox = array(min($bbox[0], $posxc), min($bbox[1], $posyc), max($bbox[2], $posxc),  max($bbox[3], $posyc));
+            $bbox = [
+                min($bbox[0], $posxc),
+                min($bbox[1], $posyc),
+                max($bbox[2], $posxc),
+                max($bbox[3], $posyc),
+            ];
         }
+
         return $out;
     }
 
@@ -326,7 +351,7 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
      *
      * @return float Angle in radiants
      */
-    public function getVectorsAngle($posx1, $posy1, $posx2, $posy2)
+    public function getVectorsAngle(int $posx1, int $posy1, int $posx2, int $posy2): float
     {
         $dprod = (($posx1 * $posx2) + ($posy1 * $posy2));
         $dist1 = sqrt(($posx1 * $posx1) + ($posy1 * $posy1));
@@ -335,10 +360,12 @@ abstract class Raw extends \Com\Tecnick\Pdf\Graph\Transform
         if ($distprod == 0) {
             return 0;
         }
+
         $angle = acos(min(1, max(-1, ($dprod / $distprod))));
         if ((($posx1 * $posy2) - ($posx2 * $posy1)) < 0) {
             $angle *= -1;
         }
+
         return $angle;
     }
 }

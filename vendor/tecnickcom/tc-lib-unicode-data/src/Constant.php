@@ -7,7 +7,7 @@
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  *
@@ -23,7 +23,7 @@ namespace Com\Tecnick\Unicode\Data;
  * @category    Library
  * @package     UnicodeData
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-unicode-data
  */
@@ -43,13 +43,13 @@ class Constant
      * (U+202A) LEFT-TO-RIGHT EMBEDDING
      * Treat the following text as embedded left-to-right
      */
-    const LRE = 8234;
+    public const LRE = 8234;
 
     /**
      * (U+202B) RIGHT-TO-LEFT EMBEDDING
      * Treat the following text as embedded right-to-left
      */
-    const RLE = 8235;
+    public const RLE = 8235;
 
     /*
      * Explicit Directional Overrides
@@ -64,13 +64,13 @@ class Constant
      * (U+202D) for LEFT-TO-RIGHT OVERRIDE
      * Force following characters to be treated as strong left-to-right characters
      */
-    const LRO = 8237;
+    public const LRO = 8237;
 
     /**
      * (U+202E) RIGHT-TO-LEFT OVERRIDE
      * Force following characters to be treated as strong right-to-left characters
      */
-    const RLO = 8238;
+    public const RLO = 8238;
 
     /*
      * Terminating Explicit Directional Embeddings and Overrides
@@ -81,7 +81,7 @@ class Constant
      * (U+202C) POP DIRECTIONAL FORMATTING
      * End the scope of the last LRE, RLE, RLO, or LRO whose scope has not yet been terminated
      */
-    const PDF = 8236;
+    public const PDF = 8236;
 
     /*
      * Explicit Directional Isolates
@@ -104,20 +104,20 @@ class Constant
      * (U+2066) LEFT-TO-RIGHT ISOLATE
      * Treat the following text as isolated and left-to-right
      */
-    const LRI = 8294;
+    public const LRI = 8294;
 
     /**
      * (U+2067) RIGHT-TO-LEFT ISOLATE
      * Treat the following text as isolated and right-to-left
      */
-    const RLI = 8295;
+    public const RLI = 8295;
 
     /**
      * (U+2068) FIRST STRONG ISOLATE
      * Treat the following text as isolated and in the direction of its first
      * strong directional character that is not inside a nested isolate
      */
-    const FSI = 8296;
+    public const FSI = 8296;
 
     /*
      * Terminating Explicit Directional Isolates
@@ -131,7 +131,7 @@ class Constant
      * (U+2069) POP DIRECTIONAL ISOLATE
      * End the scope of the last LRI, RLI, or FSI
      */
-    const PDI = 8297;
+    public const PDI = 8297;
 
     /*
      * Implicit Directional Marks
@@ -145,19 +145,19 @@ class Constant
      * (U+200E) LEFT-TO-RIGHT MARK
      * Left-to-right zero-width character
      */
-    const LRM = 8206;
+    public const LRM = 8206;
 
     /**
      * (U+200F) RIGHT-TO-LEFT MARK
      * Right-to-left zero-width non-Arabic character
      */
-    const RLM = 8207;
+    public const RLM = 8207;
 
     /**
      * (U+061C) ARABIC LETTER MARK
      * Right-to-left zero-width Arabic character
      */
-    const ALM = 1564;
+    public const ALM = 1564;
 
     /*
      * Other useful characters
@@ -167,10 +167,10 @@ class Constant
     /**
      * (U+0020) SPACE
      */
-    const SPACE = 32;
+    public const SPACE = 32;
 
     /**
      * (U+200C) ZERO WIDTH NON-JOINER
      */
-    const ZERO_WIDTH_NON_JOINER = 8204;
+    public const ZERO_WIDTH_NON_JOINER = 8204;
 }

@@ -217,7 +217,8 @@ trait PHPJasperXML_elements
     protected function element_textField(array $prop, object $obj): array
     {      
         $prop = $this->element_staticText($prop,$obj);          
-        $prop['textFieldExpression']=$obj->textFieldExpression;  
+        $prop['textFieldExpression']= $this->javaToPhpStringConcateExpression($obj->textFieldExpression);
+        
         if(isset($obj->patternExpression))      
         {
             $prop['patternExpression']=(string)$obj->patternExpression;
@@ -413,11 +414,12 @@ trait PHPJasperXML_elements
     {        
         
         $subtype='';
+        //only support jr at this time
         $childtypes = ['jr','c','sc','cvc'];
         foreach($childtypes as $childtype)
         {
-            $children = $obj->children($childtype,true);            
-            
+            $children = $obj->children($childtype,true);
+            if(is_null($children))continue;
             foreach($children as $k=>$v)
             {
                 $subtype=$k;

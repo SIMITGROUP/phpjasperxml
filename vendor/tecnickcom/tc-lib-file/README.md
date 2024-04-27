@@ -13,7 +13,7 @@
 * **category**    Library
 * **package**     \Com\Tecnick\File
 * **author**      Nicola Asuni <info@tecnick.com>
-* **copyright**   2015-2023 Nicola Asuni - Tecnick.com LTD
+* **copyright**   2015-2024 Nicola Asuni - Tecnick.com LTD
 * **license**     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
 * **link**        https://github.com/tecnickcom/tc-lib-file
 * **SRC DOC**     https://tcpdf.org/docs/srcdoc/tc-lib-file
@@ -62,7 +62,7 @@ All artifacts are generated in the target directory.
 
 Examples are located in the `example` directory.
 
-Start a development server (requires PHP 5.4) using the command:
+Start a development server (requires PHP 8.0+) using the command:
 
 ```
 make server
@@ -78,7 +78,7 @@ Create a composer.json in your projects root-directory:
 ```json
 {
     "require": {
-        "tecnickcom/tc-lib-file": "^1.6"
+        "tecnickcom/tc-lib-file": "^2.0"
     }
 }
 ```
@@ -86,7 +86,7 @@ Create a composer.json in your projects root-directory:
 Or add to an existing project with: 
 
 ```bash
-composer require tecnickcom/tc-lib-file ^1.6
+composer require tecnickcom/tc-lib-file ^2.0
 ```
 
 ## Packaging

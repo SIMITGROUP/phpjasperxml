@@ -38,5 +38,5 @@ rm -rf $RPM_BUILD_ROOT
 %docdir %{_docpath}
 
 %changelog
-* Tue Dec 01 2015 Nicola Asuni <info@tecnick.com> 1.0.0-1
+* Tue Dec 01 2024 Nicola Asuni <info@tecnick.com> 1.0.0-1
 - Initial Commit

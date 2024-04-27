@@ -3,13 +3,13 @@
 /**
  * Style.php
  *
- * @since       2011-05-23
- * @category    Library
- * @package     PdfGraph
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
+ * @since     2011-05-23
+ * @category  Library
+ * @package   PdfGraph
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  *
  * This file is part of tc-lib-pdf-graph software library.
  */
@@ -21,130 +21,198 @@ use Com\Tecnick\Pdf\Graph\Exception as GraphException;
 /**
  * Com\Tecnick\Pdf\Graph\Style
  *
- * @since       2011-05-23
- * @category    Library
- * @package     PdfGraph
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-graph
+ * @since     2011-05-23
+ * @category  Library
+ * @package   PdfGraph
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
+ *
+ * @phpstan-import-type StyleDataOpt from \Com\Tecnick\Pdf\Graph\Base
  *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
 {
     /**
-     * Stack containing style data.
-     *
-     * @var array
-     */
-    protected $style = array();
-
-    /**
-     * Stack index.
-     *
-     * @var int
-     */
-    protected $styleid = -1;
-
-    /**
      * Array of restore points (style ID).
      *
-     * @var array
+     * @var array<int>
      */
-    protected $stylemark = array(0);
-
-    /**
-     * Unit of measure conversion ratio.
-     *
-     * @var float
-     */
-    protected $kunit = 1.0;
+    protected array $stylemark = [0];
 
     /**
      * Map values for lineCap.
      *
-     * @var array
+     * @var array<int|string, int>
      */
-    protected static $linecapmap = array(0 => 0, 1 => 1, 2 => 2, 'butt' => 0, 'round' => 1, 'square' => 2);
+    protected const LINECAPMAP = [
+        0 => 0,
+        1 => 1,
+        2 => 2,
+        'butt' => 0,
+        'round' => 1,
+        'square' => 2,
+    ];
 
     /**
      * Map values for lineJoin.
      *
-     * @var array
+     * @var array<int|string, int>
      */
-    protected static $linejoinmap = array(0 => 0, 1 => 1, 2 => 2, 'miter' => 0, 'round' => 1, 'bevel' => 2);
+    protected const LINEJOINMAP = [
+        0 => 0,
+        1 => 1,
+        2 => 2,
+        'miter' => 0,
+        'round' => 1,
+        'bevel' => 2,
+    ];
 
     /**
      * Map path paint operators.
      *
-     * @var array
+     * @var array<string, string>
      */
-    protected static $ppopmap = array(
-        'S'    => 'S',
-        'D'    => 'S',
-        's'    => 's',
-        'h S'  => 's',
-        'd'    => 's',
-        'f'    => 'f',
-        'F'    => 'f',
-        'h f'  => 'h f',
-        'f*'   => 'f*',
-        'F*'   => 'f*',
+    protected const PPOPMAP = [
+        'S' => 'S',
+        'D' => 'S',
+        's' => 's',
+        'h S' => 's',
+        'd' => 's',
+        'f' => 'f',
+        'F' => 'f',
+        'h f' => 'h f',
+        'f*' => 'f*',
+        'F*' => 'f*',
         'h f*' => 'h f*',
-        'B'    => 'B',
-        'FD'   => 'B',
-        'DF'   => 'B',
-        'B*'   => 'B*',
-        'F*D'  => 'B*',
-        'DF*'  => 'B*',
-        'b'    => 'b',
-        'h B'  => 'b',
-        'fd'   => 'b',
-        'df'   => 'b',
-        'b*'   => 'b*',
+        'B' => 'B',
+        'FD' => 'B',
+        'DF' => 'B',
+        'B*' => 'B*',
+        'F*D' => 'B*',
+        'DF*' => 'B*',
+        'b' => 'b',
+        'h B' => 'b',
+        'fd' => 'b',
+        'df' => 'b',
+        'b*' => 'b*',
         'h B*' => 'b*',
-        'f*d'  => 'b*',
-        'df*'  => 'b*',
-        'W n'  => 'W n',
-        'CNZ'  => 'W n',
+        'f*d' => 'b*',
+        'df*' => 'b*',
+        'W n' => 'W n',
+        'CNZ' => 'W n',
         'W* n' => 'W* n',
-        'CEO'  => 'W* n',
-        'h'    => 'h',
-        'n'    => 'n'
-    );
+        'CEO' => 'W* n',
+        'h' => 'h',
+        'n' => 'n',
+    ];
 
     /**
-     * Initialize default style
+     * Filling modes.
+     *
+     * @var array<string, bool>
      */
-    public function init()
-    {
-        $this->style[++$this->styleid] = array(
-            'lineWidth'  => (1.0 / $this->kunit),  // line thickness in user units
-            'lineCap'    => 'butt',                // shape of the endpoints for any open path that is stroked
-            'lineJoin'   => 'miter',               // shape of joints between connected segments of a stroked path
-            'miterLimit' => (10.0 / $this->kunit), // maximum length of mitered line joins for stroked paths
-            'dashArray'  => array(),               // lengths of alternating dashes and gaps
-            'dashPhase'  => 0,                     // distance  at which to start the dash
-            'lineColor'  => 'black',               // line (drawing) color
-            'fillColor'  => 'black',               // background (filling) color
-        );
-        return $this;
-    }
+    protected const MODEFILLING = [
+        'f' => true,
+        'f*' => true,
+        'B' => true,
+        'B*' => true,
+        'b' => true,
+        'b*' => true,
+    ];
+
+    /**
+     * Stroking Modes.
+     *
+     * @var array<string, bool>
+     */
+    protected const MODESTROKING = [
+        'S' => true,
+        's' => true,
+        'B' => true,
+        'B*' => true,
+        'b' => true,
+        'b*' => true,
+    ];
+
+    /**
+     * Closing Modes.
+     *
+     * @var array<string, bool>
+     */
+    protected const MODECLOSING = [
+        'b' => true,
+        'b*' => true,
+        's' => true,
+    ];
+
+    /**
+     * Clipping Modes.
+     *
+     * @var array<string, bool>
+     */
+    protected const MODECLIPPING = [
+        'CEO' => true,
+        'CNZ' => true,
+        'W n' => true,
+        'W* n' => true,
+    ];
+
+    /**
+     * Map of equivalent modes without close.
+     *
+     * @var array<string, string>
+     */
+    protected const MODETONOCLOSE = [
+        's' => 'S',
+        'b' => 'B',
+        'b*' => 'B*',
+    ];
+
+    /**
+     * Map of equivalent modes without fill.
+     *
+     * @var array<string, string>
+     */
+    protected const MODETONOFILL = [
+        'f' => '',
+        'f*' => '',
+        'B' => 'S',
+        'B*' => 'S',
+        'b' => 's',
+        'b*' => 's',
+    ];
+
+    /**
+     * Map of equivalent modes without STROKE.
+     *
+     * @var array<string, string>
+     */
+    protected const MODETONOSTROKE = [
+        'S' => '',
+        's' => 'h',
+        'B' => 'f',
+        'B*' => 'f*',
+        'b' => 'h f',
+        'b*' => 'h f*',
+    ];
 
     /**
      * Add a new style
      *
-     * @param array $style       Style to add.
-     * @param bool  $inheritlast If true inherit missing values from the last style.
+     * @param StyleDataOpt $style       Style to add.
+     * @param bool         $inheritlast If true inherit missing values from the last style.
      *
      * @return string PDF style string
      */
-    public function add(array $style = array(), $inheritlast = false)
+    public function add(array $style = [], bool $inheritlast = false): string
     {
         if ($inheritlast) {
             $style = array_merge($this->style[$this->styleid], $style);
         }
+
         $this->style[++$this->styleid] = $style;
         return $this->getStyle();
     }
@@ -154,11 +222,12 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
      *
      * @return string PDF style string.
      */
-    public function pop()
+    public function pop(): string
     {
         if ($this->styleid <= 0) {
             throw new GraphException('The style stack is empty');
         }
+
         $style = $this->getStyle();
         unset($this->style[$this->styleid]);
         --$this->styleid;
@@ -168,7 +237,7 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     /**
      * Save the current style ID to be restored later.
      */
-    public function saveStyleStatus()
+    public function saveStyleStatus(): void
     {
         $this->stylemark[] = $this->styleid;
     }
@@ -176,18 +245,24 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     /**
      * Restore the saved style status.
      */
-    public function restoreStyleStatus()
+    public function restoreStyleStatus(): void
     {
-        $this->styleid = array_pop($this->stylemark);
+        $styleid = array_pop($this->stylemark);
+        if ($styleid === null) {
+            $styleid = 0;
+        }
+
+        $this->styleid = $styleid;
+
         $this->style = array_slice($this->style, 0, ($this->styleid + 1), true);
     }
 
     /**
      * Returns the last style array.
      *
-     * @return array
+     * @return StyleDataOpt
      */
-    public function getCurrentStyleArray()
+    public function getCurrentStyleArray(): array
     {
         return $this->style[$this->styleid];
     }
@@ -200,34 +275,35 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
      *
      * @return mixed Property value or $default in case the property is not found.
      */
-    public function getLastStyleProperty($property, $default = null)
+    public function getLastStyleProperty(string $property, mixed $default = null): mixed
     {
         for ($idx = $this->styleid; $idx >= 0; --$idx) {
             if (isset($this->style[$idx][$property])) {
                 return $this->style[$idx][$property];
             }
         }
+
         return $default;
     }
 
     /**
      * Returns the value of th especified item from the last inserted style.
      *
-     * @return mixed
+     * @param string $item Item to search.
      */
-    public function getCurrentStyleItem($item)
+    public function getCurrentStyleItem(string $item): mixed
     {
-        if (!isset($this->style[$this->styleid][$item])) {
+        if (! isset($this->style[$this->styleid][$item])) {
             throw new GraphException('The ' . $item . ' value is not set in the current style');
         }
+
         return $this->style[$this->styleid][$item];
     }
+
     /**
      * Returns the PDF string of the last style added.
-     *
-     * @return string
      */
-    public function getStyle()
+    public function getStyle(): string
     {
         return $this->getStyleCmd($this->style[$this->styleid]);
     }
@@ -235,106 +311,122 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
     /**
      * Returns the PDF string of the specified style.
      *
-     * @param array $style Style to represent.
-     *
-     * @return string
+     * @param StyleDataOpt $style Style to represent.
      */
-    public function getStyleCmd(array $style)
+    public function getStyleCmd(array $style = []): string
     {
         $out = '';
         if (isset($style['lineWidth'])) {
-            $out .= sprintf('%F w' . "\n", ((float) $style['lineWidth'] * $this->kunit));
+            $out .= sprintf('%F w' . "\n", ($style['lineWidth'] * $this->kunit));
         }
+
         $out .= $this->getLineModeCmd($style);
+
         if (isset($style['lineColor'])) {
-            $out .= $this->col->getPdfColor($style['lineColor'], true);
+            $out .= $this->pdfColor->getPdfColor($style['lineColor'], true);
         }
+
         if (isset($style['fillColor'])) {
-            $out .= $this->col->getPdfColor($style['fillColor'], false);
+            $out .= $this->pdfColor->getPdfColor($style['fillColor'], false);
         }
+
         return $out;
     }
 
     /**
      * Returns the PDF string of the specified line style.
      *
-     * @param array $style Style to represent.
-     *
-     * @return string
+     * @param StyleDataOpt $style Style to represent.
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    protected function getLineModeCmd(array $style)
+    protected function getLineModeCmd(array $style = []): string
     {
         $out = '';
-        if (isset($style['lineCap']) && isset(self::$linecapmap[$style['lineCap']])) {
-            $out .= self::$linecapmap[$style['lineCap']] . ' J' . "\n";
+
+        if (isset($style['lineCap']) && isset(self::LINECAPMAP[$style['lineCap']])) {
+            $out .= self::LINECAPMAP[$style['lineCap']] . ' J' . "\n";
         }
-        if (isset($style['lineJoin']) && isset(self::$linejoinmap[$style['lineJoin']])) {
-            $out .= self::$linejoinmap[$style['lineJoin']] . ' j' . "\n";
+
+        if (isset($style['lineJoin']) && isset(self::LINEJOINMAP[$style['lineJoin']])) {
+            $out .= self::LINEJOINMAP[$style['lineJoin']] . ' j' . "\n";
         }
+
         if (isset($style['miterLimit'])) {
-            $out .= sprintf('%F M' . "\n", ((float) $style['miterLimit'] * $this->kunit));
+            $out .= sprintf('%F M' . "\n", ($style['miterLimit'] * $this->kunit));
         }
-        if (isset($style['dashArray']) && is_array($style['dashArray'])) {
-            $dash = array();
+
+        if (isset($style['dashArray'])) {
+            $dash = [];
             foreach ($style['dashArray'] as $val) {
                 $dash[] = sprintf('%F', ((float) $val * $this->kunit));
             }
-            if (!isset($style['dashPhase'])) {
+
+            if (! isset($style['dashPhase'])) {
                 $style['dashPhase'] = 0;
             }
-            $out .= sprintf('[%s] %F d' . "\n", implode(' ', $dash), $style['dashPhase']);
+
+            return $out .= sprintf('[%s] %F d' . "\n", implode(' ', $dash), $style['dashPhase']);
         }
+
         return $out;
     }
 
     /**
      * Get the Path-Painting Operators.
      *
-     * @param string $mode Mode of rendering. Possible values are:
-     *   - S or D: Stroke the path.
-     *   - s or d: Close and stroke the path.
-     *   - f or F: Fill the path, using the nonzero winding number rule to determine the region to fill.
-     *   - f* or F*: Fill the path, using the even-odd rule to determine the region to fill.
-     *   - B or FD or DF: Fill and then stroke the path,
-     *         using the nonzero winding number rule to determine the region to fill.
-     *   - B* or F*D or DF*: Fill and then stroke the path,
-     *         using the even-odd rule to determine the region to fill.
-     *   - b or fd or df: Close, fill, and then stroke the path,
-     *         using the nonzero winding number rule to determine the region to fill.
-     *   - b or f*d or df*: Close, fill, and then stroke the path,
-     *         using the even-odd rule to determine the region to fill.
-     *   - CNZ: Clipping mode using the even-odd rule to determine which regions lie inside the clipping path.
-     *   - CEO: Clipping mode using the nonzero winding number rule to determine
-     *          which regions lie inside the clipping path
-     *   - n: End the path object without filling or stroking it.
+     * @param string $mode    Mode of rendering. Possible values are:
+     *                        - S or D: Stroke the path. - s or d:
+     *                        Close and stroke the path. - f or F:
+     *                        Fill the path, using the nonzero
+     *                        winding number rule to determine the
+     *                        region to fill. - f* or F*: Fill the
+     *                        path, using the even-odd rule to
+     *                        determine the region to fill. - B or FD
+     *                        or DF: Fill and then stroke the path,
+     *                        using the nonzero winding number rule
+     *                        to determine the region to fill. - B*
+     *                        or F*D or DF*: Fill and then stroke the
+     *                        path, using the even-odd rule to
+     *                        determine the region to fill. - b or fd
+     *                        or df: Close, fill, and then stroke the
+     *                        path, using the nonzero winding number
+     *                        rule to determine the region to fill. -
+     *                        b or f*d or df*: Close, fill, and then
+     *                        stroke the path, using the even-odd
+     *                        rule to determine the region to fill. -
+     *                        CNZ: Clipping mode using the even-odd
+     *                        rule to determine which regions lie
+     *                        inside the clipping path. - CEO:
+     *                        Clipping mode using the nonzero winding
+     *                        number rule to determine which regions
+     *                        lie inside the clipping path - n: End
+     *                        the path object without filling or
+     *                        stroking it.
      * @param string $default Default style
-     *
-     * @return string
      */
-    public function getPathPaintOp($mode, $default = 'S')
+    public function getPathPaintOp(string $mode, string $default = 'S'): string
     {
-        if (!empty(self::$ppopmap[$mode])) {
-            return self::$ppopmap[$mode] . "\n";
+        if (! isset(self::PPOPMAP[$mode])) {
+            $mode = $default;
         }
-        if (!empty(self::$ppopmap[$default])) {
-            return self::$ppopmap[$default] . "\n";
+
+        if (! isset(self::PPOPMAP[$mode])) {
+            return '';
         }
-        return '';
+
+        return self::PPOPMAP[$mode] . "\n";
     }
 
     /**
      * Returns true if the specified path paint operator includes the filling option.
      *
      * @param string $mode Path paint operator (mode of rendering).
-     *
-     * @return bool
      */
-    public function isFillingMode($mode)
+    public function isFillingMode(string $mode): bool
     {
-        return (!empty(self::$ppopmap[$mode])
-            && (in_array(self::$ppopmap[$mode], array('f', 'f*', 'B', 'B*', 'b', 'b*'))
+        return (isset(self::PPOPMAP[$mode]) && self::PPOPMAP[$mode] !== ''
+            && (isset(self::MODEFILLING[self::PPOPMAP[$mode]])
             || $this->isClippingMode($mode))
         );
     }
@@ -343,13 +435,11 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
      * Returns true if the specified mode includes the stroking option.
      *
      * @param string $mode Path paint operator (mode of rendering).
-     *
-     * @return bool
      */
-    public function isStrokingMode($mode)
+    public function isStrokingMode(string $mode): bool
     {
-        return (!empty(self::$ppopmap[$mode])
-            && in_array(self::$ppopmap[$mode], array('S', 's', 'B', 'B*', 'b', 'b*'))
+        return (isset(self::PPOPMAP[$mode]) && self::PPOPMAP[$mode] !== ''
+            && isset(self::MODESTROKING[self::PPOPMAP[$mode]])
         );
     }
 
@@ -357,13 +447,11 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
      * Returns true if the specified mode includes "closing the path" option.
      *
      * @param string $mode Path paint operator (mode of rendering).
-     *
-     * @return bool
      */
-    public function isClosingMode($mode)
+    public function isClosingMode(string $mode): bool
     {
-        return (!empty(self::$ppopmap[$mode])
-            && (in_array(self::$ppopmap[$mode], array('b','b*','s'))
+        return (isset(self::PPOPMAP[$mode]) && self::PPOPMAP[$mode] !== ''
+            && (isset(self::MODECLOSING[self::PPOPMAP[$mode]])
             || $this->isClippingMode($mode))
         );
     }
@@ -372,13 +460,11 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
      * Returns true if the specified mode is of clippping type.
      *
      * @param string $mode Path paint operator (mode of rendering).
-     *
-     * @return bool
      */
-    public function isClippingMode($mode)
+    public function isClippingMode(string $mode): bool
     {
-        return (!empty(self::$ppopmap[$mode])
-            && in_array(self::$ppopmap[$mode], array('CEO','CNZ','W n','W* n'))
+        return (isset(self::PPOPMAP[$mode]) && self::PPOPMAP[$mode] !== ''
+            && isset(self::MODECLIPPING[self::PPOPMAP[$mode]])
         );
     }
 
@@ -386,15 +472,17 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
      * Remove the Close option from the specified Path paint operator.
      *
      * @param string $mode Path paint operator (mode of rendering).
-     *
-     * @return string
      */
-    public function getModeWithoutClose($mode)
+    public function getModeWithoutClose(string $mode): string
     {
-        $map = array('s' => 'S', 'b' => 'B', 'b*' => 'B*');
-        if (!empty(self::$ppopmap[$mode]) && isset($map[self::$ppopmap[$mode]])) {
-            return $map[self::$ppopmap[$mode]];
+        if (
+            isset(self::PPOPMAP[$mode])
+            && (self::PPOPMAP[$mode] !== '')
+            && isset(self::MODETONOCLOSE[self::PPOPMAP[$mode]])
+        ) {
+            return self::MODETONOCLOSE[self::PPOPMAP[$mode]];
         }
+
         return $mode;
     }
 
@@ -402,15 +490,17 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
      * Remove the Fill option from the specified Path paint operator.
      *
      * @param string $mode Path paint operator (mode of rendering).
-     *
-     * @return string
      */
-    public function getModeWithoutFill($mode)
+    public function getModeWithoutFill(string $mode): string
     {
-        $map = array('f' => '', 'f*' => '', 'B' => 'S', 'B*' => 'S', 'b' => 's', 'b*' => 's');
-        if (!empty(self::$ppopmap[$mode]) && isset($map[self::$ppopmap[$mode]])) {
-            return $map[self::$ppopmap[$mode]];
+        if (
+            isset(self::PPOPMAP[$mode])
+            && (self::PPOPMAP[$mode] !== '')
+            && isset(self::MODETONOFILL[self::PPOPMAP[$mode]])
+        ) {
+            return self::MODETONOFILL[self::PPOPMAP[$mode]];
         }
+
         return $mode;
     }
 
@@ -418,26 +508,28 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
      * Remove the Stroke option from the specified Path paint operator.
      *
      * @param string $mode Path paint operator (mode of rendering).
-     *
-     * @return string
      */
-    public function getModeWithoutStroke($mode)
+    public function getModeWithoutStroke(string $mode): string
     {
-        $map = array('S' => '', 's' => 'h', 'B' => 'f', 'B*' => 'f*', 'b' => 'h f', 'b*' => 'h f*');
-        if (!empty(self::$ppopmap[$mode]) && isset($map[self::$ppopmap[$mode]])) {
-            return $map[self::$ppopmap[$mode]];
+        if (
+            isset(self::PPOPMAP[$mode])
+            && (self::PPOPMAP[$mode] !== '')
+            && isset(self::MODETONOSTROKE[self::PPOPMAP[$mode]])
+        ) {
+            return self::MODETONOSTROKE[self::PPOPMAP[$mode]];
         }
+
         return $mode;
     }
 
     /**
      * Add transparency parameters to the current extgstate.
      *
-     * @param array $parms parameters.
+     * @param array<string, mixed> $parms parameters.
      *
      * @return string PDF command.
      */
-    public function getExtGState($parms)
+    public function getExtGState(array $parms): string
     {
         if ($this->pdfa) {
             return '';
@@ -451,9 +543,15 @@ abstract class Style extends \Com\Tecnick\Pdf\Graph\Base
                 break;
             }
         }
+
         if (empty($this->extgstates[$gsx])) {
-            $this->extgstates[$gsx] = array('parms' => $parms);
+            $this->extgstates[$gsx] = [
+                'n' => 0,
+                'name' => '',
+                'parms' => $parms,
+            ];
         }
+
         return '/GS' . $gsx . ' gs' . "\n";
     }
 }

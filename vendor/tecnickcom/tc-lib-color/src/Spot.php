@@ -3,13 +3,13 @@
 /**
  * Spot.php
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * This file is part of tc-lib-color software library.
  */
@@ -24,13 +24,13 @@ use Com\Tecnick\Color\Model\Cmyk;
  *
  * Spot Color class
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  */
 class Spot extends \Com\Tecnick\Color\Web
 {
@@ -38,46 +38,143 @@ class Spot extends \Com\Tecnick\Color\Web
      * Array of default Spot colors
      * Color keys must be in lowercase and without spaces.
      *
-     * @var array
+     * @var array<string, array{
+     *       'name': string,
+     *       'color': array{
+     *           'cyan': int|float,
+     *           'magenta': int|float,
+     *           'yellow': int|float,
+     *           'key': int|float,
+     *           'alpha': int|float,
+     *       }
+     *     }>
      */
-    protected static $default_spot_colors = array (
-        'none' => array('name' => 'None',
-            'color' => array('cyan' => 0, 'magenta' => 0, 'yellow' => 0, 'key' => 0, 'alpha' => 1)),
-        'all' => array('name' => 'All',
-            'color' => array('cyan' => 1, 'magenta' => 1, 'yellow' => 1, 'key' => 1, 'alpha' => 1)),
-        'cyan' => array('name' => 'Cyan',
-            'color' => array('cyan' => 1, 'magenta' => 0, 'yellow' => 0, 'key' => 0, 'alpha' => 1)),
-        'magenta' => array('name' => 'Magenta',
-            'color' => array('cyan' => 0, 'magenta' => 1, 'yellow' => 0, 'key' => 0, 'alpha' => 1)),
-        'yellow' => array('name' => 'Yellow',
-            'color' => array('cyan' => 0, 'magenta' => 0, 'yellow' => 1, 'key' => 0, 'alpha' => 1)),
-        'key' => array('name' => 'Key',
-            'color' => array('cyan' => 0, 'magenta' => 0, 'yellow' => 0, 'key' => 1, 'alpha' => 1)),
-        'white' => array('name' => 'White',
-            'color' => array('cyan' => 0, 'magenta' => 0, 'yellow' => 0, 'key' => 0, 'alpha' => 1)),
-        'black' => array('name' => 'Black',
-            'color' => array('cyan' => 0, 'magenta' => 0, 'yellow' => 0, 'key' => 1, 'alpha' => 1)),
-        'red' => array('name' => 'Red',
-            'color' => array('cyan' => 0, 'magenta' => 1, 'yellow' => 1, 'key' => 0, 'alpha' => 1)),
-        'green' => array('name' => 'Green',
-            'color' => array('cyan' => 1, 'magenta' => 0, 'yellow' => 1, 'key' => 0, 'alpha' => 1)),
-        'blue' => array('name' => 'Blue',
-            'color' => array('cyan' => 1, 'magenta' => 1, 'yellow' => 0, 'key' => 0, 'alpha' => 1)),
-    );
+    public const DEFAULT_SPOT_COLORS = [
+        'none' => [
+            'name' => 'None',
+            'color' => [
+                'cyan' => 0,
+                'magenta' => 0,
+                'yellow' => 0,
+                'key' => 0,
+                'alpha' => 1,
+            ],
+        ],
+        'all' => [
+            'name' => 'All',
+            'color' => [
+                'cyan' => 1,
+                'magenta' => 1,
+                'yellow' => 1,
+                'key' => 1,
+                'alpha' => 1,
+            ],
+        ],
+        'cyan' => [
+            'name' => 'Cyan',
+            'color' => [
+                'cyan' => 1,
+                'magenta' => 0,
+                'yellow' => 0,
+                'key' => 0,
+                'alpha' => 1,
+            ],
+        ],
+        'magenta' => [
+            'name' => 'Magenta',
+            'color' => [
+                'cyan' => 0,
+                'magenta' => 1,
+                'yellow' => 0,
+                'key' => 0,
+                'alpha' => 1,
+            ],
+        ],
+        'yellow' => [
+            'name' => 'Yellow',
+            'color' => [
+                'cyan' => 0,
+                'magenta' => 0,
+                'yellow' => 1,
+                'key' => 0,
+                'alpha' => 1,
+            ],
+        ],
+        'key' => [
+            'name' => 'Key',
+            'color' => [
+                'cyan' => 0,
+                'magenta' => 0,
+                'yellow' => 0,
+                'key' => 1,
+                'alpha' => 1,
+            ],
+        ],
+        'white' => [
+            'name' => 'White',
+            'color' => [
+                'cyan' => 0,
+                'magenta' => 0,
+                'yellow' => 0,
+                'key' => 0,
+                'alpha' => 1,
+            ],
+        ],
+        'black' => [
+            'name' => 'Black',
+            'color' => [
+                'cyan' => 0,
+                'magenta' => 0,
+                'yellow' => 0,
+                'key' => 1,
+                'alpha' => 1,
+            ],
+        ],
+        'red' => [
+            'name' => 'Red',
+            'color' => [
+                'cyan' => 0,
+                'magenta' => 1,
+                'yellow' => 1,
+                'key' => 0,
+                'alpha' => 1,
+            ],
+        ],
+        'green' => [
+            'name' => 'Green',
+            'color' => [
+                'cyan' => 1,
+                'magenta' => 0,
+                'yellow' => 1,
+                'key' => 0,
+                'alpha' => 1,
+            ],
+        ],
+        'blue' => [
+            'name' => 'Blue',
+            'color' => [
+                'cyan' => 1,
+                'magenta' => 1,
+                'yellow' => 0,
+                'key' => 0,
+                'alpha' => 1,
+            ],
+        ],
+    ];
 
     /**
      * Array of Spot colors
      *
-     * @var array
+     * @var array<string, array{'i': int, 'n': int, 'name': string, 'color': Cmyk}>
      */
-    protected $spot_colors = array();
+    protected $spot_colors = [];
 
     /**
      * Returns the array of spot colors.
      *
-     * @return array Spot colors array.
+     * @return array<string, array{'i': int, 'n': int, 'name': string, 'color': Cmyk}>
      */
-    public function getSpotColors()
+    public function getSpotColors(): array
     {
         return $this->spot_colors;
     }
@@ -86,12 +183,11 @@ class Spot extends \Com\Tecnick\Color\Web
      * Return the normalized version of the spot color name
      *
      * @param string $name Full name of the spot color.
-     *
-     * @return string
      */
-    public function normalizeSpotColorName($name)
+    public function normalizeSpotColorName(string $name): string
     {
-        return preg_replace('/[^a-z0-9]*/', '', strtolower($name));
+        $ret = preg_replace('/[^a-z0-9]*/', '', strtolower($name));
+        return $ret ?? '';
     }
 
     /**
@@ -99,20 +195,22 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @param string $name Full name of the spot color.
      *
-     * @return array
+     * @return array{'i': int, 'n': int, 'name': string, 'color': Cmyk}
      *
      * @throws ColorException if the color is not found
      */
-    public function getSpotColor($name)
+    public function getSpotColor(string $name): array
     {
         $key = $this->normalizeSpotColorName($name);
         if (empty($this->spot_colors[$key])) {
             // search on default spot colors
-            if (empty(self::$default_spot_colors[$key])) {
+            if (empty(self::DEFAULT_SPOT_COLORS[$key])) {
                 throw new ColorException('unable to find the spot color: ' . $key);
             }
-            $this->addSpotColor($key, new Cmyk(self::$default_spot_colors[$key]['color']));
+
+            $this->addSpotColor($key, new Cmyk(self::DEFAULT_SPOT_COLORS[$key]['color']));
         }
+
         return $this->spot_colors[$key];
     }
 
@@ -121,11 +219,9 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @param string $name Full name of the spot color.
      *
-     * @return array
-     *
      * @throws ColorException if the color is not found
      */
-    public function getSpotColorObj($name)
+    public function getSpotColorObj(string $name): Cmyk
     {
         $spot = $this->getSpotColor($name);
         return $spot['color'];
@@ -134,23 +230,20 @@ class Spot extends \Com\Tecnick\Color\Web
     /**
      * Add a new spot color or overwrite an existing one with the same name.
      *
-     * @param string $name  Full name of the spot color.
-     * @param Cmyk   $color CMYK color object
+     * @param string $name Full name of the spot color.
+     * @param Cmyk   $cmyk CMYK color object
      */
-    public function addSpotColor($name, Cmyk $color)
+    public function addSpotColor(string $name, Cmyk $cmyk): void
     {
         $key = $this->normalizeSpotColorName($name);
-        if (isset($this->spot_colors[$key])) {
-            $num = $this->spot_colors[$key]['i'];
-        } else {
-            $num = (count($this->spot_colors) + 1);
-        }
-        $this->spot_colors[$key] = array(
-            'i'     => $num,   // color index
-            'n'     => 0,      // PDF object number
-            'name'  => $name,  // color name (key)
-            'color' => $color, // CMYK color object
-        );
+        $num = isset($this->spot_colors[$key]) ? $this->spot_colors[$key]['i'] : (count($this->spot_colors) + 1);
+
+        $this->spot_colors[$key] = [
+            'i' => $num, // color index
+            'n' => 0, // PDF object number
+            'name' => $name, // color name (key)
+            'color' => $cmyk, // CMYK color object
+        ];
     }
 
     /**
@@ -160,7 +253,7 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @return string PDF command
      */
-    public function getPdfSpotObjects(&$pon)
+    public function getPdfSpotObjects(int &$pon): string
     {
         $out = '';
         foreach ($this->spot_colors as $name => $color) {
@@ -177,6 +270,7 @@ class Spot extends \Com\Tecnick\Color\Web
                 . '>>]' . "\n"
                 . 'endobj' . "\n";
         }
+
         return $out;
     }
 
@@ -185,16 +279,17 @@ class Spot extends \Com\Tecnick\Color\Web
      *
      * @return string PDF command
      */
-    public function getPdfSpotResources()
+    public function getPdfSpotResources(): string
     {
-        if (empty($this->spot_colors)) {
+        if ($this->spot_colors === []) {
             return '';
         }
+
         $out = '/ColorSpace << ';
-        foreach ($this->spot_colors as $color) {
-            $out .= '/CS' . $color['i'] . ' ' . $color['n'] . ' 0 R ';
+        foreach ($this->spot_colors as $spot_color) {
+            $out .= '/CS' . $spot_color['i'] . ' ' . $spot_color['n'] . ' 0 R ';
         }
-        $out .= '>>' . "\n";
-        return $out;
+
+        return $out . ('>>' . "\n");
     }
 }

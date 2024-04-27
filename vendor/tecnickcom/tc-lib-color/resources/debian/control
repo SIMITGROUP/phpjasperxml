@@ -10,7 +10,7 @@ Vcs-Git: https://github.com/~#VENDOR#~/~#PROJECT#~.git
 Package: ~#PKGNAME#~
 Provides: php-~#PROJECT#~
 Architecture: all
-Depends: php (>= 5.3.0), ${misc:Depends}
+Depends: php (>= 8.0.0), ${misc:Depends}
 Description: PHP Color library
  This library includes PHP classes to parse and manipulate
  various colors representations GRAY, RGB, HSL, CMYK.

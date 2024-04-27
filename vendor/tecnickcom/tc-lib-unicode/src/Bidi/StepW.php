@@ -3,13 +3,13 @@
 /**
  * StepW.php
  *
- * @since       2011-05-23
- * @category    Library
- * @package     Unicode
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-unicode
+ * @since     2011-05-23
+ * @category  Library
+ * @package   Unicode
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-unicode
  *
  * This file is part of tc-lib-unicode software library.
  */
@@ -21,13 +21,13 @@ use Com\Tecnick\Unicode\Data\Constant as UniConstant;
 /**
  * Com\Tecnick\Unicode\Bidi\StepW
  *
- * @since       2015-07-13
- * @category    Library
- * @package     Unicode
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-unicode
+ * @since     2015-07-13
+ * @category  Library
+ * @package   Unicode
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-unicode
  */
 class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
 {
@@ -35,7 +35,7 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      * Process W steps
      * Resolving Weak Types
      */
-    protected function process()
+    protected function process(): void
     {
         $this->processStep('processW1');
         $this->processStep('processW2');
@@ -56,7 +56,7 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $idx Current character position
      */
-    protected function processW1($idx)
+    protected function processW1(int $idx): void
     {
         if ($this->seq['item'][$idx]['type'] == 'NSM') {
             $jdx = ($idx - 1);
@@ -79,7 +79,7 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $idx Current character position
      */
-    protected function processW2($idx)
+    protected function processW2(int $idx): void
     {
         if ($this->seq['item'][$idx]['type'] == 'EN') {
             $jdx = ($idx - 1);
@@ -87,9 +87,10 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
                 if ($this->seq['item'][$jdx]['type'] == 'AL') {
                     $this->seq['item'][$idx]['type'] = 'AN';
                     break;
-                } elseif (in_array($this->seq['item'][$jdx]['type'], array('R','L'))) {
+                } elseif (in_array($this->seq['item'][$jdx]['type'], ['R', 'L'])) {
                     break;
                 }
+
                 --$jdx;
             }
         }
@@ -100,7 +101,7 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $idx Current character position
      */
-    protected function processW3($idx)
+    protected function processW3(int $idx): void
     {
         if ($this->seq['item'][$idx]['type'] == 'AL') {
             $this->seq['item'][$idx]['type'] = 'R';
@@ -113,19 +114,18 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $idx Current character position
      */
-    protected function processW4($idx)
+    protected function processW4(int $idx): void
     {
-        if (in_array($this->seq['item'][$idx]['type'], array('ES','CS'))) {
+        if (in_array($this->seq['item'][$idx]['type'], ['ES', 'CS'])) {
             $bdx = ($idx - 1);
             $fdx = ($idx + 1);
             if (
                 ($bdx >= 0)
                 && ($fdx < $this->seq['length'])
-                && ($this->seq['item'][$bdx]['type'] == $this->seq['item'][$fdx]['type'])
+                    && $this->seq['item'][$bdx]['type'] == $this->seq['item'][$fdx]['type']
+                    && in_array($this->seq['item'][$bdx]['type'], ['EN', 'AN'])
             ) {
-                if (in_array($this->seq['item'][$bdx]['type'], array('EN','AN'))) {
-                    $this->seq['item'][$idx]['type'] = $this->seq['item'][$bdx]['type'];
-                }
+                $this->seq['item'][$idx]['type'] = $this->seq['item'][$bdx]['type'];
             }
         }
     }
@@ -135,7 +135,7 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $idx Current character position
      */
-    protected function processW5($idx)
+    protected function processW5(int $idx): void
     {
         if ($this->seq['item'][$idx]['type'] == 'ET') {
             $this->processW5a($idx);
@@ -148,7 +148,7 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $idx Current character position
      */
-    protected function processW5a($idx)
+    protected function processW5a(int $idx): void
     {
         for ($jdx = ($idx - 1); $jdx >= 0; --$jdx) {
             if ($this->seq['item'][$jdx]['type'] == 'EN') {
@@ -164,7 +164,7 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $idx Current character position
      */
-    protected function processW5b($idx)
+    protected function processW5b(int $idx): void
     {
         if ($this->seq['item'][$idx]['type'] == 'ET') {
             for ($jdx = ($idx + 1); $jdx < $this->seq['length']; ++$jdx) {
@@ -182,9 +182,9 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $idx Current character position
      */
-    protected function processW6($idx)
+    protected function processW6(int $idx): void
     {
-        if (in_array($this->seq['item'][$idx]['type'], array('ET','ES','CS','ON'))) {
+        if (in_array($this->seq['item'][$idx]['type'], ['ET', 'ES', 'CS', 'ON'])) {
             $this->seq['item'][$idx]['type'] = 'ON';
         }
     }
@@ -195,7 +195,7 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $idx Current character position
      */
-    protected function processW7($idx)
+    protected function processW7(int $idx): void
     {
         if ($this->seq['item'][$idx]['type'] == 'EN') {
             for ($jdx = ($idx - 1); $jdx >= 0; --$jdx) {
@@ -206,6 +206,7 @@ class StepW extends \Com\Tecnick\Unicode\Bidi\StepBase
                     break;
                 }
             }
+
             if (($this->seq['sos'] == 'L') && ($jdx < 0)) {
                 $this->seq['item'][$idx]['type'] = 'L';
             }

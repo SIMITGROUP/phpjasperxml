@@ -16,7 +16,7 @@ URL:       https://github.com/%{gh_owner}/%{gh_project}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-%(%{__id_u} -n)
 BuildArch: noarch
 
-Requires:  php(language) >= 5.4.0
+Requires:  php(language) >= 8.0.0
 Requires:  php-date
 Requires:  php-hash
 Requires:  php-openssl
@@ -48,5 +48,5 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_configpath}*
 
 %changelog
-* Wed Sep 23 2015 Nicola Asuni <info@tecnick.com> 1.0.0-1
+* Wed Sep 23 2024 Nicola Asuni <info@tecnick.com> 1.0.0-1
 - Initial Commit

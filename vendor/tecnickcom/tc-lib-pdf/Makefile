@@ -4,12 +4,15 @@
 # @category    Library
 # @package     Pdf
 # @author      Nicola Asuni <info@tecnick.com>
-# @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
+# @copyright   2015-2024 Nicola Asuni - Tecnick.com LTD
 # @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
 # @link        https://github.com/tecnickcom/tc-lib-pdf
 #
 # This file is part of tc-lib-pdf software library.
 # ----------------------------------------------------------------------------------------------------------------------
+
+SHELL=/bin/bash
+.SHELLFLAGS=-o pipefail -c
 
 # Project owner
 OWNER=tecnickcom
@@ -69,7 +72,7 @@ PATHDEBPKG=$(TARGETDIR)/DEB
 PATHBZ2PKG=$(TARGETDIR)/BZ2
 
 # Default port number for the example server
-PORT?=8000
+PORT?=8971
 
 # PHP binary
 PHP=$(shell which php)
@@ -111,6 +114,10 @@ help:
 # alias for help target
 .PHONY: all
 all: help
+
+# Full build and test sequence
+.PHONY: x
+x: buildall
 
 # Full build and test sequence
 .PHONY: buildall
@@ -165,7 +172,7 @@ endif
 deps: ensuretarget
 	rm -rf ./vendor/*
 	($(COMPOSER) install -vvv --no-interaction)
-	curl --silent --show-error --fail --location --output ./vendor/phpstan.phar https://github.com/phpstan/phpstan/releases/download/1.10.38/phpstan.phar \
+	curl --silent --show-error --fail --location --output ./vendor/phpstan.phar https://github.com/phpstan/phpstan/releases/download/1.10.41/phpstan.phar \
 	&& chmod +x ./vendor/phpstan.phar
 
 # Generate source code documentation
@@ -247,7 +254,7 @@ rpm:
 # Start the development server
 .PHONY: server
 server:
-	$(PHP) -t example -S localhost:$(PORT)
+	$(PHP) -t examples -S localhost:$(PORT)
 
 # Tag this GIT version
 .PHONY: tag

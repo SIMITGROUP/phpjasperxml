@@ -87,7 +87,7 @@
 				<textElement>
 					<font isUnderline="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{description}+$F{description}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["\n"+$F{description}+"\n"+$F{description}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="141" y="0" width="138" height="106" backcolor="#A6FFB6" uuid="7d3b6a51-7bda-403d-86bf-7b870ee6a9e9"/>

@@ -3,13 +3,13 @@
 /**
  * Byte.php
  *
- * @since       2015-07-28
- * @category    Library
- * @package     File
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-file
+ * @since     2015-07-28
+ * @category  Library
+ * @package   File
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-file
  *
  * This file is part of tc-lib-file software library.
  */
@@ -21,31 +21,27 @@ namespace Com\Tecnick\File;
  *
  * Function to read byte-level data
  *
- * @since       2015-07-28
- * @category    Library
- * @package     File
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-file
+ * @since     2015-07-28
+ * @category  Library
+ * @package   File
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-file
  */
 class Byte
 {
-    /**
-     * String to process
-     *
-     * @var string
-     */
-    protected $str = '';
-
     /**
      * Initialize a new string to be processed
      *
      * @param string $str String from where to extract values
      */
-    public function __construct($str)
-    {
-        $this->str = $str;
+    public function __construct(
+        /**
+         * String to process
+         */
+        protected string $str
+    ) {
     }
 
     /**
@@ -54,12 +50,11 @@ class Byte
      * @param int $offset Point from where to read the data.
      *
      * @return int 8 bit value
-     *
      */
-    public function getByte($offset)
+    public function getByte(int $offset): int
     {
         $val = unpack('Ci', substr($this->str, $offset, 1));
-        return $val['i'];
+        return $val === false ? 0 : $val['i'];
     }
 
     /**
@@ -69,10 +64,10 @@ class Byte
      *
      * @return int 32 bit value
      */
-    public function getULong($offset)
+    public function getULong(int $offset): int
     {
         $val = unpack('Ni', substr($this->str, $offset, 4));
-        return $val['i'];
+        return $val === false ? 0 : $val['i'];
     }
 
     /**
@@ -82,10 +77,10 @@ class Byte
      *
      * @return int 16 bit value
      */
-    public function getUShort($offset)
+    public function getUShort(int $offset): int
     {
         $val = unpack('ni', substr($this->str, $offset, 2));
-        return $val['i'];
+        return $val === false ? 0 : $val['i'];
     }
 
     /**
@@ -95,10 +90,10 @@ class Byte
      *
      * @return int 16 bit value
      */
-    public function getShort($offset)
+    public function getShort(int $offset): int
     {
         $val = unpack('si', substr($this->str, $offset, 2));
-        return $val['i'];
+        return $val === false ? 0 : $val['i'];
     }
 
     /**
@@ -108,7 +103,7 @@ class Byte
      *
      * @return int 16 bit value
      */
-    public function getUFWord($offset)
+    public function getUFWord(int $offset): int
     {
         return $this->getUShort($offset);
     }
@@ -120,12 +115,13 @@ class Byte
      *
      * @return int 16 bit value
      */
-    public function getFWord($offset)
+    public function getFWord(int $offset): int
     {
         $val = $this->getUShort($offset);
         if ($val > 0x7fff) {
             $val -= 0x10000;
         }
+
         return $val;
     }
 
@@ -133,13 +129,10 @@ class Byte
      * Get FIXED from string (32-bit signed fixed-point number (16.16).
      *
      * @param int $offset Point from where to read the data.
-     *
-     * @return float
-     *
      */
-    public function getFixed($offset)
+    public function getFixed(int $offset): float
     {
         // mantissa.fraction
-        return (float)($this->getFWord($offset) . '.' . $this->getUShort($offset + 2));
+        return (float) ($this->getFWord($offset) . '.' . $this->getUShort($offset + 2));
     }
 }

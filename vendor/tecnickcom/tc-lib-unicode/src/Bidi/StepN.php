@@ -3,13 +3,13 @@
 /**
  * StepN.php
  *
- * @since       2011-05-23
- * @category    Library
- * @package     Unicode
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-unicode
+ * @since     2011-05-23
+ * @category  Library
+ * @package   Unicode
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-unicode
  *
  * This file is part of tc-lib-unicode software library.
  */
@@ -21,29 +21,29 @@ use Com\Tecnick\Unicode\Data\Bracket as UniBracket;
 /**
  * Com\Tecnick\Unicode\Bidi\StepN
  *
- * @since       2015-07-13
- * @category    Library
- * @package     Unicode
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-unicode
+ * @since     2015-07-13
+ * @category  Library
+ * @package   Unicode
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-unicode
  */
 class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
 {
     /**
      * List or bracket pairs positions
      *
-     * @var array
+     * @var array<int, int>
      */
-    protected $brackets = array();
+    protected array $brackets = [];
 
     /**
      * Stack used to store bracket positions
      *
-     * @var array
+     * @var array<int, array{int, int}>
      */
-    protected $bstack = array();
+    protected array $bstack = [];
 
     /**
      * Process N steps
@@ -61,7 +61,7 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      * X6. The current bidirectional character type may also have changed under a previous iteration of the for loop in
      * N0 in the case of nested bracket pairs.
      */
-    protected function process()
+    protected function process(): void
     {
         $this->processStep('getBracketPairs');
         $this->processN0();
@@ -72,30 +72,33 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
     /**
      * BD16. Find all bracket pairs
      */
-    protected function getBracketPairs($idx)
+    protected function getBracketPairs(int $idx): void
     {
         $char = $this->seq['item'][$idx]['char'];
-        if (isset(UniBracket::$open[$char])) {
+        if (isset(UniBracket::OPEN[$char])) {
             // process open bracket
             if ($char == 0x3008) {
                 $char = 0x2329;
             }
-            $this->bstack[] = array($idx, $char);
-        } elseif (isset(UniBracket::$close[$char])) {
+
+            $this->bstack[] = [$idx, $char];
+        } elseif (isset(UniBracket::CLOSE[$char])) {
             // process closign bracket
             if ($char == 0x3009) {
                 $char = 0x232A;
             }
+
             // find matching opening bracket
             $tmpstack = $this->bstack;
-            while (!empty($tmpstack)) {
+            while ($tmpstack !== []) {
                 $item = array_pop($tmpstack);
-                if ($char == UniBracket::$open[$item[1]]) {
+                if ($char == UniBracket::OPEN[$item[1]]) {
                     $this->brackets[$item[0]] = $idx;
                     $this->bstack = $tmpstack;
                 }
             }
         }
+
         // Sort the list of pairs of text positions in ascending order
         // based on the text position of the opening paired bracket.
         ksort($this->brackets);
@@ -106,10 +109,8 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      * Within this scope, bidirectional types EN and AN are treated as R.
      *
      * @param string $type Char type
-     *
-     * @return string
      */
-    protected function getN0Type($type)
+    protected function getN0Type(string $type): string
     {
         return ((($type == 'AN') || ($type == 'EN')) ? 'R' : $type);
     }
@@ -118,7 +119,7 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      * N0. Process bracket pairs in an isolating run sequence sequentially in the logical order of the text positions
      *     of the opening paired brackets.
      */
-    protected function processN0()
+    protected function processN0(): void
     {
         $odir = (($this->seq['edir'] == 'L') ? 'R' : 'L');
         // For each bracket-pair element in the list of pairs of text positions
@@ -137,10 +138,12 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
                         break;
                     }
                 }
+
                 if ($jdx < 0) {
                     $this->setBracketsType($open, $close, $this->seq['sos']);
                 }
             }
+
             // d. Otherwise, there are no strong types within the bracket pair. Therefore, do not set the type for that
             //    bracket pair. Note that if the enclosed text contains no strong types the bracket pairs will both
             //    resolve to the same level when resolved individually using rules N1 and N2.
@@ -156,7 +159,7 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @return bool True if type has not been found
      */
-    protected function processInsideBrackets($open, $close, $odir)
+    protected function processInsideBrackets(int $open, int $close, string $odir): bool
     {
         $opposite = false;
         // a. Inspect the bidirectional types of the characters enclosed within the bracket pair.
@@ -167,14 +170,15 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
             if ($btype == $this->seq['edir']) {
                 $this->setBracketsType($open, $close, $this->seq['edir']);
                 break;
-            } elseif ($btype == $odir) {
+            } elseif ($btype === $odir) {
                 // c. Otherwise, if there is a strong type it must be opposite the embedding direction.
                 $opposite = true;
             }
         }
+
         // Therefore, test for an established context with a preceding strong type by checking backwards before
         // the opening paired bracket until the first strong type (L, R, or sos) is found.
-        return (($jdx == $close) && $opposite);
+        return (($jdx === $close) && $opposite);
     }
 
     /**
@@ -184,7 +188,7 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      * @param int    $close Close bracket entry
      * @param string $type  Type
      */
-    protected function setBracketsType($open, $close, $type)
+    protected function setBracketsType(int $open, int $close, string $type): void
     {
         $this->seq['item'][$open]['type'] = $type;
         $this->seq['item'][$close]['type'] = $type;
@@ -206,20 +210,22 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $idx Current character position
      */
-    protected function processN1($idx)
+    protected function processN1(int $idx): void
     {
         if ($this->seq['item'][$idx]['type'] == 'NI') {
             $bdx = ($idx - 1);
             $prev = $this->processN1prev($bdx);
-            if (empty($prev)) {
+            if ($prev === '') {
                 return;
             }
+
             $jdx = $this->getNextN1Char($idx);
             $next = $this->processN1next($jdx);
-            if (empty($next)) {
+            if ($next === '') {
                 return;
             }
-            if ($next == $prev) {
+
+            if ($next === $prev) {
                 for ($bdx = $idx; (($bdx < $jdx) && ($bdx < $this->seq['length'])); ++$bdx) {
                     $this->seq['item'][$bdx]['type'] = $next;
                 }
@@ -234,18 +240,21 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @return string Previous position
      */
-    protected function processN1prev(&$bdx)
+    protected function processN1prev(int &$bdx): string
     {
         if ($bdx < 0) {
             $bdx = 0;
             return $this->seq['sos'];
         }
-        if (in_array($this->seq['item'][$bdx]['type'], array('R','AN','EN'))) {
+
+        if (in_array($this->seq['item'][$bdx]['type'], ['R', 'AN', 'EN'])) {
             return 'R';
         }
+
         if ($this->seq['item'][$bdx]['type'] == 'L') {
             return 'L';
         }
+
         return '';
     }
 
@@ -256,18 +265,21 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @return string Previous position
      */
-    protected function processN1next(&$jdx)
+    protected function processN1next(int &$jdx): string
     {
         if ($jdx >= $this->seq['length']) {
             $jdx = $this->seq['length'];
             return $this->seq['eos'];
         }
-        if (in_array($this->seq['item'][$jdx]['type'], array('R','AN','EN'))) {
+
+        if (in_array($this->seq['item'][$jdx]['type'], ['R', 'AN', 'EN'])) {
             return 'R';
         }
+
         if ($this->seq['item'][$jdx]['type'] == 'L') {
             return 'L';
         }
+
         return '';
     }
 
@@ -275,15 +287,14 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      * Return the index of the next valid char for N1
      *
      * @param int $idx Start index
-     *
-     * @return int
      */
-    protected function getNextN1Char($idx)
+    protected function getNextN1Char(int $idx): int|float
     {
         $jdx = ($idx + 1);
         while (($jdx < $this->seq['length']) && ($this->seq['item'][$jdx]['type'] == 'NI')) {
             ++$jdx;
         }
+
         return $jdx;
     }
 
@@ -292,7 +303,7 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $idx Current character position
      */
-    protected function processN2($idx)
+    protected function processN2($idx): void
     {
         if ($this->seq['item'][$idx]['type'] == 'NI') {
             $this->seq['item'][$idx]['type'] = $this->seq['edir'];

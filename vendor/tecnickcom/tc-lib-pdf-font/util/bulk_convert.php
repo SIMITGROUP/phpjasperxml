@@ -7,7 +7,7 @@
  * @category    Library
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2011-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
@@ -148,7 +148,7 @@ foreach ($fontdir as $dir) {
 
     foreach ($fonts as $font) {
         if (substr($font, -4) == '.otf') {
-            // OTF fonts are not supported but we can try to convert them to TTF using FontForge
+            // OTF fonts are not yet supported but we can try to convert them to TTF using FontForge
             system('fontforge -script otf2ttf.ff '.escapeshellcmd($font), $err);
             if ($err != 0) {
                 fwrite(STDERR, "\033[31m".'Unable to convert: '.$font."\033[m");
@@ -157,8 +157,8 @@ foreach ($fontdir as $dir) {
             $font = substr($font, 0, -4).'.ttf';
         }
         
-        $type = null;
-        $encoding = null;
+        $type = '';
+        $encoding = '';
         if ($dir == 'cid0') {
             $type = strtoupper(basename($font, '.ttf'));
         } elseif (($dir == 'core') || ($dir == 'pdfa')) {

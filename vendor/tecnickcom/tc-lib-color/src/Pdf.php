@@ -3,13 +3,13 @@
 /**
  * Pdf.php
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * This file is part of tc-lib-color software library.
  */
@@ -23,22 +23,20 @@ use Com\Tecnick\Color\Exception as ColorException;
  *
  * PDF Color class
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  */
 class Pdf extends \Com\Tecnick\Color\Spot
 {
     /**
      * Array of valid JavaScript color names to be used in PDF documents
-     *
-     * @var array
      */
-    protected static $jscolor = array(
+    public const JSCOLOR = [
         'transparent',
         'black',
         'white',
@@ -51,39 +49,29 @@ class Pdf extends \Com\Tecnick\Color\Spot
         'dkGray',
         'gray',
         'ltGray',
-    );
-
-    /**
-     * Return the Js color array of names
-     *
-     * @return array
-     */
-    public function getJsMap()
-    {
-        return self::$jscolor;
-    }
+    ];
 
     /**
      * Convert color to javascript string
      *
-     * @param string|object $color color name or color object
-     *
-     * @return string
+     * @param string $color color name or color object
      */
-    public function getJsColorString($color)
+    public function getJsColorString(string $color): string
     {
-        if (in_array($color, self::$jscolor)) {
+        if (in_array($color, self::JSCOLOR)) {
             return 'color.' . $color;
         }
+
         try {
-            if (($colobj = $this->getColorObj($color)) !== null) {
+            if (($colobj = $this->getColorObj($color)) instanceof \Com\Tecnick\Color\Model) {
                 return $colobj->getJsPdfColor();
             }
-        } catch (ColorException $e) {
+        } catch (ColorException $colorException) {
             assert(true); // noop
         }
+
         // default transparent color
-        return 'color.' . self::$jscolor[0];
+        return 'color.' . self::JSCOLOR[0];
     }
 
     /**
@@ -91,18 +79,20 @@ class Pdf extends \Com\Tecnick\Color\Spot
      *
      * @param string $color HTML, CSS or Spot color to parse
      */
-    public function getColorObject($color)
+    public function getColorObject(string $color): ?\Com\Tecnick\Color\Model
     {
         try {
             return $this->getSpotColorObj($color);
-        } catch (ColorException $e) {
+        } catch (ColorException $colorException) {
             assert(true); // noop
         }
+
         try {
             return $this->getColorObj($color);
-        } catch (ColorException $e) {
+        } catch (ColorException $colorException) {
             assert(true); // noop
         }
+
         return null;
     }
 
@@ -113,46 +103,46 @@ class Pdf extends \Com\Tecnick\Color\Spot
      * @param string $color  HTML, CSS or Spot color to parse
      * @param bool   $stroke True for stroking (lines, drawing) and false for non-stroking (text and area filling).
      * @param float  $tint   Intensity of the color (from 0 to 1; 1 = full intensity).
-     *
-     * @return string
      */
-    public function getPdfColor($color, $stroke = false, $tint = 1)
+    public function getPdfColor(string $color, bool $stroke = false, float $tint = 1): string
     {
         try {
             $col = $this->getSpotColor($color);
-            $tint = sprintf('cs %F scn', (max(0, min(1, (float) $tint))));
+            $tint = sprintf('cs %F scn', (max(0, min(1, $tint))));
             if ($stroke) {
                 $tint = strtoupper($tint);
             }
+
             return sprintf('/CS%d %s' . "\n", $col['i'], $tint);
-        } catch (ColorException $e) {
+        } catch (ColorException $colorException) {
             assert(true); // noop
         }
+
         try {
             $col = $this->getColorObj($color);
-            if ($col !== null) {
+            if ($col instanceof \Com\Tecnick\Color\Model) {
                 return $col->getPdfColor($stroke);
             }
-        } catch (ColorException $e) {
+        } catch (ColorException $colorException) {
             assert(true); // noop
         }
+
         return '';
     }
 
     /**
      * Get the RGB color components format used in PDF documents
      *
-     * @param string $color  HTML, CSS or Spot color to parse
-     *
-     * @return string
+     * @param string $color HTML, CSS or Spot color to parse
      */
-    public function getPdfRgbComponents($color)
+    public function getPdfRgbComponents(string $color): string
     {
-        $col = $this->getColorObject($color);
-        if ($col === null) {
+        $model = $this->getColorObject($color);
+        if (! $model instanceof \Com\Tecnick\Color\Model) {
             return '';
         }
-        $cmp = $col->toRgbArray();
+
+        $cmp = $model->toRgbArray();
         return sprintf('%F %F %F', $cmp['red'], $cmp['green'], $cmp['blue']);
     }
 }

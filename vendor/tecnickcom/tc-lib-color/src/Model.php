@@ -3,13 +3,13 @@
 /**
  * Model.php
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * This file is part of tc-lib-color software library.
  */
@@ -21,15 +21,15 @@ namespace Com\Tecnick\Color;
  *
  * Color Model class
  *
- * @since       2015-02-21
- * @category    Library
- * @package     Color
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-color
+ * @since     2015-02-21
+ * @category  Library
+ * @package   Color
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2015-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-color
  */
-abstract class Model
+abstract class Model implements \Com\Tecnick\Color\Model\Template
 {
     /**
      * Color Model type (GRAY, RGB, HSL, CMYK)
@@ -46,29 +46,25 @@ abstract class Model
      */
     protected $cmp_alpha = 1.0;
 
-    abstract public function toRgbArray();
-
     /**
-     * Initialize a new color object
+     * Initialize a new color object.
      *
-     * @param array $components Array of color components is the range [0..1]
+     * @param array<string, int|float|string> $components color components.
      */
-    public function __construct($components)
+    public function __construct(array $components)
     {
         foreach ($components as $color => $value) {
             $property = 'cmp_' . $color;
             if (property_exists($this, $property)) {
-                $this->$property = (max(0, min(1, floatval($value))));
+                $this->$property = (max(0, min(1, (float) $value)));
             }
         }
     }
 
     /**
      * Get the color model type (GRAY, RGB, HSL, CMYK)
-     *
-     * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -81,9 +77,9 @@ abstract class Model
      *
      * @return float value [0..$max]
      */
-    public function getNormalizedValue($value, $max)
+    public function getNormalizedValue(float $value, int $max): float
     {
-        return round(max(0, min($max, ($max * floatval($value)))));
+        return round(max(0, min($max, ($max * $value))));
     }
 
     /**
@@ -91,20 +87,16 @@ abstract class Model
      *
      * @param float $value Fraction value to convert [0..1]
      * @param int   $max   Maximum value to return (reference value)
-     *
-     * @return string
      */
-    public function getHexValue($value, $max)
+    public function getHexValue(float $value, int $max): string
     {
         return sprintf('%02x', $this->getNormalizedValue($value, $max));
     }
 
     /**
      * Get the Hexadecimal representation of the color with alpha channel: #RRGGBBAA
-     *
-     * @return string
      */
-    public function getRgbaHexColor()
+    public function getRgbaHexColor(): string
     {
         $rgba = $this->toRgbArray();
         return '#'
@@ -116,10 +108,8 @@ abstract class Model
 
     /**
      * Get the Hexadecimal representation of the color: #RRGGBB
-     *
-     * @return string
      */
-    public function getRgbHexColor()
+    public function getRgbHexColor(): string
     {
         $rgba = $this->toRgbArray();
         return '#'

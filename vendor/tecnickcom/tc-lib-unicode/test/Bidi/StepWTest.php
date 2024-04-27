@@ -3,926 +3,2795 @@
 /**
  * StepWTest.php
  *
- * @since       2011-05-23
- * @category    Library
- * @package     Unicode
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-unicode
+ * @since     2011-05-23
+ * @category  Library
+ * @package   Unicode
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-unicode
  *
  * This file is part of tc-lib-unicode software library.
  */
 
 namespace Test\Bidi;
 
+use Com\Tecnick\Unicode\Bidi\StepW;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Bidi Test
  *
- * @since       2011-05-23
- * @category    Library
- * @package     Unicode
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-unicode
+ * @since     2011-05-23
+ * @category  Library
+ * @package   Unicode
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-unicode
  */
 class StepWTest extends TestCase
 {
     /**
      * @dataProvider stepWDataProvider
+     *
+     * @param array{
+     *          'e': int,
+     *          'edir': string,
+     *          'end': int,
+     *          'eos': string,
+     *          'length': int,
+     *          'maxlevel': int,
+     *          'sos': string,
+     *          'start': int,
+     *          'item': array<int, array{
+     *            'char': int,
+     *            'i': int,
+     *            'level': int,
+     *            'otype': string,
+     *            'pdimatch': int,
+     *            'pos': int,
+     *            'type': string,
+     *            'x': int,
+     *          }>,
+     *        } $seq
      */
-    public function testStepW($seq, $expected)
+    public function testStepW(array $seq, mixed $expected): void
     {
-        $stepw = new \Com\Tecnick\Unicode\Bidi\StepW($seq);
+        $stepw = new StepW($seq);
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public static function stepWDataProvider()
+    /**
+     * @return array<int, array{
+     *           0: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *           1: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *         }>
+     */
+    public static function stepWDataProvider(): array
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1536, 'level' => 0, 'type' => 'AL', 'otype' => 'AL'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'NSM', 'otype' => 'NSM'),
-                        array('pos' => 2, 'char' => 768,  'level' => 0, 'type' => 'NSM', 'otype' => 'NSM'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1536,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AL',
+                            'otype' => 'AL',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NSM',
+                            'otype' => 'NSM',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NSM',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1536, 'level' => 0, 'type' => 'R', 'otype' => 'AL'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'R', 'otype' => 'NSM'),
-                        array('pos' => 2, 'char' => 768,  'level' => 0, 'type' => 'R', 'otype' => 'NSM'),
-                    ),
-                )
-            ),
-        );
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1536,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'AL',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'NSM',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**
      * @dataProvider stepW1DataProvider
+     *
+     * @param array{
+     *          'e': int,
+     *          'edir': string,
+     *          'end': int,
+     *          'eos': string,
+     *          'length': int,
+     *          'maxlevel': int,
+     *          'sos': string,
+     *          'start': int,
+     *          'item': array<int, array{
+     *            'char': int,
+     *            'i': int,
+     *            'level': int,
+     *            'otype': string,
+     *            'pdimatch': int,
+     *            'pos': int,
+     *            'type': string,
+     *            'x': int,
+     *          }>,
+     *        } $seq
      */
-    public function testStepW1($seq, $expected)
+    public function testStepW1(array $seq, mixed $expected): void
     {
         $stepw = new \Com\Tecnick\Unicode\Bidi\StepW($seq, false);
         $stepw->processStep('processW1');
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public static function stepW1DataProvider()
+    /**
+     * @return array<int, array{
+     *           0: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *           1: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *         }>
+     */
+    public static function stepW1DataProvider(): array
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1536, 'level' => 0, 'type' => 'AL', 'otype' => 'AL'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'NSM', 'otype' => 'NSM'),
-                        array('pos' => 2, 'char' => 768,  'level' => 0, 'type' => 'NSM', 'otype' => 'NSM'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1536,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AL',
+                            'otype' => 'AL',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NSM',
+                            'otype' => 'NSM',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NSM',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1536, 'level' => 0, 'type' => 'AL', 'otype' => 'AL'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'AL', 'otype' => 'NSM'),
-                        array('pos' => 2, 'char' => 768,  'level' => 0, 'type' => 'AL', 'otype' => 'NSM'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1536,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AL',
+                            'otype' => 'AL',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AL',
+                            'otype' => 'NSM',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AL',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1470, 'level' => 0, 'type' => 'R',   'otype' => 'R'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'NSM', 'otype' => 'NSM'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1470,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'R',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NSM',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1470, 'level' => 0, 'type' => 'R', 'otype' => 'R'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'R', 'otype' => 'NSM'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1470,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'R',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 8294, 'level' => 0, 'type' => 'NI',  'otype' => 'NI'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'NSM', 'otype' => 'NSM'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 8294,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NSM',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 8294, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'ON', 'otype' => 'NSM'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 8294,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 8297, 'level' => 0, 'type' => 'NI',  'otype' => 'NI'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'NSM', 'otype' => 'NSM'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 8297,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NSM',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 8297, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'ON', 'otype' => 'NSM'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 8297,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 768,  'level' => 0, 'type' => 'NSM', 'otype' => 'NSM'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'NSM', 'otype' => 'NSM'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NSM',
+                            'otype' => 'NSM',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NSM',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 768,  'level' => 0, 'type' => 'R', 'otype' => 'NSM'),
-                        array('pos' => 1, 'char' => 768,  'level' => 0, 'type' => 'R', 'otype' => 'NSM'),
-                    ),
-                )
-            ),
-        );
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'NSM',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 768,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'NSM',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**
      * @dataProvider stepW2DataProvider
+     *
+     * @param array{
+     *          'e': int,
+     *          'edir': string,
+     *          'end': int,
+     *          'eos': string,
+     *          'length': int,
+     *          'maxlevel': int,
+     *          'sos': string,
+     *          'start': int,
+     *          'item': array<int, array{
+     *            'char': int,
+     *            'i': int,
+     *            'level': int,
+     *            'otype': string,
+     *            'pdimatch': int,
+     *            'pos': int,
+     *            'type': string,
+     *            'x': int,
+     *          }>,
+     *        } $seq
      */
-    public function testStepW2($seq, $expected)
+    public function testStepW2(array $seq, mixed $expected): void
     {
         $stepw = new \Com\Tecnick\Unicode\Bidi\StepW($seq, false);
         $stepw->processStep('processW2');
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public static function stepW2DataProvider()
+    /**
+     * @return array<int, array{
+     *           0: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *           1: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *         }>
+     */
+    public static function stepW2DataProvider(): array
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1536, 'level' => 0, 'type' => 'AL', 'otype' => 'AL'),
-                        array('pos' => 1, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1536,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AL',
+                            'otype' => 'AL',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1536, 'level' => 0, 'type' => 'AL', 'otype' => 'AL'),
-                        array('pos' => 1, 'char' => 1776, 'level' => 0, 'type' => 'AN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1536,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AL',
+                            'otype' => 'AL',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1536, 'level' => 0, 'type' => 'AL', 'otype' => 'AL'),
-                        array('pos' => 1, 'char' => 1769, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1536,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AL',
+                            'otype' => 'AL',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1769,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1536, 'level' => 0, 'type' => 'AL', 'otype' => 'AL'),
-                        array('pos' => 1, 'char' => 1769, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'AN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1536,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AL',
+                            'otype' => 'AL',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1769,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'L',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1470, 'level' => 0, 'type' => 'L',  'otype' => 'L'),
-                        array('pos' => 1, 'char' => 1769, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1470,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'otype' => 'L',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1769,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'L',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1470, 'level' => 0, 'type' => 'L', 'otype' => 'L'),
-                        array('pos' => 1, 'char' => 1769, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1470,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'otype' => 'L',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1769,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 65,   'level' => 0, 'type' => 'L',  'otype' => 'L'),
-                        array('pos' => 1, 'char' => 1769, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 65,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'otype' => 'L',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1769,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 65, 'level' => 0, 'type' => 'L', 'otype' => 'L'),
-                        array('pos' => 1, 'char' => 1769, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 65,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'otype' => 'L',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1769,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1470, 'level' => 0, 'type' => 'R',  'otype' => 'R'),
-                        array('pos' => 1, 'char' => 1769, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1470,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'R',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1769,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1470, 'level' => 0, 'type' => 'R', 'otype' => 'R'),
-                        array('pos' => 1, 'char' => 1769, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-        );
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1470,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'R',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1769,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**
      * @dataProvider stepW3DataProvider
+     *
+     * @param array{
+     *          'e': int,
+     *          'edir': string,
+     *          'end': int,
+     *          'eos': string,
+     *          'length': int,
+     *          'maxlevel': int,
+     *          'sos': string,
+     *          'start': int,
+     *          'item': array<int, array{
+     *            'char': int,
+     *            'i': int,
+     *            'level': int,
+     *            'otype': string,
+     *            'pdimatch': int,
+     *            'pos': int,
+     *            'type': string,
+     *            'x': int,
+     *          }>,
+     *        } $seq
      */
-    public function testStepW3($seq, $expected)
+    public function testStepW3(array $seq, mixed $expected): void
     {
         $stepw = new \Com\Tecnick\Unicode\Bidi\StepW($seq, false);
         $stepw->processStep('processW3');
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public static function stepW3DataProvider()
+    /**
+     * @return array<int, array{
+     *           0: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *           1: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *         }>
+     */
+    public static function stepW3DataProvider(): array
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1536, 'level' => 0, 'type' => 'AL', 'otype' => 'AL'),
-                        array('pos' => 1, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1536,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AL',
+                            'otype' => 'AL',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1536, 'level' => 0, 'type' => 'R', 'otype' => 'AL'),
-                        array('pos' => 1, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-        );
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1536,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'AL',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**
      * @dataProvider stepW4DataProvider
+     *
+     * @param array{
+     *          'e': int,
+     *          'edir': string,
+     *          'end': int,
+     *          'eos': string,
+     *          'length': int,
+     *          'maxlevel': int,
+     *          'sos': string,
+     *          'start': int,
+     *          'item': array<int, array{
+     *            'char': int,
+     *            'i': int,
+     *            'level': int,
+     *            'otype': string,
+     *            'pdimatch': int,
+     *            'pos': int,
+     *            'type': string,
+     *            'x': int,
+     *          }>,
+     *        } $seq
      */
-    public function testStepW4($seq, $expected)
+    public function testStepW4(array $seq, mixed $expected): void
     {
         $stepw = new \Com\Tecnick\Unicode\Bidi\StepW($seq, false);
         $stepw->processStep('processW4');
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public static function stepW4DataProvider()
+    /**
+     * @return array<int, array{
+     *           0: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *           1: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *         }>
+     */
+    public static function stepW4DataProvider(): array
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 1, 'char' => 43,   'level' => 0, 'type' => 'ES', 'otype' => 'ES'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 43,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ES',
+                            'otype' => 'ES',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 1, 'char' => 43, 'level' => 0, 'type' => 'EN', 'otype' => 'ES'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 43,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'ES',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 1, 'char' => 44,   'level' => 0, 'type' => 'CS', 'otype' => 'CS'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 44,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'CS',
+                            'otype' => 'CS',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 1, 'char' => 44, 'level' => 0, 'type' => 'EN', 'otype' => 'CS'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 44,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'CS',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                        array('pos' => 1, 'char' => 44,   'level' => 0, 'type' => 'CS', 'otype' => 'CS'),
-                        array('pos' => 2, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 44,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'CS',
+                            'otype' => 'CS',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                        array('pos' => 1, 'char' => 44, 'level' => 0, 'type' => 'AN', 'otype' => 'CS'),
-                        array('pos' => 2, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                    ),
-                )
-            ),
-        );
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 44,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'CS',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**
      * @dataProvider stepW5DataProvider
+     *
+     * @param array{
+     *          'e': int,
+     *          'edir': string,
+     *          'end': int,
+     *          'eos': string,
+     *          'length': int,
+     *          'maxlevel': int,
+     *          'sos': string,
+     *          'start': int,
+     *          'item': array<int, array{
+     *            'char': int,
+     *            'i': int,
+     *            'level': int,
+     *            'otype': string,
+     *            'pdimatch': int,
+     *            'pos': int,
+     *            'type': string,
+     *            'x': int,
+     *          }>,
+     *        } $seq
      */
-    public function testStepW5($seq, $expected)
+    public function testStepW5(array $seq, mixed $expected): void
     {
         $stepw = new \Com\Tecnick\Unicode\Bidi\StepW($seq, false);
         $stepw->processStep('processW5');
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public static function stepW5DataProvider()
+    /**
+     * @return array<int, array{
+     *           0: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *           1: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *         }>
+     */
+    public static function stepW5DataProvider(): array
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1642, 'level' => 0, 'type' => 'ET', 'otype' => 'ET'),
-                        array('pos' => 1, 'char' => 1642, 'level' => 0, 'type' => 'ET', 'otype' => 'ET'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ET',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ET',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1642, 'level' => 0, 'type' => 'EN', 'otype' => 'ET'),
-                        array('pos' => 1, 'char' => 1642, 'level' => 0, 'type' => 'EN', 'otype' => 'ET'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 1, 'char' => 1642, 'level' => 0, 'type' => 'ET', 'otype' => 'ET'),
-                        array('pos' => 2, 'char' => 1642, 'level' => 0, 'type' => 'ET', 'otype' => 'ET'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ET',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ET',
+                            'otype' => 'ET',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 1, 'char' => 1642, 'level' => 0, 'type' => 'EN', 'otype' => 'ET'),
-                        array('pos' => 2, 'char' => 1642, 'level' => 0, 'type' => 'EN', 'otype' => 'ET'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'ET',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                        array('pos' => 1, 'char' => 1642, 'level' => 0, 'type' => 'ET', 'otype' => 'ET'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ET',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                        array('pos' => 1, 'char' => 1642, 'level' => 0, 'type' => 'EN', 'otype' => 'ET'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 4,
                     'length' => 5,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1642, 'level' => 0, 'type' => 'ET', 'otype' => 'ET'),
-                        array('pos' => 1, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 2, 'char' => 1642, 'level' => 0, 'type' => 'ET', 'otype' => 'ET'),
-                        array('pos' => 3, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 4, 'char' => 38,   'level' => 1, 'type' => 'ON', 'otype' => 'ON'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ET',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ET',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 3,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 4,
+                            'char' => 38,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 1,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'ON',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 4,
                     'length' => 5,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1642, 'level' => 0, 'type' => 'EN', 'otype' => 'ET'),
-                        array('pos' => 1, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 2, 'char' => 1642, 'level' => 0, 'type' => 'EN', 'otype' => 'ET'),
-                        array('pos' => 3, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 4, 'char' => 38,   'level' => 1, 'type' => 'ON', 'otype' => 'ON'),
-                    ),
-                )
-            ),
-        );
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 3,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 4,
+                            'char' => 38,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 1,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'ON',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**
      * @dataProvider stepW6DataProvider
+     *
+     * @param array{
+     *          'e': int,
+     *          'edir': string,
+     *          'end': int,
+     *          'eos': string,
+     *          'length': int,
+     *          'maxlevel': int,
+     *          'sos': string,
+     *          'start': int,
+     *          'item': array<int, array{
+     *            'char': int,
+     *            'i': int,
+     *            'level': int,
+     *            'otype': string,
+     *            'pdimatch': int,
+     *            'pos': int,
+     *            'type': string,
+     *            'x': int,
+     *          }>,
+     *        } $seq
      */
-    public function testStepW6($seq, $expected)
+    public function testStepW6(array $seq, mixed $expected): void
     {
         $stepw = new \Com\Tecnick\Unicode\Bidi\StepW($seq, false);
         $stepw->processStep('processW6');
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public static function stepW6DataProvider()
+    /**
+     * @return array<int, array{
+     *           0: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *           1: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *         }>
+     */
+    public static function stepW6DataProvider(): array
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                        array('pos' => 1, 'char' => 1642, 'level' => 0, 'type' => 'ET', 'otype' => 'ET'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ET',
+                            'otype' => 'ET',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                        array('pos' => 1, 'char' => 1642, 'level' => 0, 'type' => 'ON', 'otype' => 'ET'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'ET',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 65,   'level' => 0, 'type' => 'L',  'otype' => 'L'),
-                        array('pos' => 1, 'char' => 43,   'level' => 0, 'type' => 'ES', 'otype' => 'ES'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 65,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'otype' => 'L',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 43,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ES',
+                            'otype' => 'ES',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 65, 'level' => 0, 'type' => 'L', 'otype' => 'L'),
-                        array('pos' => 1, 'char' => 43, 'level' => 0, 'type' => 'ON', 'otype' => 'ES'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 65,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'otype' => 'L',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 43,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'ES',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 1, 'char' => 44,   'level' => 0, 'type' => 'CS', 'otype' => 'CS'),
-                        array('pos' => 2, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 44,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'CS',
+                            'otype' => 'CS',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                        array('pos' => 1, 'char' => 44, 'level' => 0, 'type' => 'ON', 'otype' => 'CS'),
-                        array('pos' => 2, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 44,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'CS',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1642, 'level' => 0, 'type' => 'ET', 'otype' => 'ET'),
-                        array('pos' => 1, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ET',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 1,
                     'length' => 2,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1642, 'level' => 0, 'type' => 'ON', 'otype' => 'ET'),
-                        array('pos' => 1, 'char' => 1632, 'level' => 0, 'type' => 'AN', 'otype' => 'AN'),
-                    ),
-                )
-            ),
-        );
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1642,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'ET',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 1632,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'AN',
+                            'otype' => 'AN',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**
      * @dataProvider stepW7DataProvider
+     *
+     * @param array{
+     *          'e': int,
+     *          'edir': string,
+     *          'end': int,
+     *          'eos': string,
+     *          'length': int,
+     *          'maxlevel': int,
+     *          'sos': string,
+     *          'start': int,
+     *          'item': array<int, array{
+     *            'char': int,
+     *            'i': int,
+     *            'level': int,
+     *            'otype': string,
+     *            'pdimatch': int,
+     *            'pos': int,
+     *            'type': string,
+     *            'x': int,
+     *          }>,
+     *        } $seq
      */
-    public function testStepW7($seq, $expected)
+    public function testStepW7(array $seq, mixed $expected): void
     {
         $stepw = new \Com\Tecnick\Unicode\Bidi\StepW($seq, false);
         $stepw->processStep('processW7');
         $this->assertEquals($expected, $stepw->getSequence());
     }
 
-    public static function stepW7DataProvider()
+    /**
+     * @return array<int, array{
+     *           0: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *           1: array{
+     *              'e': int,
+     *              'edir': string,
+     *              'end': int,
+     *              'eos': string,
+     *              'length': int,
+     *              'maxlevel': int,
+     *              'sos': string,
+     *              'start': int,
+     *              'item': array<int, array{
+     *                'char': int,
+     *                'i': int,
+     *                'level': int,
+     *                'otype': string,
+     *                'pdimatch': int,
+     *                'pos': int,
+     *                'type': string,
+     *                'x': int,
+     *              }>,
+     *            },
+     *         }>
+     */
+    public static function stepW7DataProvider(): array
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 65,   'level' => 0, 'type' => 'L',  'otype' => 'L'),
-                        array('pos' => 1, 'char' => 8294, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 65,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'otype' => 'L',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 8294,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 65,   'level' => 0, 'type' => 'L',  'otype' => 'L'),
-                        array('pos' => 1, 'char' => 8294, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'L',  'otype' => 'EN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 65,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'otype' => 'L',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 8294,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1470, 'level' => 0, 'type' => 'R',  'otype' => 'R'),
-                        array('pos' => 1, 'char' => 8294, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1470,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'R',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 8294,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'R',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'R',
                     'eos' => 'R',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 1470, 'level' => 0, 'type' => 'R',  'otype' => 'R'),
-                        array('pos' => 1, 'char' => 8294, 'level' => 0, 'type' => 'NI', 'otype' => 'NI'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                )
-            ),
-            array(
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 1470,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'R',
+                            'otype' => 'R',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 8294,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'NI',
+                            'otype' => 'NI',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
                     'e' => 0,
                     'edir' => 'L',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'L',
                     'eos' => 'L',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 38,   'level' => 1, 'type' => 'ON', 'otype' => 'ON'),
-                        array('pos' => 1, 'char' => 38,   'level' => 1, 'type' => 'ON', 'otype' => 'ON'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'EN', 'otype' => 'EN'),
-                    ),
-                ),
-                array(
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 38,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 1,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'ON',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 38,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 1,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'ON',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'EN',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+                [
                     'e' => 0,
                     'edir' => 'L',
                     'start' => 0,
                     'end' => 2,
                     'length' => 3,
+                    'maxlevel' => 0,
                     'sos' => 'L',
                     'eos' => 'L',
-                    'item' => array(
-                        array('pos' => 0, 'char' => 38,   'level' => 1, 'type' => 'ON', 'otype' => 'ON'),
-                        array('pos' => 1, 'char' => 38,   'level' => 1, 'type' => 'ON', 'otype' => 'ON'),
-                        array('pos' => 2, 'char' => 1776, 'level' => 0, 'type' => 'L',  'otype' => 'EN'),
-                    ),
-                )
-            ),
-        );
+                    'item' => [
+                        [
+                            'pos' => 0,
+                            'char' => 38,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 1,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'ON',
+                        ],
+                        [
+                            'pos' => 1,
+                            'char' => 38,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 1,
+                            'pdimatch' => -1,
+                            'type' => 'ON',
+                            'otype' => 'ON',
+                        ],
+                        [
+                            'pos' => 2,
+                            'char' => 1776,
+                            'x' => -1,
+                            'i' => -1,
+                            'level' => 0,
+                            'pdimatch' => -1,
+                            'type' => 'L',
+                            'otype' => 'EN',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 }

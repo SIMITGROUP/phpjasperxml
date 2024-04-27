@@ -7,7 +7,7 @@
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
@@ -16,7 +16,6 @@
 
 namespace Test\Linear\CodeOneTwoEight;
 
-use PHPUnit\Framework\TestCase;
 use Test\TestUtil;
 
 /**
@@ -26,37 +25,37 @@ use Test\TestUtil;
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2015-2023 Nicola Asuni - Tecnick.com LTD
+ * @copyright   2015-2024 Nicola Asuni - Tecnick.com LTD
  * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
 class CodeOneTwoEightBTest extends TestUtil
 {
-    protected function getTestObject()
+    protected function getTestObject(): \Com\Tecnick\Barcode\Barcode
     {
         return new \Com\Tecnick\Barcode\Barcode();
     }
 
-    public function testGetGrid()
+    public function testGetGrid(): void
     {
-        $testObj = $this->getTestObject();
-        $bobj = $testObj->getBarcodeObj('C128B', '0123456789');
+        $barcode = $this->getTestObject();
+        $bobj = $barcode->getBarcodeObj('C128B', '0123456789');
         $grid = $bobj->getGrid();
         $expected = "11010010000100111011001001110011011001110010110010111001100100111011011100"
             . "10011001110100111011011101110100110011100101100110000101001100011101011\n";
         $this->assertEquals($expected, $grid);
 
-        $bobj = $testObj->getBarcodeObj('C128B', chr(241) . '01234567891');
+        $bobj = $barcode->getBarcodeObj('C128B', chr(241) . '01234567891');
         $grid = $bobj->getGrid();
         $expected = "11010010000111101011101001110110010011100110110011100101100101110011001001"
             . "110110111001001100111010011101101110111010011001110010110010011100110100001100101100011101011\n";
         $this->assertEquals($expected, $grid);
     }
 
-    public function testInvalidInput()
+    public function testInvalidInput(): void
     {
-        $this->bcExpectException('\Com\Tecnick\Barcode\Exception');
-        $testObj = $this->getTestObject();
-        $testObj->getBarcodeObj('C128B', chr(246) . '01234567891');
+        $this->bcExpectException('\\' . \Com\Tecnick\Barcode\Exception::class);
+        $barcode = $this->getTestObject();
+        $barcode->getBarcodeObj('C128B', chr(246) . '01234567891');
     }
 }

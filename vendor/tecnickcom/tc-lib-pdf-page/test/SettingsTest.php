@@ -3,189 +3,326 @@
 /**
  * SettingsTest.php
  *
- * @since       2011-05-23
- * @category    Library
- * @package     PdfPage
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-page
+ * @since     2011-05-23
+ * @category  Library
+ * @package   PdfPage
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  *
  * This file is part of tc-lib-pdf-page software library.
  */
 
 namespace Test;
 
-use PHPUnit\Framework\TestCase;
-
 /**
  * Settings Test
  *
- * @since       2011-05-23
- * @category    Library
- * @package     PdfPage
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2011-2023 Nicola Asuni - Tecnick.com LTD
- * @license     http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf-page
+ * @since     2011-05-23
+ * @category  Library
+ * @package   PdfPage
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2011-2024 Nicola Asuni - Tecnick.com LTD
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  */
 class SettingsTest extends TestUtil
 {
-    protected function getTestObject()
+    protected function getTestObject(): \Com\Tecnick\Pdf\Page\Page
     {
-        $col = new \Com\Tecnick\Color\Pdf();
-        $enc = new \Com\Tecnick\Pdf\Encrypt\Encrypt(false);
-        return new \Com\Tecnick\Pdf\Page\Page('mm', $col, $enc, false, false);
+        $pdf = new \Com\Tecnick\Color\Pdf();
+        $encrypt = new \Com\Tecnick\Pdf\Encrypt\Encrypt(false);
+        return new \Com\Tecnick\Pdf\Page\Page('mm', $pdf, $encrypt, false, false);
     }
 
-    public function testSanitizePageNumber()
+    public function testSanitizePageNumber(): void
     {
-        $testObj = $this->getTestObject();
-        $data = array();
-        $testObj->sanitizePageNumber($data);
-        $this->assertEquals(array(), $data);
+        $page = $this->getTestObject();
+        $data = [];
+        $page->sanitizePageNumber($data);
+        $this->assertEquals([], $data);
 
-        $data = array('num' => -1);
-        $testObj->sanitizePageNumber($data);
-        $this->assertEquals(array('num' => 0), $data);
+        $data = [
+            'num' => -1,
+        ];
+        $page->sanitizePageNumber($data);
+        $this->assertEquals(
+            [
+                'num' => 0,
+            ],
+            $data
+        );
 
+        $data = [
+            'num' => 0,
+        ];
+        $page->sanitizePageNumber($data);
+        $this->assertEquals(
+            [
+                'num' => 0,
+            ],
+            $data
+        );
 
-        $data = array('num' => 0);
-        $testObj->sanitizePageNumber($data);
-        $this->assertEquals(array('num' => 0), $data);
-
-
-        $data = array('num' => 1);
-        $testObj->sanitizePageNumber($data);
-        $this->assertEquals(array('num' => 1), $data);
+        $data = [
+            'num' => 1,
+        ];
+        $page->sanitizePageNumber($data);
+        $this->assertEquals(
+            [
+                'num' => 1,
+            ],
+            $data
+        );
     }
 
-    public function testSanitizeTime()
+    public function testSanitizeTime(): void
     {
-        $testObj = $this->getTestObject();
-        $data = array();
-        $testObj->sanitizeTime($data);
+        $page = $this->getTestObject();
+        $data = [];
+        $page->sanitizeTime($data);
         $this->assertNotEmpty($data['time']); /* @phpstan-ignore-line */
 
-        $data = array('time' => -1);
-        $testObj->sanitizeTime($data);
-        $this->assertEquals(array('time' => 0), $data);
+        $data = [
+            'time' => -1,
+        ];
+        $page->sanitizeTime($data);
+        $this->assertEquals(
+            [
+                'time' => 0,
+            ],
+            $data
+        );
 
-        $data = array('time' => 0);
-        $testObj->sanitizeTime($data);
+        $data = [
+            'time' => 0,
+        ];
+        $page->sanitizeTime($data);
         $this->assertNotEmpty($data['time']);
 
-        $data = array('time' => 1);
-        $testObj->sanitizeTime($data);
-        $this->assertEquals(array('time' => 1), $data);
+        $data = [
+            'time' => 1,
+        ];
+        $page->sanitizeTime($data);
+        $this->assertEquals(
+            [
+                'time' => 1,
+            ],
+            $data
+        );
     }
 
-    public function testSanitizeGroup()
+    public function testSanitizeGroup(): void
     {
-        $testObj = $this->getTestObject();
-        $data = array();
-        $testObj->sanitizeGroup($data);
-        $this->assertEquals(array('group' => 0), $data);
+        $page = $this->getTestObject();
+        $data = [];
+        $page->sanitizeGroup($data);
+        $this->assertEquals(
+            [
+                'group' => 0,
+            ],
+            $data
+        );
 
-        $data = array('group' => -1);
-        $testObj->sanitizeGroup($data);
-        $this->assertEquals(array('group' => 0), $data);
+        $data = [
+            'group' => -1,
+        ];
+        $page->sanitizeGroup($data);
+        $this->assertEquals(
+            [
+                'group' => 0,
+            ],
+            $data
+        );
 
+        $data = [
+            'group' => 0,
+        ];
+        $page->sanitizeGroup($data);
+        $this->assertEquals(
+            [
+                'group' => 0,
+            ],
+            $data
+        );
 
-        $data = array('group' => 0);
-        $testObj->sanitizeGroup($data);
-        $this->assertEquals(array('group' => 0), $data);
-
-
-        $data = array('group' => 1);
-        $testObj->sanitizeGroup($data);
-        $this->assertEquals(array('group' => 1), $data);
+        $data = [
+            'group' => 1,
+        ];
+        $page->sanitizeGroup($data);
+        $this->assertEquals(
+            [
+                'group' => 1,
+            ],
+            $data
+        );
     }
 
-    public function testSanitizeContent()
+    public function testSanitizeContent(): void
     {
-        $testObj = $this->getTestObject();
-        $data = array();
-        $testObj->sanitizeContent($data);
-        $this->assertEquals(array('content' => array('')), $data);
+        $page = $this->getTestObject();
+        $data = [];
+        $page->sanitizeContent($data);
+        $this->assertEquals(
+            [
+                'content' => [''],
+            ],
+            $data
+        );
 
-        $data = array('content' => 'test');
-        $testObj->sanitizeContent($data);
-        $this->assertEquals(array('content' => array('test')), $data);
+        $data = [
+            'content' => 'test',
+        ];
+        $page->sanitizeContent($data);
+        $this->assertEquals(
+            [
+                'content' => ['test'],
+            ],
+            $data
+        );
     }
 
-    public function testSanitizeAnnotRefs()
+    public function testSanitizeAnnotRefs(): void
     {
-        $testObj = $this->getTestObject();
-        $data = array();
-        $testObj->sanitizeAnnotRefs($data);
-        $this->assertEquals(array('annotrefs' => array()), $data);
+        $page = $this->getTestObject();
+        $data = [];
+        $page->sanitizeAnnotRefs($data);
+        $this->assertEquals(
+            [
+                'annotrefs' => [],
+            ],
+            $data
+        );
     }
 
-    public function testSanitizeRotation()
+    public function testSanitizeRotation(): void
     {
-        $testObj = $this->getTestObject();
-        $data = array();
-        $testObj->sanitizeRotation($data);
-        $this->assertEquals(array('rotation' => 0), $data);
+        $page = $this->getTestObject();
+        $data = [];
+        $page->sanitizeRotation($data);
+        $this->assertEquals(
+            [
+                'rotation' => 0,
+            ],
+            $data
+        );
 
-        $data = array('rotation' => 0);
-        $testObj->sanitizeRotation($data);
-        $this->assertEquals(array('rotation' => 0), $data);
+        $data = [
+            'rotation' => 0,
+        ];
+        $page->sanitizeRotation($data);
+        $this->assertEquals(
+            [
+                'rotation' => 0,
+            ],
+            $data
+        );
 
-        $data = array('rotation' => 100);
-        $testObj->sanitizeRotation($data);
-        $this->assertEquals(array('rotation' => 0), $data);
+        $data = [
+            'rotation' => 100,
+        ];
+        $page->sanitizeRotation($data);
+        $this->assertEquals(
+            [
+                'rotation' => 0,
+            ],
+            $data
+        );
 
-        $data = array('rotation' => 90);
-        $testObj->sanitizeRotation($data);
-        $this->assertEquals(array('rotation' => 90), $data);
+        $data = [
+            'rotation' => 90,
+        ];
+        $page->sanitizeRotation($data);
+        $this->assertEquals(
+            [
+                'rotation' => 90,
+            ],
+            $data
+        );
 
-        $data = array('rotation' => 180);
-        $testObj->sanitizeRotation($data);
-        $this->assertEquals(array('rotation' => 180), $data);
+        $data = [
+            'rotation' => 180,
+        ];
+        $page->sanitizeRotation($data);
+        $this->assertEquals(
+            [
+                'rotation' => 180,
+            ],
+            $data
+        );
 
-        $data = array('rotation' => 270);
-        $testObj->sanitizeRotation($data);
-        $this->assertEquals(array('rotation' => 270), $data);
+        $data = [
+            'rotation' => 270,
+        ];
+        $page->sanitizeRotation($data);
+        $this->assertEquals(
+            [
+                'rotation' => 270,
+            ],
+            $data
+        );
 
-        $data = array('rotation' => 360);
-        $testObj->sanitizeRotation($data);
-        $this->assertEquals(array('rotation' => 360), $data);
+        $data = [
+            'rotation' => 360,
+        ];
+        $page->sanitizeRotation($data);
+        $this->assertEquals(
+            [
+                'rotation' => 360,
+            ],
+            $data
+        );
     }
 
-    public function testSanitizeZoom()
+    public function testSanitizeZoom(): void
     {
-        $testObj = $this->getTestObject();
-        $data = array();
-        $testObj->sanitizeZoom($data);
-        $this->assertEquals(array('zoom' => 1), $data);
+        $page = $this->getTestObject();
+        $data = [];
+        $page->sanitizeZoom($data);
+        $this->assertEquals(
+            [
+                'zoom' => 1,
+            ],
+            $data
+        );
 
-        $data = array('zoom' => 1.2);
-        $testObj->sanitizeZoom($data);
-        $this->assertEquals(array('zoom' => 1.2), $data);
+        $data = [
+            'zoom' => 1.2,
+        ];
+        $page->sanitizeZoom($data);
+        $this->assertEquals(
+            [
+                'zoom' => 1.2,
+            ],
+            $data
+        );
     }
 
-    public function testSanitizeTransitions()
+    public function testSanitizeTransitions(): void
     {
-        $testObj = $this->getTestObject();
-        $data = array();
-        $testObj->sanitizeTransitions($data);
-        $this->assertEquals(array(), $data);
+        $page = $this->getTestObject();
+        $data = [];
+        $page->sanitizeTransitions($data);
+        $this->assertEquals([], $data);
 
-        $data = array('transition' => array('Dur' => 0));
-        $testObj->sanitizeTransitions($data);
-        $exp = array(
-            'transition' => array(
+        $data = [
+            'transition' => [
+                'Dur' => 0,
+            ],
+        ];
+        $page->sanitizeTransitions($data);
+        $exp = [
+            'transition' => [
                 'S' => 'R',
                 'D' => 1,
                 'B' => false,
-            )
-        );
+            ],
+        ];
         $this->assertEquals($exp, $data);
 
-        $data = array(
-            'transition' => array(
+        $data = [
+            'transition' => [
                 'Dur' => 2,
                 'D' => 3,
                 'Dm' => 'V',
@@ -193,30 +330,30 @@ class SettingsTest extends TestUtil
                 'M' => 'O',
                 'Di' => 315,
                 'SS' => 1.3,
-                'B' => true
-            )
-        );
-        $testObj->sanitizeTransitions($data);
-        $exp = array(
-            'transition' => array(
+                'B' => true,
+            ],
+        ];
+        $page->sanitizeTransitions($data);
+        $exp = [
+            'transition' => [
                 'Dur' => 2,
                 'D' => 3,
                 'S' => 'Glitter',
                 'Di' => 315,
                 'SS' => 1.3,
                 'B' => true,
-            )
-        );
+            ],
+        ];
         $this->assertEquals($exp, $data);
     }
 
-    public function testSanitizeMargins()
+    public function testSanitizeMargins(): void
     {
-        $testObj = $this->getTestObject();
-        $data = array();
-        $testObj->sanitizeMargins($data);
-        $exp = array(
-            'margin' => array(
+        $page = $this->getTestObject();
+        $data = [];
+        $page->sanitizeMargins($data);
+        $exp = [
+            'margin' => [
                 'PL' => 0,
                 'PR' => 0,
                 'PT' => 0,
@@ -225,7 +362,7 @@ class SettingsTest extends TestUtil
                 'CB' => 0,
                 'FT' => 0,
                 'PB' => 0,
-            ),
+            ],
             'orientation' => 'P',
             'height' => 297,
             'width' => 210,
@@ -233,11 +370,11 @@ class SettingsTest extends TestUtil
             'ContentHeight' => 297,
             'HeaderHeight' => 0,
             'FooterHeight' => 0,
-        );
+        ];
         $this->bcAssertEqualsWithDelta($exp, $data);
 
-        $data = array(
-            'margin' => array(
+        $data = [
+            'margin' => [
                 'PL' => 11,
                 'PR' => 12,
                 'PT' => 13,
@@ -246,14 +383,14 @@ class SettingsTest extends TestUtil
                 'CB' => 15,
                 'FT' => 13,
                 'PB' => 11,
-            ),
+            ],
             'orientation' => 'P',
             'height' => 297,
             'width' => 210,
-        );
-        $testObj->sanitizeMargins($data);
-        $exp = array(
-            'margin' => array(
+        ];
+        $page->sanitizeMargins($data);
+        $exp = [
+            'margin' => [
                 'PL' => 11,
                 'PR' => 12,
                 'PT' => 13,
@@ -262,7 +399,7 @@ class SettingsTest extends TestUtil
                 'CB' => 15,
                 'FT' => 13,
                 'PB' => 11,
-            ),
+            ],
             'orientation' => 'P',
             'height' => 297,
             'width' => 210,
@@ -270,334 +407,360 @@ class SettingsTest extends TestUtil
             'ContentHeight' => 267,
             'HeaderHeight' => 1,
             'FooterHeight' => 2,
-        );
+        ];
         $this->bcAssertEqualsWithDelta($exp, $data);
     }
 
-    public function testSanitizeBoxData()
+    public function testSanitizeBoxData(): void
     {
-        $testObj = $this->getTestObject();
-        $data = array();
-        $testObj->sanitizeBoxData($data);
-        $exp = array(
+        $page = $this->getTestObject();
+        $data = [];
+        $page->sanitizeBoxData($data);
+        $exp = [
             'orientation' => 'P',
             'pheight' => 841.890,
             'pwidth' => 595.276,
-            'box' => array(
-                'MediaBox' => array(
+            'box' => [
+                'MediaBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(
+                        'dash' => [
                             0 => 3,
-                        ),
-                    ),
-                ),
-                'CropBox' => array(
+                        ],
+                    ],
+                ],
+                'CropBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(
+                        'dash' => [
                             0 => 3,
-                        ),
-                    ),
-                ),
-                'BleedBox' => array(
+                        ],
+                    ],
+                ],
+                'BleedBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(
+                        'dash' => [
                             0 => 3,
-                        ),
-                    ),
-                ),
-                'TrimBox' => array(
+                        ],
+                    ],
+                ],
+                'TrimBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(
+                        'dash' => [
                             0 => 3,
-                        ),
-                    ),
-                ),
-                'ArtBox' => array(
+                        ],
+                    ],
+                ],
+                'ArtBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(
+                        'dash' => [
                             0 => 3,
-                        ),
-                    ),
-                ),
-            )
-        );
+                        ],
+                    ],
+                ],
+            ],
+        ];
         $this->bcAssertEqualsWithDelta($exp, $data);
 
-        $data = array(
+        $data = [
             'format' => 'MediaBox',
             'orientation' => 'L',
-            'box' => array(
-                'MediaBox' => array(
+            'box' => [
+                'MediaBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(
+                        'dash' => [
                             0 => 3,
-                        )
-                    )
-                )
-            )
-        );
-        $testObj->sanitizeBoxData($data);
-        $exp = array(
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $page->sanitizeBoxData($data);
+        $exp = [
             'format' => 'CUSTOM',
             'orientation' => 'L',
-            'box' => array(
-                'MediaBox' => array(
+            'box' => [
+                'MediaBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 841.890,
                     'ury' => 595.276,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(0 => 3)
-                    )
-                ),
-                'CropBox' => array(
+                        'dash' => [
+                            0 => 3,
+                        ],
+                    ],
+                ],
+                'CropBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 841.890,
                     'ury' => 595.276,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(0 => 3)
-                    )
-                ),
-                'BleedBox' => array(
+                        'dash' => [
+                            0 => 3,
+                        ],
+                    ],
+                ],
+                'BleedBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 841.890,
                     'ury' => 595.276,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(0 => 3)
-                    )
-                ),
-                'TrimBox' => array(
+                        'dash' => [
+                            0 => 3,
+                        ],
+                    ],
+                ],
+                'TrimBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 841.890,
                     'ury' => 595.276,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(0 => 3)
-                    )
-                ),
-                'ArtBox' => array(
+                        'dash' => [
+                            0 => 3,
+                        ],
+                    ],
+                ],
+                'ArtBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 841.890,
                     'ury' => 595.276,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(0 => 3)
-                    )
-                ),
-            ),
+                        'dash' => [
+                            0 => 3,
+                        ],
+                    ],
+                ],
+            ],
             'width' => 297,
             'height' => 210,
             'pwidth' => 841.890,
             'pheight' => 595.276,
-        );
+        ];
         $this->bcAssertEqualsWithDelta($exp, $data);
 
-        $data = array(
+        $data = [
             'width' => 210,
             'height' => 297,
             'pwidth' => 595.276,
             'pheight' => 841.890,
-            'box' => array(
-                'CropBox' => array(
+            'box' => [
+                'CropBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(
+                        'dash' => [
                             0 => 3,
-                        )
-                    )
-                )
-            )
-        );
-        $testObj->sanitizeBoxData($data);
-        $exp = array(
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $page->sanitizeBoxData($data);
+        $exp = [
             'width' => 210,
             'height' => 297,
             'pwidth' => 595.276,
             'pheight' => 841.890,
-            'box' => array(
-                'CropBox' => array(
+            'box' => [
+                'CropBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(0 => 3)
-                    )
-                ),
-                'MediaBox' => array(
+                        'dash' => [
+                            0 => 3,
+                        ],
+                    ],
+                ],
+                'MediaBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(0 => 3)
-                    )
-                ),
-                'BleedBox' => array(
+                        'dash' => [
+                            0 => 3,
+                        ],
+                    ],
+                ],
+                'BleedBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(0 => 3)
-                    )
-                ),
-                'TrimBox' => array(
+                        'dash' => [
+                            0 => 3,
+                        ],
+                    ],
+                ],
+                'TrimBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(0 => 3)
-                    )
-                ),
-                'ArtBox' => array(
+                        'dash' => [
+                            0 => 3,
+                        ],
+                    ],
+                ],
+                'ArtBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(0 => 3)
-                    )
-                ),
-            ),
+                        'dash' => [
+                            0 => 3,
+                        ],
+                    ],
+                ],
+            ],
             'orientation' => 'P',
-        );
+        ];
         $this->bcAssertEqualsWithDelta($exp, $data);
     }
 
-    public function testSanitizePageFormat()
+    public function testSanitizePageFormat(): void
     {
-        $testObj = $this->getTestObject();
-        $data = array();
-        $testObj->sanitizePageFormat($data);
-        $exp = array(
+        $page = $this->getTestObject();
+        $data = [];
+        $page->sanitizePageFormat($data);
+        $exp = [
             'orientation' => 'P',
             'format' => 'A4',
             'pheight' => 841.890,
             'pwidth' => 595.276,
             'width' => 210,
             'height' => 297,
-        );
+        ];
         $this->bcAssertEqualsWithDelta($exp, $data);
 
-        $data = array(
-            'box' => array(
-                'MediaBox' => array(
+        $data = [
+            'box' => [
+                'MediaBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(
+                        'dash' => [
                             0 => 3,
-                        )
-                    )
-                )
-            )
-        );
-        $testObj->sanitizePageFormat($data);
-        $exp = array(
-            'box' => array(
-                'MediaBox' => array(
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $page->sanitizePageFormat($data);
+        $exp = [
+            'box' => [
+                'MediaBox' => [
                     'llx' => 0,
                     'lly' => 0,
                     'urx' => 595.276,
                     'ury' => 841.890,
-                    'bci' => array(
+                    'bci' => [
                         'color' => '#000000',
                         'width' => 0.353,
                         'style' => 'S',
-                        'dash' => array(0 => 3),
-                    ),
-                ),
-            ),
-            'orientation' => '',
-            'format' => 'MediaBox',
-        );
+                        'dash' => [
+                            0 => 3,
+                        ],
+                    ],
+                ],
+            ],
+            'orientation' => 'P',
+            'format' => 'A4',
+            'pwidth' => 595.276,
+            'pheight' => 841.890,
+            'width' => 210.000,
+            'height' => 297.000,
+        ];
         $this->bcAssertEqualsWithDelta($exp, $data);
     }
 }

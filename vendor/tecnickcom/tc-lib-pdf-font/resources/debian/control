@@ -10,6 +10,6 @@ Vcs-Git: https://github.com/~#VENDOR#~/~#PROJECT#~.git
 Package: ~#PKGNAME#~
 Provides: php-~#PROJECT#~
 Architecture: all
-Depends: php (>= 5.4.0), php-json, php-zip, php-tecnickcom-tc-lib-file (<< 2.0.0), php-tecnickcom-tc-lib-file (>= 1.7.38), php-tecnickcom-tc-lib-unicode-data (<< 2.0.0), php-tecnickcom-tc-lib-unicode-data (>= 1.7.32), php-tecnickcom-tc-lib-pdf-encrypt (<< 2.0.0), php-tecnickcom-tc-lib-pdf-encrypt (>= 1.6.34), php-tecnickcom-tc-lib-pdf-font-core (<< 2.0.0), php-tecnickcom-tc-lib-pdf-font-data-core (>= 1.8.7), ${misc:Depends}
+Depends: php (>= 8.0.0), php-json, php-zip, php-tecnickcom-tc-lib-file (<< 2.0.0), php-tecnickcom-tc-lib-file (>= 2.0.11), php-tecnickcom-tc-lib-unicode-data (<< 2.0.0), php-tecnickcom-tc-lib-unicode-data (>= 2.0.11), php-tecnickcom-tc-lib-pdf-encrypt (<< 2.0.0), php-tecnickcom-tc-lib-pdf-encrypt (>= 2.1.2), php-tecnickcom-tc-lib-pdf-font-core (<< 2.0.0), php-tecnickcom-tc-lib-pdf-font-data-core (>= 1.8.7), ${misc:Depends}
 Description: PHP PDF Fonts Library
  PHP library containing PDF font methods and utilities.

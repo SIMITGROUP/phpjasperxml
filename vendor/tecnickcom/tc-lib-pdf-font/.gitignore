@@ -6,12 +6,16 @@
 **/.idea
 **/.vagrant
 **/auth.json
-**/composer.lock
 **/nbproject
+**/temp.php
+**/test.php
 .phpdoc
 .phpunit.cache
 .phpunit.result.cache
+composer.lock
+ecs.php
 phpunit.xml
+rector.php
 resources/util/vendor
 src/fonts
 target

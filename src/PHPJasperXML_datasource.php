@@ -10,6 +10,7 @@ trait PHPJasperXML_datasource{
     protected $dataloaded=false;
     protected array $connectionsetting;
     protected string $cachefile = '';
+    protected bool $debugdata = false;
     
     public function setDataSource(array $setting):self
     {
@@ -53,10 +54,16 @@ trait PHPJasperXML_datasource{
         $sql = $this->parseExpression($this->querystring);
         
         $data =$this->db->fetchData($sql);
+        if($this->debugdata){
+            echo "<pre>".print_r($data,true)."</pre>";
+        }
         $this->loadData($data);        
         return $this;
     }
-
+    public function debugData(bool $isdebugdata):self{
+        $this->debugdata = $isdebugdata;
+        return $this;
+    }
     public function loadData(array $data):self
     {
         $this->dataloaded=true;
