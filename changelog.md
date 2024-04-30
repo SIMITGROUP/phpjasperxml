@@ -9,6 +9,9 @@
 4. added ->debugsql(true)
 5. more reliable algorithm to parse `expression`
 
+## 2.1.9
+- fix padding not effect in textfield and static text
+
 ## 2.1.8
 - added ->debugData(true) to verify data loaded
 - wont cause error for some unsupport component like charts or list
