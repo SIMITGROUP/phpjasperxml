@@ -184,6 +184,14 @@ trait PHPJasperXML_elements
             $prop = $this->appendprop($prop,$obj->textElement->font);
         }        
         $prop = $this->addBorders($prop,$obj);
+        if($obj->textElement->paragraph){
+            $paragraph = $obj->textElement->paragraph;
+            $prop['topPadding'] = (integer)$paragraph['spacingBefore']??0;
+            $prop['bottomPadding'] = (integer)$paragraph['spacingAfter']??0;
+            $prop['leftPadding'] = (integer)$paragraph['leftIndent']??0;
+            $prop['rightPadding'] = (integer)$paragraph['rightIndent']??0;
+        }
+        // <paragraph leftIndent="10" spacingBefore="10"/>
         if(isset($obj->text))
         {
             $prop['text']=(string)$obj->text;
