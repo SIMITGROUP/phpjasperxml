@@ -9,6 +9,9 @@
 4. added ->debugsql(true)
 5. more reliable algorithm to parse `expression`
 
+## 2.1.10
+- fix sub report parameter cannot recognise
+
 ## 2.1.9
 - fix padding not effect in textfield and static text
 

@@ -790,6 +790,7 @@ class Pdf_driver extends TCPDF implements ExportInterface
             $estimateHeight = $h;
         }
         // $newY= $y+$estimateHeight;
+        // MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
         $target->MultiCell($w,$h,$finaltxt,$border,$halign,$fill,0,$x,$y,true,$stretchtype,$ishtml,true,$maxheight,$valign);
         if($textAdjust!='StretchHeight' || $ishtml)
         {

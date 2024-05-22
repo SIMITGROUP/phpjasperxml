@@ -407,6 +407,8 @@ trait PHPJasperXML_elements
                 }
                 else if(!empty($psetting['defaultValueExpression'])){
                     $pexpression = $psetting['defaultValueExpression'];
+                }else if(gettype($psetting=='string')){
+                    $pexpression=$psetting;
                 }
                                 
                 $paras[$pname]=$this->executeExpression($pexpression);
