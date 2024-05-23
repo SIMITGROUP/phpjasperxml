@@ -9,6 +9,11 @@
 4. added ->debugsql(true)
 5. more reliable algorithm to parse `expression`
 
+## 2.1.11
+- fix main report left margin not apply to subreport
+- fix main report top margin not apply to subreport on band pageHeader
+
+
 ## 2.1.10
 - fix sub report parameter cannot recognise
 

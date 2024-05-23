@@ -338,6 +338,10 @@ trait PHPJasperXML_elements
             // print_r($prop);
             // echo "draw subreport";die;
 
+            if($prop['band']=='pageHeader'){
+                $prop['y']+= $this->pageproperties['topMargin'];                    
+            }
+            $prop['x']+= $this->pageproperties['leftMargin'];
             
             $subreport = new PHPJasperXML();       
             
