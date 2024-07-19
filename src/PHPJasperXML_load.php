@@ -39,7 +39,8 @@ trait PHPJasperXML_load
         $pathinfo = pathinfo($file);
         $this->filename = $pathinfo['basename'];     
         $this->setPath($pathinfo['dirname']);
-        $xml =  file_get_contents($file);                  
+        $xml =  file_get_contents($file);  
+        if(!$xml)die("$file no content");                
         $this->load_xml_string($xml);      
         // print_r($this->bandelements);
         return $this;

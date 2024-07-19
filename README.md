@@ -41,6 +41,15 @@ Refer https://github.com/SIMITGROUP/phpjasperxml/blob/master/examples/databasesa
 # Samples
 Refer sample: https://github.com/SIMITGROUP/phpjasperxml/wiki/Sample-output
 
+# Try examples
+```bash
+cd phpjasperxml
+php -S 0.0.0.0:9999  -t .
+
+```
+then browse to http://localhost:9999/examples
+
+
 # Compatibility:
 Generally, phpjasperxml provide below compatiblity result of:
 

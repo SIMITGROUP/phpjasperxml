@@ -357,7 +357,8 @@ trait PHPJasperXML_elements
                 $subreportExpression = $this->executeExpression($prop['subreportExpression']);        
             }
 
-
+            // echo "draw subreport";
+            // echo "<pre>".$subreportExpression."</pre>";die;
             if($this->left($subreportExpression,5)=='<?xml')
             {                
                 // echo "load subreport";die;
@@ -368,6 +369,8 @@ trait PHPJasperXML_elements
             {
                 $subreportExpression = str_replace('.jasper','.jrxml',$subreportExpression);
                 $filename = $this->path.'/'.$subreportExpression;
+                // echo "<pre>".$filename."</pre>";die;
+
                 $subreport->load_xml_file($filename);
             }
             
@@ -681,7 +684,7 @@ trait PHPJasperXML_elements
             }
         }
         $template = '<?xml version="1.0" encoding="UTF-8"?>
-        <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="blank" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9f6a266d-cca1-4166-b5db-0716a8ffcc1b">
+        <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="blank" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="9f6a266d-cca1-4166-b5db-0716a8ffcc1b">
             <queryString><![CDATA['. $querystring. ']]></queryString>
             '. $parameterstr . $fieldstr. $variablestr. $strbands. '
         </jasperReport>';  
