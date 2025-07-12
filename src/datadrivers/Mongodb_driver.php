@@ -107,8 +107,9 @@ class Mongodb_driver implements DataInterface
         }
         else
         {
-            $cn = new Client($connectionString);
+           
             try{
+                $cn = new Client($connectionString);
                 $cn->listDatabases();
             }catch(Exception $e){
                 die($e->getMessage());

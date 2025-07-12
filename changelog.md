@@ -10,6 +10,10 @@
 5. more reliable algorithm to parse `expression`
 
 
+## 2.1.13
+- make mongodb driver not compulsory
+- set minimal php version = 7.0 (not tested)
+
 ## 2.1.12
 - provide some guidance on how to see example in README.md
 - add some error detection 
