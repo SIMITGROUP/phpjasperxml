@@ -368,7 +368,10 @@ trait PHPJasperXML_elements
             else
             {
                 $subreportExpression = str_replace('.jasper','.jrxml',$subreportExpression);
-                $filename = $this->path.'/'.$subreportExpression;
+                if(substr($subreportExpression,0,1)=='/')
+                    $filename = $subreportExpression;
+                else            
+                    $filename = $this->path.'/'.$subreportExpression;
                 // echo "<pre>".$filename."</pre>";die;
 
                 $subreport->load_xml_file($filename);

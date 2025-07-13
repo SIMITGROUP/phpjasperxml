@@ -9,6 +9,7 @@ class ComposerStaticInit1ee3e3edcc9109e23c5f6c140d2c94f2
     public static $files = array (
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+        'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -19,6 +20,11 @@ class ComposerStaticInit1ee3e3edcc9109e23c5f6c140d2c94f2
         'Z' => 
         array (
             'ZipStream\\' => 10,
+        ),
+        'R' => 
+        array (
+            'Ramsey\\Uuid\\' => 12,
+            'Ramsey\\Collection\\' => 18,
         ),
         'P' => 
         array (
@@ -55,6 +61,10 @@ class ComposerStaticInit1ee3e3edcc9109e23c5f6c140d2c94f2
             'Com\\Tecnick\\Color\\' => 18,
             'Com\\Tecnick\\Barcode\\' => 20,
         ),
+        'B' => 
+        array (
+            'Brick\\Math\\' => 11,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -65,6 +75,14 @@ class ComposerStaticInit1ee3e3edcc9109e23c5f6c140d2c94f2
         'ZipStream\\' => 
         array (
             0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
+        ),
+        'Ramsey\\Uuid\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ramsey/uuid/src',
+        ),
+        'Ramsey\\Collection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ramsey/collection/src',
         ),
         'Psr\\SimpleCache\\' => 
         array (
@@ -146,6 +164,10 @@ class ComposerStaticInit1ee3e3edcc9109e23c5f6c140d2c94f2
         'Com\\Tecnick\\Barcode\\' => 
         array (
             0 => __DIR__ . '/..' . '/tecnickcom/tc-lib-barcode/src',
+        ),
+        'Brick\\Math\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/brick/math/src',
         ),
     );
 

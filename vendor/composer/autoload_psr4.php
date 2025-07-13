@@ -8,6 +8,8 @@ $baseDir = dirname($vendorDir);
 return array(
     'simitsdk\\phpjasperxml\\' => array($baseDir . '/src'),
     'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),
+    'Ramsey\\Uuid\\' => array($vendorDir . '/ramsey/uuid/src'),
+    'Ramsey\\Collection\\' => array($vendorDir . '/ramsey/collection/src'),
     'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),
     'Psr\\Http\\Client\\' => array($vendorDir . '/psr/http-client/src'),
@@ -28,4 +30,5 @@ return array(
     'Com\\Tecnick\\File\\' => array($vendorDir . '/tecnickcom/tc-lib-file/src'),
     'Com\\Tecnick\\Color\\' => array($vendorDir . '/tecnickcom/tc-lib-color/src'),
     'Com\\Tecnick\\Barcode\\' => array($vendorDir . '/tecnickcom/tc-lib-barcode/src'),
+    'Brick\\Math\\' => array($vendorDir . '/brick/math/src'),
 );

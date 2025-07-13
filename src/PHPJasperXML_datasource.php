@@ -39,20 +39,17 @@ trait PHPJasperXML_datasource{
         }   
     }
 
-    public function debugsql(bool $isdebug) :self {
-        if($isdebug){
-            echo '<textarea rows=30 cols=100>' . print_r($this->querystring,true) . '</textarea>';
-            die;
-        }
-        return $this;
+    public function debugsql(string $sql) :self {        
+        echo '<textarea rows=30 cols=100>' . print_r($sql,true) . '</textarea>';
+        die;
     }
     public function fetchData() : self
     {
-        if(isset($_GET['debugsql']) && $_GET['debugsql']=='1'){
-            $this->debugsql(true);
-        }
-        $sql = $this->parseExpression($this->querystring);
         
+        $sql = $this->parseExpression($this->querystring);
+        if(!empty($_REQUEST['debugsql'])){
+            $this->debugsql($sql);
+        }
         $data =$this->db->fetchData($sql);
         if($this->debugdata){
             echo "<pre>".print_r($data,true)."</pre>";
