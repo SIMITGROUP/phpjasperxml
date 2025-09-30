@@ -368,7 +368,7 @@ trait PHPJasperXML_load
             
             $reportelement = $objvalue->reportElement;
             $setting = $this->prop($reportelement);
-            if(empty($setting['uuid']))$setting['uuid']= Uuid::uuid();
+            if(empty($setting['uuid']))$setting['uuid']= Uuid::uuid4();
             if(!empty($setting['uuid']))
             {                                                
                 $uuid = $setting['uuid'];
