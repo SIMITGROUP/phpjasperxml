@@ -30,7 +30,7 @@ trait Toolbox
             }
             $i++;
         }
-        
+        return null;
     }
     protected function getHashKeyFromIndex(array $arr,int $no): mixed
     {
@@ -43,21 +43,25 @@ trait Toolbox
             }
             $i++;
         }
-        
+        return null;
     }
 
+    
     public function console(mixed $txt='')
     {
         if (php_sapi_name() == "cli") {
-            echo "\n$txt\n";
+            // echo "\n$txt\n";
+            fwrite($this->consoleOut, "$txt.\n");
         } else {
             if(gettype($txt) == 'array')
             {
-                echo "<pre/>",print_r($txt,true)."<pre/>";
+                fwrite($this->consoleOut, print_r($txt,true)."\n");
+                // echo "<pre/>",print_r($txt,true)."<pre/>";
             }
             else
             {
-                echo "<br/>$txt<br/>";
+                fwrite($this->consoleOut, "$txt.\n");
+                // echo "<br/>$txt<br/>";
             }
             
         }

@@ -13,9 +13,10 @@ class PHPJasperXML{
     use PHPJasperXML_subreport;
     protected array $defaultbands=['background', 'title', 'pageHeader', 'columnHeader', 'detail', 'columnFooter', 'pageFooter', 'lastPageFooter', 'summary', 'noData', ];
     protected array $bands=[];
-    
+    protected $consoleOut;
     public function __construct()
     {
+        $this->consoleOut = fopen('php://stderr', 'w');
         foreach($this->defaultbands as $bandname)
         {
             $this->bands[$bandname]=['height'=>0,'endY'=>0];

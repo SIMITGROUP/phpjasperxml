@@ -9,6 +9,11 @@
 4. added ->debugsql(true)
 5. more reliable algorithm to parse `expression`
 
+## 2.1.16
+- Add debugging tools
+- fix group footer calculate wrong
+
+
 ## 2.1.14
 - make debug sql can show parameter
 - fix situation report element cant capture uuid cannot render

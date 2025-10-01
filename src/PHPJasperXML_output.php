@@ -498,6 +498,10 @@ trait PHPJasperXML_output
     protected function draw_groupsFooter()
     {
         $this->identifyGroupChange();
+        if($this->isgroupchanged){
+            // $this->console("draw group changed");
+            $this->reducerowno=1;
+        }
         for($i=count($this->descgroupnames)-1;$i>=0;$i--)
         {                        
             $groupname = $this->descgroupnames[$i];
@@ -510,7 +514,10 @@ trait PHPJasperXML_output
                 });
             }
             
-        }   
+        }  
+        if($this->reducerowno==1){
+            $this->reducerowno=0; 
+        } 
     }
     
     protected function draw_summary()
