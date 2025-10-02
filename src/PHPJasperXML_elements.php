@@ -423,6 +423,12 @@ trait PHPJasperXML_elements
                                 
                 $paras[$pname]=$this->executeExpression($pexpression);
             }
+            if(!empty($prop['dataSourceExpression'])){
+                $data = $this->executeExpression($prop['dataSourceExpression']);
+                if(gettype($data)=='array'){
+                    $connection = ['driver'=>'array','data'=>$data];
+                }                
+            }
             $subreport
                 ->setParameter($paras)
                 ->setDataSource($connection)
@@ -455,6 +461,7 @@ trait PHPJasperXML_elements
                         $bands = $tableprops->table->{'column'}[0];
                         $datasetRun = $tableprops->children('',true)->datasetRun;
                         $dataset = (string)$datasetRun['subDataset'];
+                        $dataSourceExpression = (string)$datasetRun->dataSourceExpression; 
                         $datasetParameters = [];
                         foreach($datasetRun->children()->datasetParameter as $p=>$pobj){
                             $pname = (string)$pobj['name'];
@@ -500,6 +507,7 @@ trait PHPJasperXML_elements
                         $prop['paras']=$results[1]; //parameter used to draw at subreport jrxml
                         $prop['datasetParameters']=$datasetParameters; //parameter maping from main report
                         $prop['connectionExpression']='';
+                        $prop['dataSourceExpression']=$dataSourceExpression;
                     break;
                     case 'list':
                     

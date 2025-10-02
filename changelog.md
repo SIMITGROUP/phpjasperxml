@@ -9,6 +9,10 @@
 4. added ->debugsql(true)
 5. more reliable algorithm to parse `expression`
 
+## 2.1.17
+- table allow support dynamic dataSourceExpression (array from parameters or field)
+
+
 ## 2.1.16
 - Add debugging tools
 - fix group footer calculate wrong

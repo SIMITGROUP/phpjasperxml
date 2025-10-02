@@ -420,7 +420,7 @@ trait PHPJasperXML_load
                 }
                 else
                 {
-                    echo "\nElement $elementtype is not supported due to $methodname() is not exists\n";
+                    $this->console("\nElement $elementtype is not supported due to $methodname() is not exists");
                 }
                 
                 
@@ -461,6 +461,7 @@ trait PHPJasperXML_load
             case 'java.math.BigDecimal':
                 $type='number';
             break;
+            case 'java.sql.Array':
             case 'java.util.List':
             case 'java.sql.Connection':
                 $type='array';
