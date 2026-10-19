@@ -27,6 +27,8 @@ class PHPJasperXML {
     private $offsetposition=0;
     private $detailbandqty=0;
     public $arraysqltable=array();
+    public $arrayVariable=array();
+    public $arraydetail=array();
     private $chartscaling=1.35;
     public $elementid=0;
     private $autofetchpara=true;
@@ -766,7 +768,7 @@ class PHPJasperXML {
         //$imagetype= substr($imagepath,-3);
 //$data->hyperlinkReferenceExpression=$this->analyse_expression($data->hyperlinkReferenceExpression);
 //$data->hyperlinkReferenceExpression=trim(str_replace(array(" ",'"'),"",$data->hyperlinkReferenceExpression));
-         switch($data[scaleImage]) {
+         switch($data['scaleImage']) {
             case "FillFrame":
                 $scaleType = "FillFrame";
                 break;
@@ -4400,7 +4402,7 @@ foreach($this->arrayVariable as $name=>$value){
                                 $this->group_count[$this->grouplist[1]["name"]]++;
                                 $this->group_count[$this->grouplist[2]["name"]]++;
                                 $this->group_count[$this->grouplist[3]["name"]]++;
-        if(isset($this->arrayVariable)) //if self define variable existing, go to do the calculation
+        if(!empty($this->arrayVariable)) //if self define variable existing, go to do the calculation
                                     $this->variable_calculation($rownum, $this->arraysqltable[$this->global_pointer][$this->group_pointer]);
 
 //begin page handling
@@ -4757,7 +4759,7 @@ foreach($this->arrayVariable as $name=>$value){
            // echo $arraydata["txt"].':'. $this->currenttextfield."<br>"; 
 //echo " $this->report_count $this->currenttextfield".print_r($arraydata,true)."<br/><br/>";
             if($fielddata==false) {
-                $this->checkoverflow($arraydata,$this->updatePageNo($arraydata["txt"]),'',$maxheight);
+                $this->checkoverflow($arraydata,$this->updatePageNo($arraydata["txt"]),$maxheight);
             }
             elseif($fielddata==true) {
             
@@ -5670,8 +5672,15 @@ $this->pdf->writeHTML($table);
         $fieldSetArr = array();
         foreach ($this->arraydetail as $k => $adetail)
         {
+            // Detail bands share this array with scalar layout metadata.
+            if (!is_array($adetail)) {
+                continue;
+            }
             foreach ($adetail as $index => $arrayset)
             {
+                if (!is_array($arrayset) || !isset($arrayset['type'])) {
+                    continue;
+                }
                 $type = $arrayset['type'];
                 if($type == "MultiCell")
                 {
@@ -5817,6 +5826,11 @@ $this->pdf->writeHTML($table);
   
     
     public function formatText($txt='',$pattern='') {
+        // Remark rows use an empty string for numeric cells. Keep them blank;
+        // number_format('') warns on PHP 7.3/7.4. Do not treat numeric zero as blank.
+        if ($txt === '') {
+            return '';
+        }
         // echo "$txt $pattern</br>";
         if($pattern=="###0")
             return number_format($txt,0,"","");
