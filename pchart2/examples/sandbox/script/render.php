@@ -14,6 +14,9 @@
 */
 
 session_start();
+// Read only chart settings, never the top-level application session.
+$sandboxSettings = $_SESSION['PCHART_SANDBOX'] ?? [];
+session_write_close();
 chdir("../../");
 
 $Mode = (!isset($_GET["Mode"])) ? "Render" : $_GET["Mode"];
@@ -21,171 +24,171 @@ $Mode = (!isset($_GET["Mode"])) ? "Render" : $_GET["Mode"];
 $Constants = readConstantFile();
 
 /* -- Retrieve General configuration items -------------------------------- */
-$g_width		= $_SESSION["g_width"];
-$g_height		= $_SESSION["g_height"];
-$g_border		= $_SESSION["g_border"];
+$g_width		= $sandboxSettings["g_width"];
+$g_height		= $sandboxSettings["g_height"];
+$g_border		= $sandboxSettings["g_border"];
 
-$g_aa			= $_SESSION["g_aa"];
-$g_shadow		= $_SESSION["g_shadow"];
-$g_transparent	= $_SESSION["g_transparent"];
+$g_aa			= $sandboxSettings["g_aa"];
+$g_shadow		= $sandboxSettings["g_shadow"];
+$g_transparent	= $sandboxSettings["g_transparent"];
 
-$g_title_enabled	= $_SESSION["g_title_enabled"];
-$g_title			= $_SESSION["g_title"];
-$g_title_align		= $_SESSION["g_title_align"];
-$g_title_x			= $_SESSION["g_title_x"];
-$g_title_y			= $_SESSION["g_title_y"];
-$g_title_color		= $_SESSION["g_title_color"];
-$g_title_font		= $_SESSION["g_title_font"];
-$g_title_font_size	= $_SESSION["g_title_font_size"];
-$g_title_box		= $_SESSION["g_title_box"];
+$g_title_enabled	= $sandboxSettings["g_title_enabled"];
+$g_title			= $sandboxSettings["g_title"];
+$g_title_align		= $sandboxSettings["g_title_align"];
+$g_title_x			= $sandboxSettings["g_title_x"];
+$g_title_y			= $sandboxSettings["g_title_y"];
+$g_title_color		= $sandboxSettings["g_title_color"];
+$g_title_font		= $sandboxSettings["g_title_font"];
+$g_title_font_size	= $sandboxSettings["g_title_font_size"];
+$g_title_box		= $sandboxSettings["g_title_box"];
 
-$g_solid_enabled	= $_SESSION["g_solid_enabled"];
-$g_solid_color		= $_SESSION["g_solid_color"];
-$g_solid_dashed		= $_SESSION["g_solid_dashed"];
+$g_solid_enabled	= $sandboxSettings["g_solid_enabled"];
+$g_solid_color		= $sandboxSettings["g_solid_color"];
+$g_solid_dashed		= $sandboxSettings["g_solid_dashed"];
 
-$g_gradient_enabled		= $_SESSION["g_gradient_enabled"];
-$g_gradient_start		= $_SESSION["g_gradient_start"];
-$g_gradient_end			= $_SESSION["g_gradient_end"];
-$g_gradient_direction	= $_SESSION["g_gradient_direction"];
-$g_gradient_alpha		= $_SESSION["g_gradient_alpha"];
+$g_gradient_enabled		= $sandboxSettings["g_gradient_enabled"];
+$g_gradient_start		= $sandboxSettings["g_gradient_start"];
+$g_gradient_end			= $sandboxSettings["g_gradient_end"];
+$g_gradient_direction	= $sandboxSettings["g_gradient_direction"];
+$g_gradient_alpha		= $sandboxSettings["g_gradient_alpha"];
 /* ------------------------------------------------------------------------ */
 
 /* -- Retrieve Data configuration items ----------------------------------- */
-$d_serie1_enabled	= $_SESSION["d_serie1_enabled"];
-$d_serie2_enabled	= $_SESSION["d_serie2_enabled"];
-$d_serie3_enabled	= $_SESSION["d_serie3_enabled"];
-$d_absissa_enabled	= $_SESSION["d_absissa_enabled"];
+$d_serie1_enabled	= $sandboxSettings["d_serie1_enabled"];
+$d_serie2_enabled	= $sandboxSettings["d_serie2_enabled"];
+$d_serie3_enabled	= $sandboxSettings["d_serie3_enabled"];
+$d_absissa_enabled	= $sandboxSettings["d_absissa_enabled"];
 
-$d_serie1_name		= $_SESSION["d_serie1_name"];
-$d_serie2_name		= $_SESSION["d_serie2_name"];
-$d_serie3_name		= $_SESSION["d_serie3_name"];
+$d_serie1_name		= $sandboxSettings["d_serie1_name"];
+$d_serie2_name		= $sandboxSettings["d_serie2_name"];
+$d_serie3_name		= $sandboxSettings["d_serie3_name"];
 
-$d_serie1_axis		= $_SESSION["d_serie1_axis"];
-$d_serie2_axis		= $_SESSION["d_serie2_axis"];
-$d_serie3_axis		= $_SESSION["d_serie3_axis"];
+$d_serie1_axis		= $sandboxSettings["d_serie1_axis"];
+$d_serie2_axis		= $sandboxSettings["d_serie2_axis"];
+$d_serie3_axis		= $sandboxSettings["d_serie3_axis"];
 
-$data0 				= $_SESSION["data0"];
-$data1 				= $_SESSION["data1"];
-$data2 				= $_SESSION["data2"];
-$absissa 			= $_SESSION["absissa"];
+$data0 				= $sandboxSettings["data0"];
+$data1 				= $sandboxSettings["data1"];
+$data2 				= $sandboxSettings["data2"];
+$absissa 			= $sandboxSettings["absissa"];
 
-$d_normalize_enabled = $_SESSION["d_normalize_enabled"];
+$d_normalize_enabled = $sandboxSettings["d_normalize_enabled"];
 
-$d_axis0_name		= $_SESSION["d_axis0_name"];
-$d_axis1_name		= $_SESSION["d_axis1_name"];
-$d_axis2_name		= $_SESSION["d_axis2_name"];
+$d_axis0_name		= $sandboxSettings["d_axis0_name"];
+$d_axis1_name		= $sandboxSettings["d_axis1_name"];
+$d_axis2_name		= $sandboxSettings["d_axis2_name"];
 
-$d_axis0_unit		= $_SESSION["d_axis0_unit"];
-$d_axis1_unit		= $_SESSION["d_axis1_unit"];
-$d_axis2_unit		= $_SESSION["d_axis2_unit"];
+$d_axis0_unit		= $sandboxSettings["d_axis0_unit"];
+$d_axis1_unit		= $sandboxSettings["d_axis1_unit"];
+$d_axis2_unit		= $sandboxSettings["d_axis2_unit"];
 
-$d_axis0_position	= $_SESSION["d_axis0_position"];
-$d_axis1_position	= $_SESSION["d_axis1_position"];
-$d_axis2_position	= $_SESSION["d_axis2_position"];
+$d_axis0_position	= $sandboxSettings["d_axis0_position"];
+$d_axis1_position	= $sandboxSettings["d_axis1_position"];
+$d_axis2_position	= $sandboxSettings["d_axis2_position"];
 
-$d_axis0_format		= $_SESSION["d_axis0_format"];
-$d_axis1_format		= $_SESSION["d_axis1_format"];
-$d_axis2_format		= $_SESSION["d_axis2_format"];
+$d_axis0_format		= $sandboxSettings["d_axis0_format"];
+$d_axis1_format		= $sandboxSettings["d_axis1_format"];
+$d_axis2_format		= $sandboxSettings["d_axis2_format"];
 
 /* ------------------------------------------------------------------------ */
 
 /* -- Retrieve Scale configuration items ---------------------------------- */
-$s_x				= $_SESSION["s_x"];
-$s_y				= $_SESSION["s_y"];
-$s_width			= $_SESSION["s_width"];
-$s_height			= $_SESSION["s_height"];
-$s_direction		= $_SESSION["s_direction"];
-$s_arrows_enabled	= $_SESSION["s_arrows_enabled"];
-$s_mode				= $_SESSION["s_mode"];
-$s_cycle_enabled	= $_SESSION["s_cycle_enabled"];
-$s_x_margin			= $_SESSION["s_x_margin"];
-$s_y_margin			= $_SESSION["s_y_margin"];
-$s_automargin_enabled	= $_SESSION["s_automargin_enabled"];
-$s_font				= $_SESSION["s_font"];
-$s_font_size		= $_SESSION["s_font_size"];
-$s_font_color		= $_SESSION["s_font_color"];
+$s_x				= $sandboxSettings["s_x"];
+$s_y				= $sandboxSettings["s_y"];
+$s_width			= $sandboxSettings["s_width"];
+$s_height			= $sandboxSettings["s_height"];
+$s_direction		= $sandboxSettings["s_direction"];
+$s_arrows_enabled	= $sandboxSettings["s_arrows_enabled"];
+$s_mode				= $sandboxSettings["s_mode"];
+$s_cycle_enabled	= $sandboxSettings["s_cycle_enabled"];
+$s_x_margin			= $sandboxSettings["s_x_margin"];
+$s_y_margin			= $sandboxSettings["s_y_margin"];
+$s_automargin_enabled	= $sandboxSettings["s_automargin_enabled"];
+$s_font				= $sandboxSettings["s_font"];
+$s_font_size		= $sandboxSettings["s_font_size"];
+$s_font_color		= $sandboxSettings["s_font_color"];
 
-$s_x_labeling		= $_SESSION["s_x_labeling"];
-$s_x_skip			= $_SESSION["s_x_skip"];
-$s_x_label_rotation	= $_SESSION["s_x_label_rotation"];
+$s_x_labeling		= $sandboxSettings["s_x_labeling"];
+$s_x_skip			= $sandboxSettings["s_x_skip"];
+$s_x_label_rotation	= $sandboxSettings["s_x_label_rotation"];
 
-$s_grid_color		= $_SESSION["s_grid_color"];
-$s_grid_alpha		= $_SESSION["s_grid_alpha"];
-$s_grid_x_enabled	= $_SESSION["s_grid_x_enabled"];
-$s_grid_y_enabled	= $_SESSION["s_grid_y_enabled"];
+$s_grid_color		= $sandboxSettings["s_grid_color"];
+$s_grid_alpha		= $sandboxSettings["s_grid_alpha"];
+$s_grid_x_enabled	= $sandboxSettings["s_grid_x_enabled"];
+$s_grid_y_enabled	= $sandboxSettings["s_grid_y_enabled"];
 
-$s_ticks_color		= $_SESSION["s_ticks_color"];
-$s_ticks_alpha		= $_SESSION["s_ticks_alpha"];
-$s_subticks_color	= $_SESSION["s_subticks_color"];
-$s_subticks_alpha	= $_SESSION["s_subticks_alpha"];
-$s_subticks_enabled	= $_SESSION["s_subticks_enabled"];
+$s_ticks_color		= $sandboxSettings["s_ticks_color"];
+$s_ticks_alpha		= $sandboxSettings["s_ticks_alpha"];
+$s_subticks_color	= $sandboxSettings["s_subticks_color"];
+$s_subticks_alpha	= $sandboxSettings["s_subticks_alpha"];
+$s_subticks_enabled	= $sandboxSettings["s_subticks_enabled"];
 /* ------------------------------------------------------------------------ */
 
 /* -- Retrieve Chart configuration items ---------------------------------- */
-$c_family			= $_SESSION["c_family"];
-$c_display_values	= $_SESSION["c_display_values"];
-$c_break_color		= $_SESSION["c_break_color"];
-$c_break			= $_SESSION["c_break"];
+$c_family			= $sandboxSettings["c_family"];
+$c_display_values	= $sandboxSettings["c_display_values"];
+$c_break_color		= $sandboxSettings["c_break_color"];
+$c_break			= $sandboxSettings["c_break"];
 
-$c_plot_size		= $_SESSION["c_plot_size"];
-$c_border_size		= $_SESSION["c_border_size"];
-$c_border_enabled	= $_SESSION["c_border_enabled"];
+$c_plot_size		= $sandboxSettings["c_plot_size"];
+$c_border_size		= $sandboxSettings["c_border_size"];
+$c_border_enabled	= $sandboxSettings["c_border_enabled"];
 
-$c_bar_classic		= $_SESSION["c_bar_classic"];
-$c_bar_rounded		= $_SESSION["c_bar_rounded"];
-$c_bar_gradient		= $_SESSION["c_bar_gradient"];
-$c_around_zero1		= $_SESSION["c_around_zero1"];
+$c_bar_classic		= $sandboxSettings["c_bar_classic"];
+$c_bar_rounded		= $sandboxSettings["c_bar_rounded"];
+$c_bar_gradient		= $sandboxSettings["c_bar_gradient"];
+$c_around_zero1		= $sandboxSettings["c_around_zero1"];
 
-$c_transparency		= $_SESSION["c_transparency"];
-$c_forced_transparency	= $_SESSION["c_forced_transparency"];
-$c_around_zero2		= $_SESSION["c_around_zero2"];
+$c_transparency		= $sandboxSettings["c_transparency"];
+$c_forced_transparency	= $sandboxSettings["c_forced_transparency"];
+$c_around_zero2		= $sandboxSettings["c_around_zero2"];
 /* ------------------------------------------------------------------------ */
 
 /* -- Retrieve Legend configuration items ---------------------------------- */
-$l_enabled		= $_SESSION["l_enabled"];
+$l_enabled		= $sandboxSettings["l_enabled"];
 
-$l_font			= $_SESSION["l_font"];
-$l_font_size	= $_SESSION["l_font_size"];
-$l_font_color	= $_SESSION["l_font_color"];
+$l_font			= $sandboxSettings["l_font"];
+$l_font_size	= $sandboxSettings["l_font_size"];
+$l_font_color	= $sandboxSettings["l_font_color"];
 
-$l_margin		= $_SESSION["l_margin"];
-$l_alpha		= $_SESSION["l_alpha"];
-$l_format		= $_SESSION["l_format"];
+$l_margin		= $sandboxSettings["l_margin"];
+$l_alpha		= $sandboxSettings["l_alpha"];
+$l_format		= $sandboxSettings["l_format"];
 
-$l_orientation	= $_SESSION["l_orientation"];
-$l_box_size		= $_SESSION["l_box_size"];
+$l_orientation	= $sandboxSettings["l_orientation"];
+$l_box_size		= $sandboxSettings["l_box_size"];
 
-$l_position		= $_SESSION["l_position"];
-$l_x			= $_SESSION["l_x"];
-$l_y			= $_SESSION["l_y"];
+$l_position		= $sandboxSettings["l_position"];
+$l_x			= $sandboxSettings["l_x"];
+$l_y			= $sandboxSettings["l_y"];
 
-$l_family		= $_SESSION["l_family"];
+$l_family		= $sandboxSettings["l_family"];
 /* ------------------------------------------------------------------------ */
 
 /* -- Retrieve Threshold configuration items ------------------------------ */
-$t_enabled		= $_SESSION["t_enabled"];
+$t_enabled		= $sandboxSettings["t_enabled"];
 
-$t_value		= $_SESSION["t_value"];
-$t_axis			= $_SESSION["t_axis"];
+$t_value		= $sandboxSettings["t_value"];
+$t_axis			= $sandboxSettings["t_axis"];
 
-$t_color		= $_SESSION["t_color"];
-$t_alpha		= $_SESSION["t_alpha"];
-$t_ticks		= $_SESSION["t_ticks"];
+$t_color		= $sandboxSettings["t_color"];
+$t_alpha		= $sandboxSettings["t_alpha"];
+$t_ticks		= $sandboxSettings["t_ticks"];
 
-$t_caption		= $_SESSION["t_caption"];
-$t_box			= $_SESSION["t_box"];
-$t_caption_enabled	= $_SESSION["t_caption_enabled"];
+$t_caption		= $sandboxSettings["t_caption"];
+$t_box			= $sandboxSettings["t_box"];
+$t_caption_enabled	= $sandboxSettings["t_caption_enabled"];
 /* ------------------------------------------------------------------------ */
 
 /* -- Retrieve slope chart configuration items ---------------------------- */
-$sl_enabled			= $_SESSION["sl_enabled"];
-$sl_shaded			= $_SESSION["sl_shaded"];
-$sl_caption_enabled	= $_SESSION["sl_caption_enabled"];
-$sl_caption_line	= $_SESSION["sl_caption_line"];
+$sl_enabled			= $sandboxSettings["sl_enabled"];
+$sl_shaded			= $sandboxSettings["sl_shaded"];
+$sl_caption_enabled	= $sandboxSettings["sl_caption_enabled"];
+$sl_caption_line	= $sandboxSettings["sl_caption_line"];
 /* ------------------------------------------------------------------------ */
 
 /* -- Retrieve color configuration items ---------------------------------- */
-$p_template	= $_SESSION["p_template"];
+$p_template	= $sandboxSettings["p_template"];
 /* ------------------------------------------------------------------------ */
 
 

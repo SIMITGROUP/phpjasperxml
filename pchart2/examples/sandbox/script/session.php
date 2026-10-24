@@ -15,11 +15,16 @@
 
 session_start();
 
-foreach($_GET as $Key => $Value){
-	$_SESSION[$Key] = $Value;
+// PHP session storage is shared across cookie names. Never write application keys
+// or expose the application's session when a caller reuses its session ID here.
+foreach ($_GET as $Key => $Value) {
+    if (is_string($Value) && preg_match('/^(?:(?:g|d|s|c|l|t|sl|p)_[a-z0-9_]+|data[012]|absissa)$/D', $Key)) {
+        $_SESSION['PCHART_SANDBOX'][$Key] = $Value;
+    }
 }
 
-print_r($_SESSION);
+header('Cache-Control: no-store');
+print_r($_SESSION['PCHART_SANDBOX'] ?? []);
 
 usleep(200000);
 
