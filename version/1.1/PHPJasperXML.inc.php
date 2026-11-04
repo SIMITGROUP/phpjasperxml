@@ -1530,7 +1530,7 @@ if($type=='stackedBarChart')
     }
         
         
-    protected function stretchDetailBandForOverflow(array $elements, &$detailHeight): array
+    protected function stretchDetailBandForOverflow(array $elements, &$detailHeight, $maximumDetailHeight = null): array
     {
         $stretchCellIndexes = [];
         foreach ($elements as $index => $element) {
@@ -1546,6 +1546,7 @@ if($type=='stackedBarChart')
         }
 
         $detailHeight = (float)$detailHeight;
+        $baseDetailHeight = $detailHeight;
         foreach ($elements as $element) {
             if (($element["type"] ?? "") !== "MultiCell"
                 || ($element["hidden_type"] ?? "") !== "field"
@@ -1559,10 +1560,24 @@ if($type=='stackedBarChart')
                 continue;
             }
 
-            $text = (string)$this->analyse_expression(
-                $element["txt"],
-                $element["isPrintRepeatedValues"] ?? "true"
-            );
+            $fieldUuid = $element["uuid"] ?? "";
+            $previousUuid = $this->currentuuid;
+            $hadPreviousValue = array_key_exists($fieldUuid, $this->lastrowresult);
+            $previousValue = $hadPreviousValue ? $this->lastrowresult[$fieldUuid] : null;
+            $this->currentuuid = $fieldUuid;
+            try {
+                $text = (string)$this->analyse_expression(
+                    $element["txt"],
+                    $element["isPrintRepeatedValues"] ?? "true"
+                );
+            } finally {
+                $this->currentuuid = $previousUuid;
+                if ($hadPreviousValue) {
+                    $this->lastrowresult[$fieldUuid] = $previousValue;
+                } else {
+                    unset($this->lastrowresult[$fieldUuid]);
+                }
+            }
             $fontData = $element;
             $fontData["font"] = $this->recommendFont($text, $element["font"], $element["pdfFontName"]);
             $this->setFont($fontData);
@@ -1575,6 +1590,10 @@ if($type=='stackedBarChart')
                 $element["border"]
             );
             $detailHeight = max($detailHeight, (float)$element["y"] + $textHeight);
+        }
+
+        if ($maximumDetailHeight !== null) {
+            $detailHeight = min($detailHeight, max($baseDetailHeight, (float)$maximumDetailHeight));
         }
 
         foreach ($stretchCellIndexes as $index) {
@@ -1683,7 +1702,6 @@ if($type=='stackedBarChart')
                 for($d=0;$d<$this->detailbandqty;$d++)
                 {
                     $detailheight=$this->detailbandheight[$d];
-                    $detailElements = $this->stretchDetailBandForOverflow($this->arraydetail[$d], $detailheight);
                     $this->pdf->setPage($this->pdf->getNumPages());
                     $currentpage= $this->pdf->getNumPages();
                 
@@ -1700,6 +1718,18 @@ if($type=='stackedBarChart')
                         $checkpoint=$this->arrayPageSetting["topMargin"]+$this->arraypageHeader[0]["height"]+$this->titlebandheight+$this->columnheaderbandheight;//$this->arraydetail[0]["y_axis"]- $this->titleheight;
                         $this->maxpagey[($this->pdf->getPage()-1)]=$checkpoint;
                     }
+
+                    $detailheight=$this->detailbandheight[$d];
+                    $pageDetailLimit=$this->detailallowtill;
+                    if ($this->pdf->getNumPages()==1) {
+                        $pageDetailLimit-=$this->orititleheight;
+                    }
+                    $maximumDetailHeight=$pageDetailLimit-$checkpoint;
+                    $detailElements = $this->stretchDetailBandForOverflow(
+                        $this->arraydetail[$d],
+                        $detailheight,
+                        $maximumDetailHeight
+                    );
                     
                     $this->currentband='detail';
         
