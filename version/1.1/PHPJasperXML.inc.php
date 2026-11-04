@@ -1530,6 +1530,63 @@ if($type=='stackedBarChart')
     }
         
         
+    protected function stretchDetailBandForOverflow(array $elements, &$detailHeight): array
+    {
+        $stretchCellIndexes = [];
+        foreach ($elements as $index => $element) {
+            if (($element["type"] ?? "") === "MultiCell"
+                && ($element["hidden_type"] ?? "") === "statictext"
+                && ($element["stretchType"] ?? "") === "RelativeToBandHeight") {
+                $stretchCellIndexes[] = $index;
+            }
+        }
+
+        if (!$stretchCellIndexes) {
+            return $elements;
+        }
+
+        $detailHeight = (float)$detailHeight;
+        foreach ($elements as $element) {
+            if (($element["type"] ?? "") !== "MultiCell"
+                || ($element["hidden_type"] ?? "") !== "field"
+                || ($element["soverflow"] ?? "false") !== "true"
+                || !empty($element["writeHTML"])) {
+                continue;
+            }
+
+            $printWhenExpression = trim((string)($element["printWhenExpression"] ?? ""));
+            if ($printWhenExpression !== "" && !$this->analyse_expression($printWhenExpression)) {
+                continue;
+            }
+
+            $text = (string)$this->analyse_expression(
+                $element["txt"],
+                $element["isPrintRepeatedValues"] ?? "true"
+            );
+            $fontData = $element;
+            $fontData["font"] = $this->recommendFont($text, $element["font"], $element["pdfFontName"]);
+            $this->setFont($fontData);
+            $textHeight = $this->pdf->getStringHeight(
+                (float)$element["width"],
+                $this->formatText($text, $element["pattern"] ?? ""),
+                true,
+                true,
+                "",
+                $element["border"]
+            );
+            $detailHeight = max($detailHeight, (float)$element["y"] + $textHeight);
+        }
+
+        foreach ($stretchCellIndexes as $index) {
+            $elements[$index]["height"] = max(
+                (float)$elements[$index]["height"],
+                $detailHeight - (float)$elements[$index]["y"]
+            );
+        }
+
+        return $elements;
+    }
+
     public function detail() 
     {
         $currentpage= $this->pdf->getNumPages();
@@ -1626,6 +1683,7 @@ if($type=='stackedBarChart')
                 for($d=0;$d<$this->detailbandqty;$d++)
                 {
                     $detailheight=$this->detailbandheight[$d];
+                    $detailElements = $this->stretchDetailBandForOverflow($this->arraydetail[$d], $detailheight);
                     $this->pdf->setPage($this->pdf->getNumPages());
                     $currentpage= $this->pdf->getNumPages();
                 
@@ -1648,7 +1706,7 @@ if($type=='stackedBarChart')
                     /* begin page handling*/
 
                     
-                    foreach ($this->arraydetail[$d] as $out) 
+                    foreach ($detailElements as $out) 
                     {
 
                         $this->currentrow=$this->arraysqltable[$this->global_pointer];
