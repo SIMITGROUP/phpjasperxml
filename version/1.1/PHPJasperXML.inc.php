@@ -40,6 +40,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
     public $generatestatus=false;       
     // public $lastrowresult=array();
     private $dbpara=array();
+    protected $activeDetailStretchCells=[];
 
     public function __construct($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
@@ -1493,18 +1494,29 @@ if($type=='stackedBarChart')
         $this->pdf->SetFillColor($this->forcefillcolor_r,$this->forcefillcolor_g,$this->forcefillcolor_b);
         $bltxt=$this->continuenextpageText;                                      
         $this->pdf->SetY($this->arraypageHeader[0]["height"]+$this->columnheaderbandheight+$this->arrayPageSetting["topMargin"]);
+        $continuationStartY = $this->pdf->GetY();
         $this->pdf->SetX($bltxt['x']);
-        $maxheight=$this->arrayPageSetting["pageHeight"]-$this->arraypageFooter[0]["height"]-$this->pdf->GetY()-$bltxt['height'];
+        $maxheight = max(0, $this->detailallowtill - $continuationStartY);
+        if ($maxheight <= 0) {
+            throw new RuntimeException('Unable to continue long text because no detail space remains on the page.');
+        }
 
         $this->pdf->MultiCell($bltxt['width'],$bltxt['height'],$bltxt['txt'],
         $bltxt['border'],
         $bltxt['align'],$bltxt['fill'],$bltxt['ln'],'','',$bltxt['reset'],
-        $bltxt['streth'],$bltxt['ishtml'],$bltxt['autopadding'],$maxheight-$bltxt['height'],$bltxt['valign']);
+        $bltxt['streth'],$bltxt['ishtml'],$bltxt['autopadding'],$maxheight,$bltxt['valign']);
+
+        $continuationEndY = min($this->pdf->GetY(), $this->detailallowtill);
+        $this->drawStretchContinuationBorders($continuationStartY, $continuationEndY);
                             
        if($this->pdf->balancetext!='')
        {
+            $remainingText = (string)$this->pdf->balancetext;
+            if ($remainingText === (string)$bltxt['txt']) {
+                throw new RuntimeException('Unable to continue long text because the available detail area cannot fit another line.');
+            }
             $this->continuenextpageText=array('width'=>$bltxt["width"], 'height'=>$bltxt["height"], 
-                'txt'=>$this->pdf->balancetext, 'border'=>$bltxt["border"] ,'align'=>$bltxt["align"], 'fill'=>$bltxt["fill"],'ln'=>1,
+                'txt'=>$remainingText, 'border'=>$bltxt["border"] ,'align'=>$bltxt["align"], 'fill'=>$bltxt["fill"],'ln'=>1,
                         'x'=>$bltxt['x'],'y'=>'','reset'=>true,'streth'=>0,'ishtml'=>false,'autopadding'=>true,'valign'=>$bltxt['valign']);
                 $this->pdf->balancetext='';
                                             
@@ -1530,6 +1542,110 @@ if($type=='stackedBarChart')
     }
         
         
+    protected function stretchDetailBandForOverflow(array $elements, &$detailHeight, $maximumDetailHeight = null): array
+    {
+        $stretchCellIndexes = [];
+        foreach ($elements as $index => $element) {
+            if (($element["type"] ?? "") === "MultiCell"
+                && ($element["hidden_type"] ?? "") === "statictext"
+                && ($element["stretchType"] ?? "") === "RelativeToBandHeight") {
+                $stretchCellIndexes[] = $index;
+            }
+        }
+
+        if (!$stretchCellIndexes) {
+            return $elements;
+        }
+
+        $detailHeight = (float)$detailHeight;
+        $baseDetailHeight = $detailHeight;
+        foreach ($elements as $element) {
+            if (($element["type"] ?? "") !== "MultiCell"
+                || ($element["hidden_type"] ?? "") !== "field"
+                || ($element["soverflow"] ?? "false") !== "true"
+                || !empty($element["writeHTML"])) {
+                continue;
+            }
+
+            $printWhenExpression = trim((string)($element["printWhenExpression"] ?? ""));
+            if ($printWhenExpression !== "" && !$this->analyse_expression($printWhenExpression)) {
+                continue;
+            }
+
+            $fieldUuid = (string)($element["uuid"] ?? "");
+            $previousUuid = $this->currentuuid;
+            $hadPreviousValue = array_key_exists($fieldUuid, $this->lastrowresult);
+            $previousValue = $hadPreviousValue ? $this->lastrowresult[$fieldUuid] : null;
+            $this->currentuuid = $fieldUuid;
+            try {
+                $text = (string)$this->analyse_expression(
+                    $element["txt"],
+                    $element["isPrintRepeatedValues"] ?? "true"
+                );
+            } finally {
+                $this->currentuuid = $previousUuid;
+                if ($hadPreviousValue) {
+                    $this->lastrowresult[$fieldUuid] = $previousValue;
+                } else {
+                    unset($this->lastrowresult[$fieldUuid]);
+                }
+            }
+            $fontData = $element;
+            $fontData["font"] = $this->recommendFont($text, $element["font"], $element["pdfFontName"]);
+            $this->setFont($fontData);
+            $textHeight = $this->pdf->getStringHeight(
+                (float)$element["width"],
+                $this->formatText($text, $element["pattern"] ?? ""),
+                true,
+                true,
+                "",
+                $element["border"]
+            );
+            $detailHeight = max($detailHeight, (float)$element["y"] + $textHeight);
+        }
+
+        if ($maximumDetailHeight !== null) {
+            $detailHeight = min($detailHeight, max($baseDetailHeight, (float)$maximumDetailHeight));
+        }
+
+        $bandGrowth = max(0, $detailHeight - $baseDetailHeight);
+        foreach ($stretchCellIndexes as $index) {
+            $elements[$index]["height"] = (float)$elements[$index]["height"] + $bandGrowth;
+        }
+
+        return $elements;
+    }
+
+    protected function drawStretchContinuationBorders($startY, $endY): void
+    {
+        if (!$this->activeDetailStretchCells || $endY <= $startY) {
+            return;
+        }
+
+        $pageNumber = $this->pdf->getPage();
+        $currentX = $this->pdf->GetX();
+        $currentY = $this->pdf->GetY();
+        $height = $endY - $startY;
+
+        foreach ($this->activeDetailStretchCells as $cell) {
+            if (empty($cell["border"])) {
+                continue;
+            }
+
+            $this->pdf->Rect(
+                (float)$cell["x"] + $this->arrayPageSetting["leftMargin"],
+                $startY,
+                (float)$cell["width"],
+                $height,
+                'n',
+                $cell["border"]
+            );
+        }
+
+        $this->pdf->setPage($pageNumber);
+        $this->pdf->SetXY($currentX, $currentY);
+    }
+
     public function detail() 
     {
         $currentpage= $this->pdf->getNumPages();
@@ -1642,13 +1758,30 @@ if($type=='stackedBarChart')
                         $checkpoint=$this->arrayPageSetting["topMargin"]+$this->arraypageHeader[0]["height"]+$this->titlebandheight+$this->columnheaderbandheight;//$this->arraydetail[0]["y_axis"]- $this->titleheight;
                         $this->maxpagey[($this->pdf->getPage()-1)]=$checkpoint;
                     }
+
+                    $detailheight=$this->detailbandheight[$d];
+                    $pageDetailLimit=$this->detailallowtill;
+                    if ($this->pdf->getNumPages()==1) {
+                        $pageDetailLimit-=$this->orititleheight;
+                    }
+                    $maximumDetailHeight=$pageDetailLimit-$checkpoint;
+                    $detailElements = $this->stretchDetailBandForOverflow(
+                        $this->arraydetail[$d],
+                        $detailheight,
+                        $maximumDetailHeight
+                    );
+                    $this->activeDetailStretchCells = array_values(array_filter($detailElements, function ($element) {
+                        return ($element["type"] ?? "") === "MultiCell"
+                            && ($element["hidden_type"] ?? "") === "statictext"
+                            && ($element["stretchType"] ?? "") === "RelativeToBandHeight";
+                    }));
                     
                     $this->currentband='detail';
         
                     /* begin page handling*/
 
                     
-                    foreach ($this->arraydetail[$d] as $out) 
+                    foreach ($detailElements as $out) 
                     {
 
                         $this->currentrow=$this->arraysqltable[$this->global_pointer];
@@ -1711,6 +1844,7 @@ if($type=='stackedBarChart')
 
                     }
                     //$this->pdf->lastPage();
+                    $this->activeDetailStretchCells = [];
                     $checkpoint=$this->maxpagey['page_'.($this->pdf->getNumPages()-1)];
                     
                 } //end loop detail band[]
