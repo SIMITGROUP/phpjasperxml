@@ -1497,6 +1497,9 @@ if($type=='stackedBarChart')
         $continuationStartY = $this->pdf->GetY();
         $this->pdf->SetX($bltxt['x']);
         $maxheight = max(0, $this->detailallowtill - $continuationStartY);
+        if ($maxheight <= 0) {
+            throw new RuntimeException('Unable to continue long text because no detail space remains on the page.');
+        }
 
         $this->pdf->MultiCell($bltxt['width'],$bltxt['height'],$bltxt['txt'],
         $bltxt['border'],
@@ -1508,8 +1511,12 @@ if($type=='stackedBarChart')
                             
        if($this->pdf->balancetext!='')
        {
+            $remainingText = (string)$this->pdf->balancetext;
+            if ($remainingText === (string)$bltxt['txt']) {
+                throw new RuntimeException('Unable to continue long text because the available detail area cannot fit another line.');
+            }
             $this->continuenextpageText=array('width'=>$bltxt["width"], 'height'=>$bltxt["height"], 
-                'txt'=>$this->pdf->balancetext, 'border'=>$bltxt["border"] ,'align'=>$bltxt["align"], 'fill'=>$bltxt["fill"],'ln'=>1,
+                'txt'=>$remainingText, 'border'=>$bltxt["border"] ,'align'=>$bltxt["align"], 'fill'=>$bltxt["fill"],'ln'=>1,
                         'x'=>$bltxt['x'],'y'=>'','reset'=>true,'streth'=>0,'ishtml'=>false,'autopadding'=>true,'valign'=>$bltxt['valign']);
                 $this->pdf->balancetext='';
                                             
@@ -1630,7 +1637,7 @@ if($type=='stackedBarChart')
                 $startY,
                 (float)$cell["width"],
                 $height,
-                '',
+                'n',
                 $cell["border"]
             );
         }
