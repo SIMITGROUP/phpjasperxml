@@ -1496,12 +1496,12 @@ if($type=='stackedBarChart')
         $this->pdf->SetY($this->arraypageHeader[0]["height"]+$this->columnheaderbandheight+$this->arrayPageSetting["topMargin"]);
         $continuationStartY = $this->pdf->GetY();
         $this->pdf->SetX($bltxt['x']);
-        $maxheight=$this->arrayPageSetting["pageHeight"]-$this->arraypageFooter[0]["height"]-$this->pdf->GetY()-$bltxt['height'];
+        $maxheight = max(0, $this->detailallowtill - $continuationStartY);
 
         $this->pdf->MultiCell($bltxt['width'],$bltxt['height'],$bltxt['txt'],
         $bltxt['border'],
         $bltxt['align'],$bltxt['fill'],$bltxt['ln'],'','',$bltxt['reset'],
-        $bltxt['streth'],$bltxt['ishtml'],$bltxt['autopadding'],$maxheight-$bltxt['height'],$bltxt['valign']);
+        $bltxt['streth'],$bltxt['ishtml'],$bltxt['autopadding'],$maxheight,$bltxt['valign']);
 
         $continuationEndY = min($this->pdf->GetY(), $this->detailallowtill);
         $this->drawStretchContinuationBorders($continuationStartY, $continuationEndY);
@@ -1625,21 +1625,13 @@ if($type=='stackedBarChart')
                 continue;
             }
 
-            $this->pdf->MultiCell(
-                (float)$cell["width"],
-                $height,
-                "",
-                $cell["border"],
-                "",
-                false,
-                0,
+            $this->pdf->Rect(
                 (float)$cell["x"] + $this->arrayPageSetting["leftMargin"],
                 $startY,
-                true,
-                0,
-                false,
-                true,
-                $height
+                (float)$cell["width"],
+                $height,
+                '',
+                $cell["border"]
             );
         }
 
