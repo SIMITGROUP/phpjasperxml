@@ -1501,10 +1501,8 @@ if($type=='stackedBarChart')
         $continuationStartY = $this->pdf->GetY();
         $this->pdf->SetX($bltxt['x']);
         if ($this->activeDetailStretchCells) {
-            $maxheight = $this->detailallowtill - $continuationStartY + self::DETAIL_HEIGHT_TOLERANCE;
-            $lineHeight = $this->pdf->getStringHeight(
-                $bltxt['width'], '', $bltxt['reset'], $bltxt['autopadding'], '', $bltxt['border']
-            );
+            $maxheight = $this->stretchTextHeightLimit($this->detailallowtill - $continuationStartY, $bltxt['border']);
+            $lineHeight = $this->pdf->getStringHeight(0, '', false, false);
             if ($maxheight < $lineHeight) {
                 throw new RuntimeException('Unable to continue long text because no detail line can fit on the page.');
             }
@@ -1555,6 +1553,14 @@ if($type=='stackedBarChart')
     }
         
         
+    private function stretchTextHeightLimit($remainingHeight, $border): float
+    {
+        // MultiCell adds vertical padding outside the height limit passed to Write.
+        $paddedLineHeight = $this->pdf->getStringHeight(0, '', false, true, '', $border);
+        $lineHeight = $this->pdf->getStringHeight(0, '', false, false);
+        return $remainingHeight - ($paddedLineHeight - $lineHeight) + self::DETAIL_HEIGHT_TOLERANCE;
+    }
+
     protected function stretchDetailBandForOverflow(array $elements, &$detailHeight, $maximumDetailHeight = null): array
     {
         $stretchCellIndexes = [];
@@ -1844,11 +1850,12 @@ if($type=='stackedBarChart')
                         {
                             case "field":
                                 $maxheight = $this->detailallowtill - $checkpoint;
-                                if ($this->activeDetailStretchCells) {
+                                if ($this->activeDetailStretchCells && $out['soverflow'] === 'true' && empty($out['writeHTML'])) {
                                     // SetXY has already applied the field's offset within the band.
                                     $remainingHeight = $this->detailallowtill - $this->pdf->GetY();
                                     // MultiCell treats a zero height limit as unlimited.
-                                    $maxheight = max(0, $remainingHeight) + self::DETAIL_HEIGHT_TOLERANCE;
+                                    $maxheight = max(self::DETAIL_HEIGHT_TOLERANCE,
+                                        $this->stretchTextHeightLimit($remainingHeight, $out['border']));
                                 }
                                 $this->prepare_print_array=array(
                                         "type"=>"MultiCell",
