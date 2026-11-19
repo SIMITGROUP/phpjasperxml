@@ -43,6 +43,9 @@ class PHPJasperXML extends abstractPHPJasperXML{
     protected $activeDetailStretchCells=[];
     protected $stretchContinuationBorders=[];
 
+    // TCPDF Write stops at equality, even when the last line fits exactly.
+    private const DETAIL_HEIGHT_TOLERANCE = 0.000001;
+
     public function __construct($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
 
@@ -1497,20 +1500,18 @@ if($type=='stackedBarChart')
         $this->pdf->SetY($this->arraypageHeader[0]["height"]+$this->columnheaderbandheight+$this->arrayPageSetting["topMargin"]);
         $continuationStartY = $this->pdf->GetY();
         $this->pdf->SetX($bltxt['x']);
-        $lineHeight = max((float)$bltxt['height'], (float)$this->pdf->getFontSize());
-        $maxheight = max(0, $this->detailallowtill - $continuationStartY);
-        if ($maxheight < $lineHeight) {
-            $this->columnFooter();
-            $this->pageFooter();
-            $this->pageHeader();
-            $this->columnHeader($this->arrayPageSetting["topMargin"]+$this->titlebandheight+$this->arraypageHeader[0]["height"]);
-            $continuationStartY = $this->arrayPageSetting["topMargin"]+$this->arraypageHeader[0]["height"]+$this->columnheaderbandheight;
-            $this->pdf->SetY($continuationStartY);
-            $this->pdf->SetX($bltxt['x']);
-            $maxheight = max(0, $this->detailallowtill - $continuationStartY);
-        }
-        if ($maxheight < $lineHeight) {
-            throw new RuntimeException('Unable to continue long text because no detail line can fit on the page.');
+        if ($this->activeDetailStretchCells) {
+            $maxheight = $this->detailallowtill - $continuationStartY + self::DETAIL_HEIGHT_TOLERANCE;
+            $lineHeight = $this->pdf->getStringHeight(
+                $bltxt['width'], '', $bltxt['reset'], $bltxt['autopadding'], '', $bltxt['border']
+            );
+            if ($maxheight < $lineHeight) {
+                throw new RuntimeException('Unable to continue long text because no detail line can fit on the page.');
+            }
+        } else {
+            // Keep the continuation height used by existing reports without stretch borders.
+            $maxheight = $this->arrayPageSetting['pageHeight'] - ($this->arraypageFooter[0]['height'] ?? 0)
+                - $continuationStartY - (2 * $bltxt['height']);
         }
 
         $this->pdf->MultiCell($bltxt['width'],$bltxt['height'],$bltxt['txt'],
@@ -1842,7 +1843,10 @@ if($type=='stackedBarChart')
                         switch ($out["hidden_type"]) 
                         {
                             case "field":
-                                $maxheight=$this->detailallowtill-$checkpoint;//                            
+                                $maxheight = $this->detailallowtill - $checkpoint;
+                                if ($this->activeDetailStretchCells && $maxheight > 0) {
+                                    $maxheight += self::DETAIL_HEIGHT_TOLERANCE;
+                                }
                                 $this->prepare_print_array=array(
                                         "type"=>"MultiCell",
                                         "width"=>$out["width"],
