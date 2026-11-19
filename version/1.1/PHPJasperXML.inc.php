@@ -1835,7 +1835,7 @@ if($type=='stackedBarChart')
                     /* begin page handling*/
 
                     
-                    foreach ($detailElements as $out) 
+                    foreach ($detailElements as $out)
                     {
 
                         $this->currentrow=$this->arraysqltable[$this->global_pointer];
@@ -1844,8 +1844,11 @@ if($type=='stackedBarChart')
                         {
                             case "field":
                                 $maxheight = $this->detailallowtill - $checkpoint;
-                                if ($this->activeDetailStretchCells && $maxheight > 0) {
-                                    $maxheight += self::DETAIL_HEIGHT_TOLERANCE;
+                                if ($this->activeDetailStretchCells) {
+                                    // SetXY has already applied the field's offset within the band.
+                                    $remainingHeight = $this->detailallowtill - $this->pdf->GetY();
+                                    // MultiCell treats a zero height limit as unlimited.
+                                    $maxheight = max(0, $remainingHeight) + self::DETAIL_HEIGHT_TOLERANCE;
                                 }
                                 $this->prepare_print_array=array(
                                         "type"=>"MultiCell",
