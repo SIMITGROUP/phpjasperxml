@@ -41,6 +41,7 @@ class PHPJasperXML extends abstractPHPJasperXML{
     // public $lastrowresult=array();
     private $dbpara=array();
     protected $activeDetailStretchCells=[];
+    protected $stretchContinuationBorders=[];
 
     public function __construct($lang="en",$pdflib="TCPDF") {
         $this->lang=$lang;
@@ -1492,13 +1493,24 @@ if($type=='stackedBarChart')
         $this->pdf->SetTextColor($this->forcetextcolor_r,$this->forcetextcolor_g,$this->forcetextcolor_b);
         //$this->pdf->SetTextColor(44,123,4);
         $this->pdf->SetFillColor($this->forcefillcolor_r,$this->forcefillcolor_g,$this->forcefillcolor_b);
-        $bltxt=$this->continuenextpageText;                                      
+        $bltxt=$this->continuenextpageText;
         $this->pdf->SetY($this->arraypageHeader[0]["height"]+$this->columnheaderbandheight+$this->arrayPageSetting["topMargin"]);
         $continuationStartY = $this->pdf->GetY();
         $this->pdf->SetX($bltxt['x']);
+        $lineHeight = max((float)$bltxt['height'], (float)$this->pdf->getFontSize());
         $maxheight = max(0, $this->detailallowtill - $continuationStartY);
-        if ($maxheight <= 0) {
-            throw new RuntimeException('Unable to continue long text because no detail space remains on the page.');
+        if ($maxheight < $lineHeight) {
+            $this->columnFooter();
+            $this->pageFooter();
+            $this->pageHeader();
+            $this->columnHeader($this->arrayPageSetting["topMargin"]+$this->titlebandheight+$this->arraypageHeader[0]["height"]);
+            $continuationStartY = $this->arrayPageSetting["topMargin"]+$this->arraypageHeader[0]["height"]+$this->columnheaderbandheight;
+            $this->pdf->SetY($continuationStartY);
+            $this->pdf->SetX($bltxt['x']);
+            $maxheight = max(0, $this->detailallowtill - $continuationStartY);
+        }
+        if ($maxheight < $lineHeight) {
+            throw new RuntimeException('Unable to continue long text because no detail line can fit on the page.');
         }
 
         $this->pdf->MultiCell($bltxt['width'],$bltxt['height'],$bltxt['txt'],
@@ -1623,27 +1635,67 @@ if($type=='stackedBarChart')
         }
 
         $pageNumber = $this->pdf->getPage();
+        $pageKey = 'page_' . $pageNumber;
+        if (!isset($this->stretchContinuationBorders[$pageKey])) {
+            $this->stretchContinuationBorders[$pageKey] = array(
+                'startY' => $startY,
+                'endY' => $endY,
+            );
+            return;
+        }
+
+        $this->stretchContinuationBorders[$pageKey]['startY'] = min(
+            (float)$this->stretchContinuationBorders[$pageKey]['startY'],
+            (float)$startY
+        );
+        $this->stretchContinuationBorders[$pageKey]['endY'] = max(
+            (float)$this->stretchContinuationBorders[$pageKey]['endY'],
+            (float)$endY
+        );
+    }
+
+    protected function flushStretchContinuationBorders(): void
+    {
+        if (!$this->stretchContinuationBorders) {
+            return;
+        }
+
+        $pageNumber = $this->pdf->getPage();
         $currentX = $this->pdf->GetX();
         $currentY = $this->pdf->GetY();
-        $height = $endY - $startY;
 
-        foreach ($this->activeDetailStretchCells as $cell) {
-            if (empty($cell["border"])) {
+        foreach ($this->stretchContinuationBorders as $pageKey => $range) {
+            $targetPage = (int)substr($pageKey, 5);
+            if ($targetPage < 1) {
                 continue;
             }
 
-            $this->pdf->Rect(
-                (float)$cell["x"] + $this->arrayPageSetting["leftMargin"],
-                $startY,
-                (float)$cell["width"],
-                $height,
-                'n',
-                $cell["border"]
-            );
+            $startY = (float)$range['startY'];
+            $endY = (float)$range['endY'];
+            if ($endY <= $startY) {
+                continue;
+            }
+
+            $this->pdf->setPage($targetPage);
+            foreach ($this->activeDetailStretchCells as $cell) {
+                if (empty($cell['border'])) {
+                    continue;
+                }
+
+                $this->pdf->Rect(
+                    (float)$cell['x'] + $this->arrayPageSetting['leftMargin'],
+                    $startY,
+                    (float)$cell['width'],
+                    $endY - $startY,
+                    'n',
+                    $cell['border']
+                );
+            }
         }
 
         $this->pdf->setPage($pageNumber);
         $this->pdf->SetXY($currentX, $currentY);
+        $this->stretchContinuationBorders = [];
     }
 
     public function detail() 
@@ -1775,6 +1827,7 @@ if($type=='stackedBarChart')
                             && ($element["hidden_type"] ?? "") === "statictext"
                             && ($element["stretchType"] ?? "") === "RelativeToBandHeight";
                     }));
+                    $this->stretchContinuationBorders = [];
                     
                     $this->currentband='detail';
         
@@ -1844,6 +1897,7 @@ if($type=='stackedBarChart')
 
                     }
                     //$this->pdf->lastPage();
+                    $this->flushStretchContinuationBorders();
                     $this->activeDetailStretchCells = [];
                     $checkpoint=$this->maxpagey['page_'.($this->pdf->getNumPages()-1)];
                     
